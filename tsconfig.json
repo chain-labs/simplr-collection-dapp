@@ -6,22 +6,22 @@
         "./src/*"
       ],
       "pages/*": [
-        "pages/*"
+        "./pages/*"
       ],
       "containers/*": [
-        "src/containers/*"
+        "./src/containers/*"
       ],
       "components/*": [
-        "src/components/*"
+        "./src/components/*"
       ],
       "svgs/*": [
-        "src/svgs/*"
+        "./src/svgs/*"
       ],
       "styleguide/*": [
-        "src/styleguide/*"
+        "./src/styleguide/*"
       ],
       "images/*": [
-        "public/static/images/*"
+        "./public/static/images/*"
       ]
     },
     "target": "es5",
