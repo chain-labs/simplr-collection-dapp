@@ -5,7 +5,7 @@ const HomePage = () => {
 		<Box color="seaweed" bg="red">
 			Hi! man
 			<Box color="yellow" bg="green">
-				This is the home page of simplr
+				This is the home page of simplrDAO
 			</Box>
 		</Box>
 	);
