@@ -5,7 +5,7 @@ const HomePage = () => {
 		<Box color="seaweed" bg="red">
 			Hi! man
 			<Box color="yellow" bg="green">
-				This is me
+				This is the home page
 			</Box>
 		</Box>
 	);
