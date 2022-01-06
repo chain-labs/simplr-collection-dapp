@@ -9,7 +9,7 @@ const HomePage = () => {
 		<Box color="seaweed" bg="red">
 			Hi! man
 			<Box color="yellow" bg="green">
-				This is the home page with {count}
+				Counter: {count}
 			</Box>
 			<Box as="button" onClick={() => dispatch(increment())}>
 				+
