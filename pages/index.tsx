@@ -1,6 +1,6 @@
 import Box from 'src/components/Box';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, incrementByAmount, selectCount } from 'src/redux/reducers/counterSlice';
+import { increment, decrement, selectCount } from 'src/redux/reducers/counterSlice';
 
 const HomePage = () => {
 	const dispatch = useDispatch();
