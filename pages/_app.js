@@ -10,6 +10,8 @@ import { ThemeProvider } from 'styled-components';
 import { Provider } from 'react-redux';
 import { store } from 'src/redux/store';
 
+import Navbar from 'components/Navbar';
+
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
 		// Set a custom CSS Property for Height
@@ -44,6 +46,7 @@ const MyApp = ({ Component, pageProps }) => {
 			</Head>
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>
+					<Navbar />
 					<Component {...pageProps} />
 				</ThemeProvider>
 			</Provider>
