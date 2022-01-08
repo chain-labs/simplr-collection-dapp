@@ -8,7 +8,7 @@ import 'styleguide/globalStyles.css';
 import { ThemeProvider } from 'styled-components';
 
 import { Provider } from 'react-redux';
-import store from 'src/redux/store';
+import { store } from 'src/redux/store';
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
@@ -39,9 +39,8 @@ const MyApp = ({ Component, pageProps }) => {
 	return (
 		<>
 			<Head>
-				<title>SMAC | Space Man Astro Club</title>
+				<title>Simplr Collection</title>
 				<link href="https://api.fontshare.com/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
-				<link rel="shortcut icon" href="/static/images/logo.jpeg" />
 			</Head>
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>
