@@ -1,22 +1,21 @@
+import Link from 'next/link';
 import Box from 'src/components/Box';
-import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement, selectCount } from 'src/redux/reducers/counterSlice';
+import If from 'src/components/If';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { selectUser, userSelector } from 'src/redux/user';
 
-const HomePage = () => {
-	const dispatch = useDispatch();
-	const count = useSelector(selectCount);
+const HomePage: React.FC = () => {
+	const dispatch = useAppDispatch();
+	const user = useAppSelector(userSelector);
 	return (
 		<Box color="seaweed" bg="red">
 			Hi! man
-			<Box color="yellow" bg="green">
-				Counter: {count}
-			</Box>
-			<Box as="button" onClick={() => dispatch(increment())}>
-				+
-			</Box>
-			<Box as="button" onClick={() => dispatch(decrement())}>
-				-
-			</Box>
+			<If
+				condition={user.exists}
+				then={<Box fontSize="3.2rem">Your address: {user.address}</Box>}
+				else={<Box fontSize="3.2rem">Connect Wallet Address</Box>}
+			/>
+			<Link href="/address">Address</Link>
 		</Box>
 	);
 };
