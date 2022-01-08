@@ -1,14 +1,7 @@
-import Box from 'src/components/Box';
+import HomeComponent from 'containers/Home';
 
-const HomePage = () => {
-	return (
-		<Box color="seaweed" bg="red">
-			Hi! man
-			<Box color="yellow" bg="green">
-				This is the home page
-			</Box>
-		</Box>
-	);
+const HomePage: React.FC = () => {
+	return <HomeComponent />;
 };
 
 export default HomePage;

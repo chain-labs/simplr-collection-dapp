@@ -6,6 +6,10 @@ import { ProviderProps, UseEthersResult } from './types';
 // To expose ethereum to the window object
 declare let window: any;
 
+export const requestAccount = async () => {
+	if (process.browser) await window?.ethereum?.request({ method: ETH_REQUEST_ACCOUNT });
+};
+
 const useEthers = (): UseEthersResult => {
 	const [provider, setProvider] = useState<ProviderProps>(null);
 	const [ethers, setEthers] = useState<any>(null);
