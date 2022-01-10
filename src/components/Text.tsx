@@ -2,27 +2,16 @@ import React from 'react';
 import Box, { BoxProps } from 'components/Box';
 
 export const fontSizes = {
-	h1: { mobS: '3.2rem', tabS: '4.8rem', deskL: '6.4rem' },
-	h2: { mobS: '2.4rem', tabS: '3.2rem', deskL: '4.8rem' },
-	s1: { mobS: '2rem', tabS: '2.4rem', deskL: '3.6rem' },
-	s2: { mobS: '2rem', tabS: '2rem', deskL: '2.4rem' },
-	b1: { mobS: '1.6rem', tabS: '2rem', deskL: '2.4rem' },
-};
-
-export const charSpacing = {
-	h1: { mobS: '-5%', deskM: '12%' },
-	h2: '2%',
-	s1: '8%',
-	s2: '15%',
-	b1: { mobS: '2%', deskM: '0%' },
-};
-
-export const fontW = {
-	h1: 600,
-	h2: 600,
-	s1: 600,
-	s2: 600,
-	b1: 300,
+	headline: { mobS: '4.0rem', tabL: '5.6rem' },
+	h1: { mobS: '3.2rem', tabL: '4rem' },
+	h2: { mobS: '2.4rem', tabL: '3.2rem' },
+	h3: { mobS: '1.8rem', tabL: '2.4rem' },
+	h4: '1.8rem',
+	h5: '1.6rem',
+	h6: '1.4rem',
+	b1: '1.8rem',
+	b2: '1.6rem',
+	b3: '1.4rem',
 };
 
 const fontWeights = {
@@ -33,10 +22,43 @@ const fontWeights = {
 	thin: 300,
 };
 
-export interface TextProps extends BoxProps {
-	as?: 'h1' | 'h2' | 's1' | 's2' | 'b1';
-	fontWeight?: 'semi-bold' | 'bold' | 'medium' | 'regular' | 'thin';
+const fontW = {
+	headline: fontWeights.bold,
+	h1: fontWeights.bold,
+	h2: fontWeights.bold,
+	h3: fontWeights.bold,
+	h4: fontWeights.medium,
+	h5: fontWeights.medium,
+	h6: fontWeights.medium,
+	b1: fontWeights.regular,
+	b2: fontWeights.regular,
+	b3: fontWeights.regular,
+};
 
+const charSpacing = {
+	headline: '-0.5px',
+	h1: '-0.4px',
+	h2: { mobS: '-0.1px', tabL: '-0.4px' },
+	h3: '-0.1px',
+	h4: '0.1px',
+	h5: '0px',
+	h6: '0px',
+	b1: '0.1px',
+	b2: '-0.1px',
+	b3: '-0.1px',
+};
+
+const lineHeights = (as) => {
+	return as === 'h1' || as === 'headline' ? '150%' : '140%';
+};
+
+const fontFamily = (as) => {
+	return as === 'b1' || as === 'b2' || as === 'b3' ? '"OpenSauceOneRegular", sans-serif' : '"Switzer", sans-serif';
+};
+
+export interface TextProps extends BoxProps {
+	as?: 'headline' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3';
+	fontWeight?: 'semi-bold' | 'bold' | 'medium' | 'regular' | 'thin';
 	children?: string | React.ReactNode;
 	id?: string;
 	dangerouslySetInnerHTML?: { __html: string };
@@ -47,7 +69,9 @@ export interface TextProps extends BoxProps {
 const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProps): JSX.Element => {
 	const fs = fontSizes[as];
 	const fw = fontWeight ? fontWeights[fontWeight] : fontW[as];
-	const cs = charSpacing[as] ?? '150%';
+	const lh = restProps.lineHeight ?? lineHeights(as);
+	const cs = restProps.letterSpacing ?? charSpacing[as];
+	const ff = restProps.fontFamily ?? fontFamily(as);
 
 	return (
 		<Box
@@ -59,6 +83,9 @@ const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProp
 			fontSize={fs}
 			fontWeight={fw}
 			letterSpacing={cs}
+			lineHeight={lh}
+			fontFamily={ff}
+			fontStyle="normal"
 			{...restProps}
 		>
 			{children}

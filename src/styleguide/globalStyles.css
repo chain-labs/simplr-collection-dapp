@@ -1,27 +1,20 @@
-/*@font-face {
-	font-family: 'FONT NAME HERE';
-	font-style: normal;
-	font-weight: 400;
-	font-display: swap;
-	src: url('/static/fonts/Epilogue/Epilogue-Regular.eot'); *//* IE9 Compat Modes */
-	/*src: local('Epilogue Thin'), local('Epilogue-Thin'),
-		url('/static/fonts/Epilogue/Epilogue-Thin.eot?#iefix') format('embedded-opentype'),
-		/* IE6-IE8 */ /*url('/static/fonts/Epilogue/Epilogue-Thin.woff2') format('woff2'),
-		/* Super Modern Browsers */ /*url('/static/fonts/Epilogue/Epilogue-Thin.woff') format('woff'),
-		/* Modern Browsers */ /*url('/static/fonts/Epilogue/Epilogue-Thin.ttf') format('truetype'),
-		/* Safari, Android, iOS */ /*url('/static/fonts/Epilogue/Epilogue-Thin.svg#Epilogue') format('svg'); /* Legacy iOS */
-/*}*/
-
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-@import url('https://api.fontshare.com/css?f[]=clash-display@300,400,500,600,700&display=swap');
+@import url('https://api.fontshare.com/css?f[]=switzer@300,400,500,600,700&display=swap');
+@import url('https://fontlibrary.org//face/open-sauce-one');
+
 
 body,
 html {
 	padding: 0;
 	margin: 0;
 	font-size: 62.5%;
-	font-family: 'Clash Display', sans-serif;
+	font-family: 'Switzer', sans-serif;
 	overflow-x: hidden;
+	font-style: normal;
+}
+
+p {
+	font-family: 'OpenSauceOneRegular', sans-serif;
 }
 
 div {
