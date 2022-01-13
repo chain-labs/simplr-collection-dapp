@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Box from 'src/components/Box';
+import InputSlider from 'src/components/InputSlider';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextArea from 'src/components/TextArea';
@@ -38,6 +39,9 @@ const InputComponents = () => {
 			</Box>
 			<Box gridColumn="2" gridRow="2 / 6">
 				<TextArea value={text} setValue={setText} />
+			</Box>
+			<Box gridColumn="2" gridRow="6 / 7">
+				<InputSlider />
 			</Box>
 		</Box>
 	);
