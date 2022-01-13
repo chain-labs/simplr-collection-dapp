@@ -2,17 +2,21 @@ import { useState } from 'react';
 import Box from 'src/components/Box';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
+import TextArea from 'src/components/TextArea';
 import TextInput from 'src/components/TextInput';
 
 const InputComponents = () => {
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [pass, setPass] = useState('');
+	const [text, setText] = useState('');
 
 	return (
-		<Box px="wm" py="mm">
-			<Text as="h1">Input Components</Text>
-			<Box bg="black-10" height="2px" mb="mm" />
+		<Box px="wm" py="mm" display="grid" gridTemplateColumns="1fr 2fr" gridGap="mm">
+			<Box gridColumn="span 2">
+				<Text as="h1">Input Components</Text>
+				<Box bg="black-10" height="2px" mb="mm" />
+			</Box>
 			<LabelledTextInput
 				placeholder="Field Text"
 				regexp=".{8,}"
@@ -20,7 +24,6 @@ const InputComponents = () => {
 				value={name}
 				setValue={setName}
 			/>
-			<Box mb="wm" />
 
 			<LabelledTextInput
 				placeholder="Field Text"
@@ -30,8 +33,12 @@ const InputComponents = () => {
 				value={pass}
 				setValue={setPass}
 			/>
-			<Box mb="wm" />
-			<TextInput placeholder="Field Text" type="email" value={email} setValue={setEmail} />
+			<Box gridRow="5" overflow="visible">
+				<TextInput placeholder="Field Text" type="email" value={email} setValue={setEmail} />
+			</Box>
+			<Box gridColumn="2" gridRow="2 / 6">
+				<TextArea value={text} setValue={setText} />
+			</Box>
 		</Box>
 	);
 };
