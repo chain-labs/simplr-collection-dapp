@@ -52,6 +52,7 @@ const colors: DefaultTheme['colors'] = {
 	'simply-blue': '#4743C5',
 	'simply-black': '#010211',
 	'simply-white': '#ffffff',
+	'simply-gray': '#868686',
 
 	'blue-90': '#0E0C5F',
 	'blue-80': '#161572',
