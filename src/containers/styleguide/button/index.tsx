@@ -10,76 +10,116 @@ const Button = () => {
 				<Box display="flex" justifyContent="flex-start" mb="mxl">
 					32
 					<ButtonComp bg="primary" px="12px" mx="mxxs" height="33px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="secondary" px="12px" mx="mxxs" height="32px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="12px" mx="mxxs" height="32px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="12px" mx="mxxs" height="32px" active={false}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 				</Box>
 				<Box display="flex" justifyContent="flex-start" mb="mxl">
 					36
 					<ButtonComp bg="primary" px="12px" mx="mxxs" height="36px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="secondary" px="12px" mx="mxxs" height="36px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="12px" mx="mxxs" height="36px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="12px" mx="mxxs" height="36px" active={false}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 				</Box>
 				<Box display="flex" justifyContent="flex-start" mb="mxl">
 					40
 					<ButtonComp bg="primary" px="12px" mx="mxxs" height="40px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="secondary" px="12px" mx="mxxs" height="40px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="12px" mx="mxxs" height="40px" active={true}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="12px" mx="mxxs" height="40px" active={false}>
-						<Text>Action</Text>
+						<Text as="h6" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 				</Box>
 				<Box display="flex" justifyContent="flex-start" mb="mxl">
 					48
 					<ButtonComp bg="primary" px="24px" mx="mxxs" height="48px" active={true}>
-						<Text>Action</Text>
+						<Text as="h5" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="secondary" px="24px" mx="mxxs" height="48px" active={true}>
-						<Text>Action</Text>
+						<Text as="h5" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="24px" mx="mxxs" height="48px" active={true}>
-						<Text>Action</Text>
+						<Text as="h5" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="24px" mx="mxxs" height="48px" active={false}>
-						<Text>Action</Text>
+						<Text as="h5" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 				</Box>
 				<Box display="flex" justifyContent="flex-start" mb="mxl">
 					56
 					<ButtonComp bg="primary" px="32px" mx="mxxs" height="56px" active={true}>
-						<Text>Action</Text>
+						<Text as="h4" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="secondary" px="32px" mx="mxxs" height="56px" active={true}>
-						<Text>Action</Text>
+						<Text as="h4" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="32px" mx="mxxs" height="56px" active={true}>
-						<Text>Action</Text>
+						<Text as="h4" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 					<ButtonComp bg="tertiary" px="32px" mx="mxxs" height="56px" active={false}>
-						<Text>Action</Text>
+						<Text as="h4" fontFamily="Switzer">
+							Action
+						</Text>
 					</ButtonComp>
 				</Box>
 			</Box>
