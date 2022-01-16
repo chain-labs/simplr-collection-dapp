@@ -104,6 +104,7 @@ const customProps = {
 	whiteSpace: true,
 	WebkitBoxOrient: true,
 	WebkitLineClamp: true,
+	color: true,
 };
 
 const customPropsStyleFn = system(customProps as any);
