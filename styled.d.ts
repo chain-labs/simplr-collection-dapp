@@ -95,5 +95,15 @@ declare module 'styled-components' {
 		};
 		space: string[] & Partial<ISpace>;
 		breakpoints: string[] & Partial<IBreakpoints>;
+		shadows: {
+			'shadow-100': string;
+			'shadow-200': string;
+			'shadow-300': string;
+			'shadow-400': string;
+			'shadow-500': string;
+			'shadow-600': string;
+			'shadow-700': string;
+			'shadow-800': string;
+		};
 	}
 }
