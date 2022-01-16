@@ -1,0 +1,13 @@
+{
+	"presets": ["next/babel"],
+	"plugins": [
+		[
+			"babel-plugin-styled-components",
+			{
+				"ssr": true,
+				"pure": true
+			}
+		],
+		["@babel/plugin-proposal-optional-chaining"]
+	]
+}

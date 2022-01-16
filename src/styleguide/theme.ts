@@ -3,11 +3,11 @@ import { DefaultTheme } from 'styled-components';
 //Breakpoints
 const breakpoints: DefaultTheme['breakpoints'] = ['0px', '576px', '768px', '992px', '1200px', '1440px', '1600px'];
 
-breakpoints.mobS = breakpoints[0]; // 319px
+breakpoints.mobS = breakpoints[0]; // 320px
 breakpoints.mobL = breakpoints[1]; // 424px
 breakpoints.tabS = breakpoints[2]; // 767px
-breakpoints.tabL = breakpoints[3]; // 1025px
-breakpoints.deskS = breakpoints[4]; //1199px
+breakpoints.tabL = breakpoints[3]; // 1024px
+breakpoints.deskS = breakpoints[4]; //1200px
 breakpoints.deskM = breakpoints[5]; //1440px
 breakpoints.deskL = breakpoints[6]; //1600px
 
@@ -49,12 +49,66 @@ space.wxl = space[14]; //100px
 space.wxxl = space[15]; //120px
 
 const colors: DefaultTheme['colors'] = {
-	'black-10': '#0D0E1E',
-	'blue-10': '#020541',
-	'blue-20': '#030641',
-	'red-10': '#CC0000',
-	'red-20': '#FF2E3D',
-	'white-10': '#FFFFFF',
+	'simply-blue': '#4743C5',
+	'simply-black': '#010211',
+	'simply-white': '#ffffff',
+	'disable-black': '#8C8CA1',
+	'simply-gray': '#868686',
+
+	'blue-90': '#0E0C5F',
+	'blue-80': '#161572',
+	'blue-70': '#24218C',
+	'blue-60': '#3430A9',
+	'blue-50': '#4743C5',
+	'blue-40': '#726EDC',
+	'blue-30': '#938FED',
+	'blue-20': '#B9B7F8',
+	'blue-10': '#DBDAFC',
+	'blue-00': '#F0EFFC',
+
+	'black-00': '#EAE9F3',
+	'black-10': '#D4D0F3',
+	'black-20': '#A9A3E9',
+	'black-30': '#706AC0',
+	'black-40': '#3F3983',
+	'black-50': '#0E0C2F',
+	'black-60': '#090828',
+	'black-70': '#060620',
+	'black-80': '#05031B',
+	'black-90': '#010211',
+
+	'green-00': '#F1FCEF',
+	'green-10': '#DAFCD6',
+	'green-20': '#AFFAAE',
+	'green-30': '#83F08D',
+	'green-40': '#62E279',
+	'green-50': '#33CF5F',
+	'green-60': '#25B25A',
+	'green-70': '#199554',
+	'green-80': '#10784B',
+	'green-90': '#096345',
+
+	'red-00': '#FCF2EF',
+	'red-10': '#FCDDD5',
+	'red-20': '#FAB5AD',
+	'red-30': '#F28382',
+	'red-40': '#E6616C',
+	'red-50': '#D6314F',
+	'red-60': '#B8234C',
+	'red-70': '#9A1848',
+	'red-80': '#7C0F42',
+	'red-90': '#66093D',
+
+	'yellow-00': '#FFFCF2',
+	'yellow-10': '#FFF6D9',
+	'yellow-20': '#FFEBB4',
+	'yellow-30': '#FFDE8E',
+	'yellow-40': '#FFD072',
+	'yellow-50': '#FFBA44',
+	'yellow-60': '#DB9631',
+	'yellow-70': '#B77522',
+	'yellow-80': '#935715',
+	'yellow-90': '#7A410D',
 };
 
 const theme: DefaultTheme = {
