@@ -43,6 +43,7 @@ const MyApp = ({ Component, pageProps }) => {
 			<Head>
 				<title>Simplr Collection</title>
 				<link href="https://api.fontshare.com/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+				<link rel="shortcut icon" href="/favicon.png" />
 			</Head>
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>

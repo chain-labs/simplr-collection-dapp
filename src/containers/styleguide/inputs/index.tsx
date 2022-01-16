@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Box from 'src/components/Box';
+import InputSlider from 'src/components/InputSlider';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextArea from 'src/components/TextArea';
@@ -10,6 +11,7 @@ const InputComponents = () => {
 	const [email, setEmail] = useState('');
 	const [pass, setPass] = useState('');
 	const [text, setText] = useState('');
+	const [percentage, setPercentage] = useState(15);
 
 	return (
 		<Box px="wm" py="mm" display="grid" gridTemplateColumns="1fr 2fr" gridGap="mm">
@@ -38,6 +40,10 @@ const InputComponents = () => {
 			</Box>
 			<Box gridColumn="2" gridRow="2 / 6">
 				<TextArea value={text} setValue={setText} />
+			</Box>
+			<Box gridColumn="2" gridRow="5 / 7" overflow="visible">
+				<InputSlider value={percentage} setValue={setPercentage} max={100} min={0} />
+				<Text as="h3">{percentage}</Text>
 			</Box>
 		</Box>
 	);

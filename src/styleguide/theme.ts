@@ -54,6 +54,7 @@ const colors: DefaultTheme['colors'] = {
 	'simply-white': '#ffffff',
 	'disable-black': '#8C8CA1',
 	'simply-gray': '#868686',
+	'light-purple': '#EFEFFD',
 
 	'blue-90': '#0E0C5F',
 	'blue-80': '#161572',
@@ -111,10 +112,22 @@ const colors: DefaultTheme['colors'] = {
 	'yellow-90': '#7A410D',
 };
 
+const shadows: DefaultTheme['shadows'] = {
+	'shadow-100': '0px 2px 4px -2px rgba(24, 39, 75, 0.12), 0px 4px 4px -2px rgba(24, 39, 75, 0.08)',
+	'shadow-200': '0px 4px 6px -4px rgba(24, 39, 75, 0.12), 0px 8px 8px -4px rgba(24, 39, 75, 0.08)',
+	'shadow-300': '0px 6px 8px -6px rgba(24, 39, 75, 0.12), 0px 8px 16px -6px rgba(24, 39, 75, 0.08)',
+	'shadow-400': '0px 6px 12px -6px rgba(24, 39, 75, 0.12), 0px 8px 24px -4px rgba(24, 39, 75, 0.08)',
+	'shadow-500': '0px 6px 14px -6px rgba(24, 39, 75, 0.12), 0px 10px 32px -4px rgba(24, 39, 75, 0.1)',
+	'shadow-600': '0px 8px 18px -6px rgba(24, 39, 75, 0.12), 0px 12px 42px -4px rgba(24, 39, 75, 0.12)',
+	'shadow-700': '0px 8px 22px -6px rgba(24, 39, 75, 0.12), 0px 14px 64px -4px rgba(24, 39, 75, 0.12)',
+	'shadow-800': '0px 8px 28px -6px rgba(24, 39, 75, 0.12), 0px 18px 88px -4px rgba(24, 39, 75, 0.14)',
+};
+
 const theme: DefaultTheme = {
 	space,
 	breakpoints,
 	colors,
+	shadows,
 };
 
 export default theme;
