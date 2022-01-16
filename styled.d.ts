@@ -37,6 +37,7 @@ declare module 'styled-components' {
 			'simply-white': string;
 			'disable-black': string;
 			'simply-gray': string;
+			'light-purple': string;
 
 			'blue-10': string;
 			'blue-20': string;
