@@ -34,6 +34,9 @@ const Toggle = ({ value, setValue, size, ...restProps }) => {
 					transition-delay: 0.1s;
 				`}
 				{...restProps}
+				onClick={() => {
+					setValue(!value);
+				}}
 			>
 				<Box
 					width={toggleBallSize}
@@ -44,9 +47,6 @@ const Toggle = ({ value, setValue, size, ...restProps }) => {
 					border="none"
 					cursor="pointer"
 					transform={value ? (size === 'desk' ? 'translateX(30px)' : 'translate(15px)') : ''}
-					onClick={() => {
-						setValue(!value);
-					}}
 					css={`
 						transition: 0.5s transform;
 					`}
