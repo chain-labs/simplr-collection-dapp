@@ -24,34 +24,33 @@ const borderColor = (bg) => {
 
 export interface ButtonProps extends BoxProps {
 	bg?: 'primary' | 'secondary' | 'tertiary';
-	active?: true | false;
+	disable?: boolean;
 	children?: string | React.ReactNode;
 	dangerouslySetInnerHTML?: { __html: string };
 	onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	className?: string;
 }
 
-const ButtonComp = ({ bg, active, height, children, ...restProps }: ButtonProps): JSX.Element => {
+const ButtonComp = ({ bg, disable, height, children, ...restProps }: ButtonProps): JSX.Element => {
 	const buttonColour = color[bg];
-	const hColor = active ? hoverColor[bg] : 'simply-white';
+	const hColor = !disable ? hoverColor[bg] : 'simply-white';
 	const bColor = borderColor(bg);
 	return (
 		<Box
 			as="button"
-			backgroundColor={active ? buttonColour : 'simply-white'}
+			backgroundColor={!disable ? buttonColour : 'simply-white'}
 			//@ts-expect-error-button
-			color={active ? fontColor(bg) : 'disable-black'}
-			border={active ? bColor : '1px solid rgba(140, 140, 161, 0.2)'}
+			color={!disable ? fontColor(bg) : 'disable-black'}
+			border={!disable ? bColor : '1px solid rgba(140, 140, 161, 0.2)'}
 			borderRadius="8px"
 			height={height}
-			cursor={active ? 'pointer' : 'not-allowed'}
-			disabled={active ? false : true}
+			cursor={!disable ? 'pointer' : 'not-allowed'}
+			disabled={!disable ? false : true}
 			css={`
 				&:hover {
 					background-color: ${theme.colors[`${hColor}`]};
 				}
 			`}
-			boxShadow={active ? 'none' : 'inset 0px -1px 0.5px rgba(14, 14, 44, 0.4);'}
 			{...restProps}
 		>
 			{children}
