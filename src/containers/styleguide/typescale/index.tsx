@@ -14,17 +14,19 @@ const StyleguideTypescale = () => {
 				<Text as="h4">Heading 4</Text>
 				<Text as="h5">Heading 5</Text>
 				<Text as="h6">Heading 6</Text>
+				<Box my="mm" />
+
 				<Text as="b1">
 					SIMPLR IS a simple, cost-effective and easy to use platform to start any NFT Project. We believe in building
 					an open community with non-existing entry barriers.
 				</Text>
-				<Box />
-				<Text as="b2">
+				<Box my="mm" />
+				<Text as="b2" my="wl">
 					SIMPLR IS a simple, cost-effective and easy to use platform to start any NFT Project. We believe in building
 					an open community with non-existing entry barriers.
 				</Text>
-				<Box />
-				<Text as="b3">
+				<Box my="mm" />
+				<Text as="b3" my="ml">
 					SIMPLR IS a simple, cost-effective and easy to use platform to start any NFT Project. We believe in building
 					an open community with non-existing entry barriers.
 				</Text>

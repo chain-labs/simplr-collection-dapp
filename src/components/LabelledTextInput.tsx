@@ -20,7 +20,7 @@ const LabelledTextInput = ({ label, helperText, placeholder, regexp, disabled, v
 			</Text>
 			<TextInput {...{ disabled, regexp, placeholder, value, setValue }} />
 			{!!helperText && (
-				<Text as="h6" mt="mxs" color="simply-gray">
+				<Text as="b1" mt="mxs" color="simply-gray">
 					{helperText}
 				</Text>
 			)}
