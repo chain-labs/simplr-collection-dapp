@@ -9,9 +9,9 @@ export const fontSizes = {
 	h4: '1.8rem',
 	h5: '1.6rem',
 	h6: '1.4rem',
-	b1: '1.8rem',
+	b3: '1.8rem',
 	b2: '1.6rem',
-	b3: '1.4rem',
+	b1: '1.4rem',
 };
 
 const fontWeights = {
@@ -30,9 +30,9 @@ const fontW = {
 	h4: fontWeights.medium,
 	h5: fontWeights.medium,
 	h6: fontWeights.medium,
-	b1: fontWeights.regular,
-	b2: fontWeights.regular,
 	b3: fontWeights.regular,
+	b2: fontWeights.regular,
+	b1: fontWeights.regular,
 };
 
 const charSpacing = {
@@ -43,9 +43,9 @@ const charSpacing = {
 	h4: '0.1px',
 	h5: '0px',
 	h6: '0px',
-	b1: '0.1px',
+	b3: '0.1px',
 	b2: '-0.1px',
-	b3: '-0.1px',
+	b1: '-0.1px',
 };
 
 const lineHeights = (as) => {
@@ -59,11 +59,11 @@ const lineHeights = (as) => {
 		case 'h5':
 		case 'h6':
 			return '140%';
-		case 'b1':
+		case 'b3':
 			return '27px';
 		case 'b2':
 			return '24px';
-		case 'b3':
+		case 'b1':
 			return '21px';
 	}
 	return as === 'h1' || as === 'headline' ? '150%' : '140%';
