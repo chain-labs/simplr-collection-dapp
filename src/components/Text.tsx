@@ -49,6 +49,23 @@ const charSpacing = {
 };
 
 const lineHeights = (as) => {
+	switch (as) {
+		case 'headline':
+		case 'h1':
+			return '150%';
+		case 'h2':
+		case 'h3':
+		case 'h4':
+		case 'h5':
+		case 'h6':
+			return '140%';
+		case 'b1':
+			return '27px';
+		case 'b2':
+			return '24px';
+		case 'b3':
+			return '21px';
+	}
 	return as === 'h1' || as === 'headline' ? '150%' : '140%';
 };
 
