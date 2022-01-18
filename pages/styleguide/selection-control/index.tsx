@@ -1,6 +1,6 @@
 import React from 'react';
 import Box from 'src/components/Box';
-import SelectionControllerComp from 'src/containers/selection-control';
+import SelectionControllerComp from 'src/containers/styleguide/selection-control';
 
 const SelectionController = () => {
 	return (

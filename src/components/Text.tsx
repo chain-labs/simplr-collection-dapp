@@ -12,6 +12,9 @@ export const fontSizes = {
 	b3: '1.8rem',
 	b2: '1.6rem',
 	b1: '1.4rem',
+	c1: '1rem',
+	c2: '1rem',
+	c3: '1rem',
 };
 
 const fontWeights = {
@@ -33,6 +36,9 @@ const fontW = {
 	b3: fontWeights.regular,
 	b2: fontWeights.regular,
 	b1: fontWeights.regular,
+	c1: fontWeights.bold,
+	c2: fontWeights.medium,
+	c3: fontWeights.regular,
 };
 
 const charSpacing = {
@@ -46,6 +52,9 @@ const charSpacing = {
 	b3: '0.1px',
 	b2: '-0.1px',
 	b1: '-0.1px',
+	c1: '0.4px',
+	c2: '0.4px',
+	c3: '0.4px',
 };
 
 const lineHeights = (as) => {
@@ -64,17 +73,23 @@ const lineHeights = (as) => {
 		case 'b2':
 			return '24px';
 		case 'b1':
+		case 'c1':
 			return '21px';
+		case 'c2':
+		case 'c3':
+			return '18px';
 	}
 	return as === 'h1' || as === 'headline' ? '150%' : '140%';
 };
 
 const fontFamily = (as) => {
-	return as === 'b1' || as === 'b2' || as === 'b3' ? '"OpenSauceOneRegular", sans-serif' : '"Switzer", sans-serif';
+	return as === 'b1' || as === 'b2' || as === 'b3' || as === 'c1' || as === 'c2' || as === 'c3'
+		? '"OpenSauceOneRegular", sans-serif'
+		: '"Switzer", sans-serif';
 };
 
 export interface TextProps extends BoxProps {
-	as?: 'headline' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3';
+	as?: 'headline' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3' | 'c1' | 'c2' | 'c3';
 	fontWeight?: 'semi-bold' | 'bold' | 'medium' | 'regular' | 'thin';
 	children?: string | React.ReactNode;
 	id?: string;
