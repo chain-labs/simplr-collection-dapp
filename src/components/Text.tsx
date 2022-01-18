@@ -89,7 +89,7 @@ const fontFamily = (as) => {
 };
 
 export interface TextProps extends BoxProps {
-	as?: 'headline' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3';
+	as?: 'headline' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3' | 'c1' | 'c2' | 'c3';
 	fontWeight?: 'semi-bold' | 'bold' | 'medium' | 'regular' | 'thin';
 	children?: string | React.ReactNode;
 	id?: string;

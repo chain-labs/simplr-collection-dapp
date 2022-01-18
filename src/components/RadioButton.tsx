@@ -11,7 +11,7 @@ const RadioButton = ({ active, value, setValue, ...restProps }) => {
 			alignItems="center"
 			width="32px"
 			height="32px"
-			border={active ? (value ? `1px solid ${theme.colors['blue-50']}` : 'none') : 'none'}
+			border={active ? `2px solid ${theme.colors['blue-50']}` : '2px solid rgba(71, 67, 197, 0.1)'}
 			bg="#ECF1F4"
 			boxShadow="inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)"
 			borderRadius="100%"
