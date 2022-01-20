@@ -3,15 +3,15 @@ import { setCollectionDetails } from './actions';
 import { CollectionState } from './types';
 
 const intitalState: CollectionState = {
-	blockchain: '',
+	type: null,
 	name: '',
 	symbol: '',
-	collection_uri: '',
+	project_uri: '',
 	website_url: '',
 	logo_url: '',
 	banner_url: '',
 	contact_email: '',
-	admin_address: '',
+	admin: '',
 };
 
 export const collectionReducer = createReducer(intitalState, (builder) => {
