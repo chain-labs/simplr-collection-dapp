@@ -1,9 +1,15 @@
 import { configureStore, Action, ThunkAction } from '@reduxjs/toolkit';
+import { collectionReducer } from './collection';
+import { paymentReducer } from './payment';
+import { saleReducer } from './sales';
 import { userReducer } from './user/reducers';
 
 export const store = configureStore({
 	reducer: {
 		user: userReducer,
+		collection: collectionReducer,
+		sales: saleReducer,
+		payment: paymentReducer,
 	},
 });
 
