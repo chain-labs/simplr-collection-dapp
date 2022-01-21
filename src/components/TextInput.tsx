@@ -1,7 +1,7 @@
 import Box from 'components/Box';
 import theme from 'src/styleguide/theme';
 import styled from 'styled-components';
-import { Prohibit, Check, WarningCircle } from 'phosphor-react';
+import { Prohibit, Check, WarningCircle, CaretDown } from 'phosphor-react';
 import If from './If';
 import { useRef, useState } from 'react';
 
@@ -14,16 +14,29 @@ interface Props {
 	errorText?: string;
 	value: any;
 	setValue: (any) => void;
+	dropdown?: boolean;
 }
 
-const TextInput = ({ disabled, placeholder, type, required, regexp, value, setValue }: Props) => {
+const TextInput = ({ disabled, placeholder, type, required, regexp, value, setValue, dropdown }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 
 	const inputRef = useRef(null);
 	const handleChange = (e) => {
 		e.preventDefault();
 		setValue(e.target.value);
-		if (!e.target.value) {
+		// if (!e.target.value) {
+		// 	setValidity('clear');
+		// } else {
+		// 	const valid = e.target.validity.valid;
+		// 	if (valid) {
+		// 		setValidity('valid');
+		// 	} else {
+		// 		setValidity('invalid');
+		// 	}
+		// }
+	};
+	const handleValidity = (e) => {
+		if (!value) {
 			setValidity('clear');
 		} else {
 			const valid = e.target.validity.valid;
@@ -32,6 +45,7 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 			} else {
 				setValidity('invalid');
 			}
+			console.log(valid);
 		}
 	};
 	return (
@@ -44,6 +58,7 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 				onChange={handleChange}
 				validation={validity}
 				ref={inputRef}
+				onBlur={handleValidity}
 			></InputElement>
 			<If
 				condition={disabled}
@@ -53,6 +68,7 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 					</Box>
 				}
 			/>
+
 			<If
 				condition={validity === 'valid'}
 				then={
@@ -93,13 +109,21 @@ const InputElement = styled(Box)(
 		props.disabled
 			? `1px solid ${theme.colors['black-10']}`
 			: props.value
-			? `1px solid ${theme.colors['green-40']}`
+			? props.validation === 'valid'
+				? `1px solid ${theme.colors['green-40']}`
+				: `1px solid ${props.theme.colors['red-40']};`
 			: 'none'
 	};
 	outline: none;
 	min-width: 32rem;
 	${!props.disabled && !props.value ? `box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.2);` : ''};
-    ${props.value ? `box-shadow: 0 0 0 4px ${theme.colors['green-50']}33` : ''};
+    ${
+			props.value
+				? props.validation === 'valid'
+					? `box-shadow: 0 0 0 4px ${theme.colors['green-50']}33`
+					: `box-shadow: 0px 0px 0px 4px ${props.theme.colors['red-50']}33;`
+				: ''
+		};
 
 
 	&::placeholder {
@@ -107,6 +131,12 @@ const InputElement = styled(Box)(
 	}
 
 	&:focus {
+		border: 1px solid ${props.theme.colors['simply-blue']};
+		box-shadow: 0 0 0 4px ${props.theme.colors['simply-blue']}33; 
+		background: ${props.theme.colors['simply-white']};
+	}
+
+	&:blur {
 		${
 			props.value
 				? `
@@ -117,14 +147,9 @@ const InputElement = styled(Box)(
 				border: 1px solid ${props.theme.colors['simply-blue']}
 			`
 		};
-
-		
-		background: ${props.theme.colors['simply-white']};
 	}
+	
 
-	&:invalid {
-		border: 1px solid ${props.theme.colors['red-40']};
-		box-shadow: 0px 0px 0px 4px ${props.theme.colors['red-50']}33;
-	}
+	
 `
 );

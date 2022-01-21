@@ -10,9 +10,10 @@ interface Props {
 	disabled?: boolean;
 	value: any;
 	setValue: (any) => void;
+	children?: string | React.ReactNode;
 }
 
-const LabelledTextInput = ({ label, helperText, placeholder, regexp, disabled, value, setValue }: Props) => {
+const LabelledTextInput = ({ label, helperText, placeholder, regexp, disabled, value, setValue, children }: Props) => {
 	return (
 		<Box overflow="visible">
 			<Text as="h6" mb="mxs" color="simply-gray">

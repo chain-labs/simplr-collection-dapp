@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import Box from 'src/components/Box';
+import Dropdown from 'src/components/Dropdown';
 import InputSlider from 'src/components/InputSlider';
+import LabelledInput from 'src/components/LabelledInput';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextArea from 'src/components/TextArea';
 import TextInput from 'src/components/TextInput';
+import theme from 'src/styleguide/theme';
 
 const InputComponents = () => {
 	const [name, setName] = useState('');
@@ -12,6 +15,10 @@ const InputComponents = () => {
 	const [pass, setPass] = useState('');
 	const [text, setText] = useState('');
 	const [percentage, setPercentage] = useState(15);
+	const [selectInput, setSelectInput] = useState('');
+	const networks = ['Ethereum', 'Polygon', 'Solana'];
+	const [dropdown, setDropdown] = useState<boolean>(false);
+	const [date, setDate] = useState('');
 
 	return (
 		<Box px="wm" py="mm" display="grid" gridTemplateColumns="1fr 2fr" gridGap="mm">
@@ -45,6 +52,15 @@ const InputComponents = () => {
 				<InputSlider value={percentage} setValue={setPercentage} max={100} min={0} />
 				<Text as="h3">{percentage}</Text>
 			</Box>
+			{/* <LabelledInput as="input" label="default field" placeholder="Blockchain" set={setValue} data={value} /> */}
+			<Dropdown
+				setVisible={setDropdown}
+				setValue={setSelectInput}
+				visible={dropdown}
+				value={selectInput}
+				data={networks}
+			/>
+			{/* <LabelledInput type="date" value={date} onChange={handleDateChange} placeholder="DD/MM/YY" /> */}
 		</Box>
 	);
 };
