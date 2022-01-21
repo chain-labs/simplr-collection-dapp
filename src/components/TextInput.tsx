@@ -14,12 +14,13 @@ interface Props {
 	regexp?: string;
 	errorText?: string;
 	value: any;
+	step?: string;
 	setValue: (any) => void;
 	dropdown?: boolean;
 	unit?: string;
 }
 
-const TextInput = ({ disabled, placeholder, type, required, regexp, value, setValue, unit }: Props) => {
+const TextInput = ({ disabled, placeholder, type, required, step, regexp, value, setValue, unit }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 	const [searchIcon, setSearchIcon] = useState<boolean>(true);
 
@@ -27,7 +28,7 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 	const handleChange = (e) => {
 		e.preventDefault();
 		setValue(e.target.value);
-		if (e.target.value! === '') setSearchIcon(true);
+		if (e.target.value === '') setSearchIcon(true);
 		else setSearchIcon(false);
 	};
 	const handleValidity = (e) => {
@@ -47,7 +48,7 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 		<Box display="flex" alignItems="center" overflow="visible" color="disable-black">
 			<InputElement
 				as="input"
-				{...{ disabled, required, type }}
+				{...{ disabled, required, type, step }}
 				placeholder={placeholder}
 				pattern={regexp}
 				value={value}

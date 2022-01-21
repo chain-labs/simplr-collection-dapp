@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import TimezoneSelect from 'react-timezone-select';
 import Box from 'src/components/Box';
 import Dropdown from 'src/components/Dropdown';
 import InputSlider from 'src/components/InputSlider';
@@ -71,10 +70,18 @@ const InputComponents = () => {
 				label="Network"
 				placeholder="Blockchain"
 			/>
-			<LabelledTextInput label="enter date" type="date" value={date} setValue={setDate} placeholder="DD/MM/YY" />
+			<LabelledTextInput
+				label="Enter date"
+				type="time"
+				step="1"
+				value={date}
+				setValue={setDate}
+				placeholder="DD/MM/YY"
+			/>
 			<LabelledTextInput
 				label="Enter price"
 				type="number"
+				step="0.01"
 				value={price}
 				setValue={setPrice}
 				placeholder="eg. 0.08"

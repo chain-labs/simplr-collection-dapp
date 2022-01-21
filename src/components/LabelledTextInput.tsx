@@ -9,6 +9,7 @@ interface Props {
 	regexp?: string;
 	disabled?: boolean;
 	value: any;
+	step?: string;
 	setValue: (any) => void;
 	type?: string;
 	unit?: string;
@@ -23,6 +24,7 @@ const LabelledTextInput = ({
 	regexp,
 	disabled,
 	value,
+	step,
 	setValue,
 	unit,
 }: Props) => {
@@ -31,7 +33,7 @@ const LabelledTextInput = ({
 			<Text as="h6" mb="mxs" color="simply-gray">
 				{label}
 			</Text>
-			<TextInput {...{ disabled, regexp, placeholder, value, type, unit, setValue }} />
+			<TextInput {...{ disabled, regexp, placeholder, value, type, unit, setValue, step }} />
 			{!!helperText && (
 				<Text as="b1" mt="mxs" color="simply-gray">
 					{helperText}
