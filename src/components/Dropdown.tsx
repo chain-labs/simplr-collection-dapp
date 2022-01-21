@@ -7,7 +7,7 @@ import Text from './Text';
 
 const Dropdown = ({ setVisible, setValue, visible, value, data, label, placeholder }) => {
 	return (
-		<Box>
+		<Box position="relative" overflow="visible">
 			<LabelledSelectInput
 				label={label}
 				set={setVisible}
@@ -16,7 +16,7 @@ const Dropdown = ({ setVisible, setValue, visible, value, data, label, placehold
 				value={value}
 				setValue={setValue}
 			/>
-			<Box borderRadius="8px" width="32rem" onClick={() => setVisible(!visible)}>
+			<Box borderRadius="8px" width="32rem" position="absolute" onClick={() => setVisible(!visible)}>
 				<If
 					condition={visible}
 					then={data.map((item) => (

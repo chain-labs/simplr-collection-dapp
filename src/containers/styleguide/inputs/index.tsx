@@ -33,6 +33,7 @@ const InputComponents = () => {
 			</Box>
 			<LabelledTextInput
 				placeholder="Field Text"
+				type="text"
 				regexp=".{8,}"
 				label="Textfield Default"
 				value={name}
@@ -42,6 +43,7 @@ const InputComponents = () => {
 			<LabelledTextInput
 				placeholder="Field Text"
 				disabled
+				type="text"
 				label="Disabled Input Field"
 				helperText="This input field is disabled"
 				value={pass}
