@@ -18,7 +18,6 @@ export const collectionReducer = createReducer(intitalState, (builder) => {
 	builder.addCase(setCollectionDetails, (state, action) => {
 		const updateState: CollectionState = action.payload;
 		const newState = { ...state, ...updateState };
-		state = newState;
-		return state;
+		return newState;
 	});
 });
