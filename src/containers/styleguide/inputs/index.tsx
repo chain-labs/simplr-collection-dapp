@@ -6,7 +6,7 @@ import LabelledInput from 'src/components/LabelledInput';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextArea from 'src/components/TextArea';
-import TextInput from 'src/components/TextInput';
+import TextInput, { InputElement } from 'src/components/TextInput';
 import theme from 'src/styleguide/theme';
 
 const InputComponents = () => {
@@ -19,6 +19,8 @@ const InputComponents = () => {
 	const networks = ['Ethereum', 'Polygon', 'Solana'];
 	const [dropdown, setDropdown] = useState<boolean>(false);
 	const [date, setDate] = useState('');
+	const [price, setPrice] = useState<number>(0.0);
+	const unit = 'ETH';
 
 	return (
 		<Box px="wm" py="mm" display="grid" gridTemplateColumns="1fr 2fr" gridGap="mm">
@@ -60,7 +62,8 @@ const InputComponents = () => {
 				value={selectInput}
 				data={networks}
 			/>
-			{/* <LabelledInput type="date" value={date} onChange={handleDateChange} placeholder="DD/MM/YY" /> */}
+			<TextInput type="date" value={date} setValue={setDate} placeholder="DD/MM/YY" />
+			{/* <TextInput type="number" value={price} setValue={setPrice} placeholder="eg. 0.08" /> */}
 		</Box>
 	);
 };

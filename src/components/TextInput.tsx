@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Prohibit, Check, WarningCircle, CaretDown } from 'phosphor-react';
 import If from './If';
 import { useRef, useState } from 'react';
+import Text from './Text';
 
 interface Props {
 	disabled?: boolean;
@@ -17,23 +18,13 @@ interface Props {
 	dropdown?: boolean;
 }
 
-const TextInput = ({ disabled, placeholder, type, required, regexp, value, setValue, dropdown }: Props) => {
+const TextInput = ({ disabled, placeholder, type, required, regexp, value, setValue }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 
 	const inputRef = useRef(null);
 	const handleChange = (e) => {
 		e.preventDefault();
 		setValue(e.target.value);
-		// if (!e.target.value) {
-		// 	setValidity('clear');
-		// } else {
-		// 	const valid = e.target.validity.valid;
-		// 	if (valid) {
-		// 		setValidity('valid');
-		// 	} else {
-		// 		setValidity('invalid');
-		// 	}
-		// }
 	};
 	const handleValidity = (e) => {
 		if (!value) {
@@ -68,23 +59,29 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 					</Box>
 				}
 			/>
-
-			<If
-				condition={validity === 'valid'}
-				then={
-					<Box ml="-3.2rem" mt="0.2rem">
-						<Check size={24} color={theme.colors['green-40']} />
-					</Box>
-				}
-			/>
-			<If
-				condition={validity === 'invalid'}
-				then={
-					<Box ml="-3.2rem" mt="0.2rem">
-						<WarningCircle size={24} color={theme.colors['red-50']} />
-					</Box>
-				}
-			/>
+			{type === 'text' ? (
+				<Box>
+					<If
+						condition={validity === 'valid'}
+						then={
+							<Box ml="-3.2rem" mt="0.2rem">
+								<Check size={24} color={theme.colors['green-40']} />
+							</Box>
+						}
+					/>
+					<If
+						condition={validity === 'invalid'}
+						then={
+							<Box ml="-3.2rem" mt="0.2rem">
+								<WarningCircle size={24} color={theme.colors['red-50']} />
+							</Box>
+						}
+					/>
+				</Box>
+			) : (
+				''
+			)}
+			<If condition={type === 'number'} then={<Text></Text>} />
 		</Box>
 	);
 };
@@ -98,7 +95,7 @@ interface InputProps {
 	validation?: 'clear' | 'valid' | 'invalid';
 }
 
-const InputElement = styled(Box)(
+export const InputElement = styled(Box)(
 	(props: InputProps) => `
 	padding: ${`${props.theme.space.ms} ${props.theme.space.mm}`};
 	font-size: 16px;
