@@ -1,7 +1,9 @@
 import React from 'react';
+import theme from 'src/styleguide/theme';
 import Box from './Box';
 
 const SingleButton = ({ value, setValue, children, currentActive, ...restProps }) => {
+	const hColor = value === currentActive ? 'blue-60' : 'blue-10';
 	return (
 		<Box
 			as="button"
@@ -19,6 +21,11 @@ const SingleButton = ({ value, setValue, children, currentActive, ...restProps }
 			cursor="pointer"
 			borderRadius="8px"
 			{...restProps}
+			css={`
+				&:hover {
+					background-color: ${theme.colors[`${hColor}`]};
+				}
+			`}
 		>
 			{children}
 		</Box>

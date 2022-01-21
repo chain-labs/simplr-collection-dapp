@@ -21,15 +21,21 @@ const ButtonBar = () => {
 				</SingleButton>
 				<SingleButton currentActive={activeButton} setValue={setActiveButton} value={second}>
 					{' '}
-					<Text>Its</Text>
+					<Text as="h5" fontWeight="medium" fontFamily="Switzer">
+						Its
+					</Text>
 				</SingleButton>
 				<SingleButton currentActive={activeButton} setValue={setActiveButton} value={third}>
 					{' '}
-					<Text>My</Text>
+					<Text as="h5" fontWeight="medium" fontFamily="Switzer">
+						My
+					</Text>
 				</SingleButton>
 				<SingleButton currentActive={activeButton} setValue={setActiveButton} value={fourth}>
 					{' '}
-					<Text>Button</Text>
+					<Text as="h5" fontWeight="medium" fontFamily="Switzer">
+						Button
+					</Text>
 				</SingleButton>
 			</ButtonBarComp>
 		</Box>
