@@ -65,8 +65,8 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 					</Box>
 				}
 			/>
-			{type === 'text' ? (
-				<Box>
+			{type === 'text' || type === 'email' ? (
+				<Box overflow="visible">
 					<If
 						condition={validity === 'valid'}
 						then={
