@@ -2,17 +2,17 @@ import React from 'react';
 import theme from 'src/styleguide/theme';
 import Box from './Box';
 import If from './If';
-import LabelledInput from './LabelledInput';
+import LabelledSelectInput from './LabelledSelectInput';
 import Text from './Text';
 
-const Dropdown = ({ setVisible, setValue, visible, value, data }) => {
+const Dropdown = ({ setVisible, setValue, visible, value, data, label, placeholder }) => {
 	return (
 		<Box>
-			<LabelledInput
+			<LabelledSelectInput
+				label={label}
 				set={setVisible}
-				placeholder="blockchain"
+				placeholder={placeholder}
 				visible={visible}
-				label="dropdown"
 				value={value}
 				setValue={setValue}
 			/>

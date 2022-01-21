@@ -1,7 +1,7 @@
 import Box from 'components/Box';
 import theme from 'src/styleguide/theme';
 import styled from 'styled-components';
-import { Prohibit, Check, WarningCircle, CaretDown } from 'phosphor-react';
+import { Prohibit, Check, WarningCircle, CaretDown, MagnifyingGlass } from 'phosphor-react';
 import If from './If';
 import { useRef, useState } from 'react';
 import Text from './Text';
@@ -16,15 +16,19 @@ interface Props {
 	value: any;
 	setValue: (any) => void;
 	dropdown?: boolean;
+	unit?: string;
 }
 
-const TextInput = ({ disabled, placeholder, type, required, regexp, value, setValue }: Props) => {
+const TextInput = ({ disabled, placeholder, type, required, regexp, value, setValue, unit }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
+	const [searchIcon, setSearchIcon] = useState<boolean>(true);
 
 	const inputRef = useRef(null);
 	const handleChange = (e) => {
 		e.preventDefault();
 		setValue(e.target.value);
+		if (e.target.value! === '') setSearchIcon(true);
+		else setSearchIcon(false);
 	};
 	const handleValidity = (e) => {
 		if (!value) {
@@ -40,16 +44,18 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 		}
 	};
 	return (
-		<Box display="flex" alignItems="center" overflow="visible">
+		<Box display="flex" alignItems="center" overflow="visible" color="disable-black">
 			<InputElement
 				as="input"
-				{...{ disabled, required, placeholder, type }}
+				{...{ disabled, required, type }}
+				placeholder={placeholder}
 				pattern={regexp}
 				value={value}
 				onChange={handleChange}
 				validation={validity}
 				ref={inputRef}
 				onBlur={handleValidity}
+				color="inherit"
 			></InputElement>
 			<If
 				condition={disabled}
@@ -81,7 +87,22 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 			) : (
 				''
 			)}
-			<If condition={type === 'number'} then={<Text></Text>} />
+			<If
+				condition={type === 'number'}
+				then={
+					<Text ml="-4.2rem" as="h5" color={validity === 'invalid' ? 'red-50' : 'disable-black'}>
+						{unit}
+					</Text>
+				}
+			/>
+			<If
+				condition={searchIcon && type === 'search'}
+				then={
+					<Box ml="-4.2rem" mt="0.3rem">
+						<MagnifyingGlass size={24} />
+					</Box>
+				}
+			/>
 		</Box>
 	);
 };
@@ -101,7 +122,7 @@ export const InputElement = styled(Box)(
 	font-size: 16px;
 	font-family: 'Switzer', sans-serif;
 	border-radius: 8px;
-	background: ${props?.disabled || props.value ? props.theme.colors['simply-white'] : props.theme.colors['blue-00']};
+	background: ${props?.disabled || props.value ? props.theme.colors['simply-white'] : props.theme.colors['white-00']};
 	border: ${
 		props.disabled
 			? `1px solid ${theme.colors['black-10']}`
@@ -109,11 +130,15 @@ export const InputElement = styled(Box)(
 			? props.validation === 'valid'
 				? `1px solid ${theme.colors['green-40']}`
 				: `1px solid ${props.theme.colors['red-40']};`
-			: 'none'
+			: '0.5px solid #E6E6FF'
 	};
 	outline: none;
 	min-width: 32rem;
-	${!props.disabled && !props.value ? `box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.2);` : ''};
+	${
+		!props.disabled && !props.value
+			? `box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.2);`
+			: 'inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)'
+	};
     ${
 			props.value
 				? props.validation === 'valid'

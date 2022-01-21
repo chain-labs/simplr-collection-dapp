@@ -15,7 +15,7 @@ export interface InputProps {
 	setValue: (any) => void;
 }
 
-const LabelledInput = ({ label, placeholder, set, visible, value, setValue, ...restProps }: InputProps) => {
+const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue }: InputProps) => {
 	return (
 		<Box overflow="visible">
 			<Text as="h6" mb="mxs" color="simply-gray">
@@ -43,7 +43,6 @@ const LabelledInput = ({ label, placeholder, set, visible, value, setValue, ...r
 						}
 					`}
 					onChange={(e) => setValue(e.target.value)}
-					{...restProps}
 				></Box>
 				<Box ml="-4.2rem" mt="1.1rem" cursor="pointer">
 					<CaretDown size={24} color={theme.colors['disable-black']} />
@@ -53,4 +52,4 @@ const LabelledInput = ({ label, placeholder, set, visible, value, setValue, ...r
 	);
 };
 
-export default LabelledInput;
+export default LabelledSelectInput;

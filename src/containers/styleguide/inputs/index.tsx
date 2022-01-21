@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import TimezoneSelect from 'react-timezone-select';
 import Box from 'src/components/Box';
 import Dropdown from 'src/components/Dropdown';
 import InputSlider from 'src/components/InputSlider';
-import LabelledInput from 'src/components/LabelledInput';
+import LabelledInput from 'src/components/LabelledSelectInput';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextArea from 'src/components/TextArea';
@@ -19,7 +20,10 @@ const InputComponents = () => {
 	const networks = ['Ethereum', 'Polygon', 'Solana'];
 	const [dropdown, setDropdown] = useState<boolean>(false);
 	const [date, setDate] = useState('');
-	const [price, setPrice] = useState<number>(0.0);
+	const [price, setPrice] = useState<number>(0);
+	const [search, setSearch] = useState('');
+	const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
+
 	const unit = 'ETH';
 
 	return (
@@ -44,6 +48,10 @@ const InputComponents = () => {
 				value={pass}
 				setValue={setPass}
 			/>
+			{/* <TimezoneSelect
+				value={timezone}
+				onChange={setTimezone}
+			/> */}
 			<Box gridRow="5" overflow="visible">
 				<TextInput placeholder="Field Text" type="email" value={email} setValue={setEmail} />
 			</Box>
@@ -54,16 +62,34 @@ const InputComponents = () => {
 				<InputSlider value={percentage} setValue={setPercentage} max={100} min={0} />
 				<Text as="h3">{percentage}</Text>
 			</Box>
-			{/* <LabelledInput as="input" label="default field" placeholder="Blockchain" set={setValue} data={value} /> */}
 			<Dropdown
 				setVisible={setDropdown}
 				setValue={setSelectInput}
 				visible={dropdown}
 				value={selectInput}
 				data={networks}
+				label="Network"
+				placeholder="Blockchain"
 			/>
-			<TextInput type="date" value={date} setValue={setDate} placeholder="DD/MM/YY" />
-			{/* <TextInput type="number" value={price} setValue={setPrice} placeholder="eg. 0.08" /> */}
+			<LabelledTextInput label="enter date" type="date" value={date} setValue={setDate} placeholder="DD/MM/YY" />
+			<LabelledTextInput
+				label="Enter price"
+				type="number"
+				value={price}
+				setValue={setPrice}
+				placeholder="eg. 0.08"
+				unit={unit}
+				regexp={'/^[-]?[0-9]+[.]?[0-9]+$/'}
+			/>
+			<LabelledTextInput
+				label=""
+				type="search"
+				value={search}
+				setValue={setSearch}
+				placeholder="search"
+				unit={unit}
+				regexp="/^[-]?[0-9]+[\.]?[0-9]+$/"
+			/>
 		</Box>
 	);
 };
