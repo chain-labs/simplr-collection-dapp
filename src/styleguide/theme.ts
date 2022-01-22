@@ -114,6 +114,8 @@ const colors: DefaultTheme['colors'] = {
 	'white-00': '#FAFAFF',
 	'white-10': '#E6E6FF',
 	'white-20': '#E5E5FF',
+
+	'gray-00': '#ABABB2',
 };
 
 const shadows: DefaultTheme['shadows'] = {

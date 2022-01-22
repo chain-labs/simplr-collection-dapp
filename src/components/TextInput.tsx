@@ -44,7 +44,13 @@ const TextInput = ({ disabled, placeholder, type, required, regexp, value, setVa
 		}
 	};
 	return (
-		<Box display="flex" alignItems="center" overflow="visible" color="disable-black">
+		<Box
+			display="flex"
+			alignItems="center"
+			overflow="visible"
+			color="disable-black"
+			cursor={disabled ? 'not-allowed' : 'auto'}
+		>
 			<InputElement
 				as="input"
 				{...{ disabled, required, type }}
@@ -125,7 +131,7 @@ export const InputElement = styled(Box)(
 	background: ${props?.disabled || props.value ? props.theme.colors['simply-white'] : props.theme.colors['white-00']};
 	border: ${
 		props.disabled
-			? `1px solid ${theme.colors['black-10']}`
+			? `2px solid rgba(140, 140, 161, 0.2)`
 			: props.value
 			? props.validation === 'valid'
 				? `1px solid ${theme.colors['green-40']}`
@@ -149,7 +155,7 @@ export const InputElement = styled(Box)(
 
 
 	&::placeholder {
-		${props.disabled ? `color: #8c8ca1` : ''};
+		${props.disabled ? `color: #8c8ca1` : `${theme.colors['gray-00']}`};
 	}
 
 	&:focus {
@@ -170,6 +176,7 @@ export const InputElement = styled(Box)(
 			`
 		};
 	}
+	cursor: ${props.disabled ? 'not-allowed' : ''}
 	
 
 	

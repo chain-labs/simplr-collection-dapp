@@ -39,6 +39,7 @@ const InputComponents = () => {
 				label="Textfield Default"
 				value={name}
 				setValue={setName}
+				required
 			/>
 
 			<LabelledTextInput
@@ -49,13 +50,14 @@ const InputComponents = () => {
 				helperText="This input field is disabled"
 				value={pass}
 				setValue={setPass}
+				required
 			/>
 			{/* <TimezoneSelect
 				value={timezone}
 				onChange={setTimezone}
 			/> */}
 			<Box gridRow="5" overflow="visible">
-				<TextInput placeholder="Field Text" type="email" value={email} setValue={setEmail} />
+				<TextInput placeholder="Field Text" type="email" value={email} setValue={setEmail} required />
 			</Box>
 			<Box gridColumn="2" gridRow="2 / 6">
 				<TextArea value={text} setValue={setText} />
@@ -82,6 +84,7 @@ const InputComponents = () => {
 				placeholder="eg. 0.08"
 				unit={unit}
 				regexp={'/^[-]?[0-9]+[.]?[0-9]+$/'}
+				required
 			/>
 			<LabelledTextInput
 				label=""
