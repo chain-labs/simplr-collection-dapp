@@ -9,13 +9,15 @@ interface Props {
 	placeholder?: string;
 	regexp?: string;
 	disabled?: boolean;
-	value: any;
+	value?: any;
 	step?: string;
-	setValue: (any) => void;
+	setValue?: (any) => void;
 	type?: string;
 	unit?: string;
 	required?: boolean;
 	width?: string;
+	min?: string;
+	max?: string;
 	children?: string | React.ReactNode;
 }
 
@@ -32,6 +34,9 @@ const LabelledTextInput = ({
 	setValue,
 	unit,
 	required,
+	min,
+	max,
+	children,
 }: Props) => {
 	return (
 		<Box overflow="visible">
@@ -46,7 +51,15 @@ const LabelledTextInput = ({
 					}
 				/>
 			</Text>
-			<TextInput {...{ disabled, regexp, required, placeholder, value, type, unit, setValue, step, width }} />
+			<If
+				condition={!!children}
+				then={children}
+				else={
+					<TextInput
+						{...{ disabled, regexp, required, placeholder, value, type, unit, setValue, step, width, min, max }}
+					/>
+				}
+			/>
 			{!!helperText && (
 				<Text as="b1" mt="mxs" color="simply-gray">
 					{helperText}

@@ -19,9 +19,24 @@ interface Props {
 	dropdown?: boolean;
 	unit?: string;
 	width?: string;
+	min?: string;
+	max?: string;
 }
 
-const TextInput = ({ disabled, placeholder, type, required, step, regexp, value, setValue, unit, width }: Props) => {
+const TextInput = ({
+	disabled,
+	placeholder,
+	type,
+	required,
+	step,
+	regexp,
+	value,
+	setValue,
+	unit,
+	width,
+	min,
+	max,
+}: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 	const [searchIcon, setSearchIcon] = useState<boolean>(true);
 
@@ -62,8 +77,10 @@ const TextInput = ({ disabled, placeholder, type, required, step, regexp, value,
 				validation={validity}
 				ref={inputRef}
 				onBlur={handleValidity}
-				color="inherit"
+				color="simply-black"
 				width={width ?? '32rem'}
+				min={min}
+				max={max}
 			></InputElement>
 			<If
 				condition={disabled}
