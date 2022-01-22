@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import useEthers, { requestAccount } from 'src/ethereum/useEthers';
 import useListeners from 'src/ethereum/useListeners';
@@ -9,13 +9,38 @@ import Container from './Container';
 import If from './If';
 import Text from './Text';
 
+import Wordmark from 'public/wordmark.svg';
+import { networks } from 'src/redux/collection/types';
+import { WSAEINVAL } from 'constants';
+
 const Navbar = () => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
 
 	const [provider, setProvider, ethers] = useEthers();
 	const [signer, setSigner] = useSigner(provider);
+	const [chain, setChain] = useState(null);
 	useListeners(provider, setProvider, setSigner);
+
+	useEffect(() => {
+		const getChain = async () => {
+			const network = await provider.getNetwork();
+			setChain(network.chainId);
+		};
+		if (provider) {
+			getChain();
+		}
+	}, [provider, signer]);
+
+	useEffect(() => {
+		if (process.browser) {
+			// @ts-expect-error ethereum in window is not defined
+			window?.ethereum.on('chainChanged', (chainId) => {
+				setChain(chainId);
+				window.location.reload();
+			});
+		}
+	}, []);
 
 	const handleConnectWallet = () => {
 		requestAccount();
@@ -41,16 +66,17 @@ const Navbar = () => {
 	}, [signer]);
 
 	return (
-		<Box bg="grey" color="white">
+		<Box bg="#F8F8F8" py="mxxxl">
 			<Container>
 				<Box display="flex" justifyContent="space-between" alignItems="center">
-					<Text as="h1">Simplr Collection</Text>
+					<Wordmark />
 					<Box
-						border="2px solid white"
+						border="1px solid"
+						borderColor="black-10"
 						borderRadius="4px"
-						bg="black"
+						bg=""
 						py="1rem"
-						px="2.4rem"
+						px="mxl"
 						onClick={
 							!user.exists
 								? handleConnectWallet
@@ -59,9 +85,16 @@ const Navbar = () => {
 								  }
 						}
 						cursor="pointer"
+						row
+						center
 					>
-						<Text as="b1">
-							<If condition={user.exists} then={`Connected to ${user.address}`} else={'Connect your wallet'} />
+						<Box height="20px" width="20px" borderRadius="50%" bg={user.exists ? 'green-50' : 'red-50'} />
+						<Text as="h5" mx="mxs">
+							{networks[chain]?.name}
+						</Text>
+						<Box height="20px" width="0.1rem" bg="black-10" mr="mxs" />
+						<Text as="h5" mx="mxs" color="simply-blue">
+							{`${user.address.substring(0, 5)}...${user.address.substr(-4)}`}
 						</Text>
 					</Box>
 				</Box>

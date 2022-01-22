@@ -10,7 +10,7 @@ const AddressComponent = () => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
 
-	const [name, setName] = useState('');
+	const [name, setName] = useState(user.address);
 	const [timestamp, setTimestamp] = useState(null);
 
 	return (
