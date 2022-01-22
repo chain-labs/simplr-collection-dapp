@@ -12,15 +12,15 @@ const SelectionControllerComp = () => {
 		<Box display="flex" justifyContent="center">
 			<Box mr="12px">
 				ACTIVE
-				<Toggle value={isToggled} setValue={setIsToggled} mt="mxl" />
-				<Checkbox active={true} mt="12px" mx="12px" value={isChecked} setValue={setIsChecked} />
-				<RadioButton active={true} mt="12px" mx="12px" value={isSelected} setValue={setIsSelected} />
+				<Toggle value={isToggled} setValue={setIsToggled} mx="12px" />
+				<Checkbox value={isChecked} setValue={setIsChecked} mt="12px" mx="12px" />
+				<RadioButton value={isSelected} setValue={setIsSelected} mt="12px" mx="12px" />
 			</Box>
 			<Box>
 				DISABLED
-				<Toggle value={isToggled} setValue={setIsToggled} mt="mxl" mobile />
-				<Checkbox active={false} mt="12px" mx="12px" value={isChecked} setValue={setIsChecked} />
-				<RadioButton value={isSelected} setValue={setIsSelected} active={false} mt="12px" mx="12px" />
+				<Toggle value={true} mt="mxl" mobile disabled />
+				<Checkbox mt="12px" mx="12px" value={isChecked} setValue={setIsChecked} disabled />
+				<RadioButton value={isSelected} setValue={setIsSelected} mt="12px" mx="12px" disabled />
 			</Box>
 		</Box>
 	);
