@@ -1,8 +1,7 @@
 import { CaretDown } from 'phosphor-react';
-import React, { Children } from 'react';
+import React from 'react';
 import theme from 'src/styleguide/theme';
 import Box from './Box';
-import Dropdown from './Dropdown';
 import Text from './Text';
 
 export interface InputProps {
@@ -22,7 +21,7 @@ const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue
 			<Text as="h6" mb="mxs" color="simply-gray">
 				{label}
 			</Text>
-			<Box display="flex" color="disable-black" onClick={(e) => set(!visible)}>
+			<Box display="flex" color="disable-black" onClick={() => set(!visible)}>
 				<Box
 					as="input"
 					value={value}

@@ -1,7 +1,7 @@
 import Box from 'components/Box';
 import theme from 'src/styleguide/theme';
 import styled from 'styled-components';
-import { Prohibit, Check, WarningCircle, CaretDown, MagnifyingGlass } from 'phosphor-react';
+import { Prohibit, Check, WarningCircle, MagnifyingGlass } from 'phosphor-react';
 import If from './If';
 import { useRef, useState } from 'react';
 import Text from './Text';
@@ -42,7 +42,6 @@ const TextInput = ({ disabled, placeholder, type, required, step, regexp, value,
 			} else {
 				setValidity('invalid');
 			}
-			console.log(valid);
 		}
 	};
 	return (

@@ -3,12 +3,10 @@ import Box from 'src/components/Box';
 import DateTime from 'src/components/DateTime';
 import Dropdown from 'src/components/Dropdown';
 import InputSlider from 'src/components/InputSlider';
-import LabelledInput from 'src/components/LabelledSelectInput';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextArea from 'src/components/TextArea';
-import TextInput, { InputElement } from 'src/components/TextInput';
-import theme from 'src/styleguide/theme';
+import TextInput from 'src/components/TextInput';
 
 const InputComponents = () => {
 	const [name, setName] = useState('');
@@ -18,7 +16,6 @@ const InputComponents = () => {
 	const [percentage, setPercentage] = useState(15);
 	const [selectInput, setSelectInput] = useState('');
 	const networks = ['Ethereum', 'Polygon', 'Solana'];
-	const [dropdown, setDropdown] = useState<boolean>(false);
 	const [date, setDate] = useState('');
 	const [price, setPrice] = useState<number>(0);
 	const [search, setSearch] = useState('');

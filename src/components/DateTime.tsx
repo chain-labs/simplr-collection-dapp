@@ -3,7 +3,6 @@ import Box from './Box';
 import TextInput from './TextInput';
 import Dropdown from './Dropdown';
 import { timezones } from 'src/utils/timezones';
-import Text from './Text';
 
 const DateTime = ({ value, setValue }) => {
 	const [date, setDate] = useState('');
