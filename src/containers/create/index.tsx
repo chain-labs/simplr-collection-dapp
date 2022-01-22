@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
+import SalesPage from './components';
 
 const CreateComp = () => {
-	const [step, setStep] = useState(0);
+	const [step, setStep] = useState(1);
+
+	const getFormPage = (step) => {
+		if (step === 1) {
+			return <SalesPage />;
+		}
+	};
+
 	return (
 		<Box pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
 			<Text as="h2" center>
@@ -24,6 +32,7 @@ const CreateComp = () => {
 					Payment Details
 				</Text>
 			</Box>
+			{getFormPage(step)}
 		</Box>
 	);
 };
