@@ -15,6 +15,7 @@ interface Props {
 	type?: string;
 	unit?: string;
 	required?: boolean;
+	width?: string;
 	children?: string | React.ReactNode;
 }
 
@@ -27,6 +28,7 @@ const LabelledTextInput = ({
 	disabled,
 	value,
 	step,
+	width,
 	setValue,
 	unit,
 	required,
@@ -44,7 +46,7 @@ const LabelledTextInput = ({
 					}
 				/>
 			</Text>
-			<TextInput {...{ disabled, regexp, required, placeholder, value, type, unit, setValue, step }} />
+			<TextInput {...{ disabled, regexp, required, placeholder, value, type, unit, setValue, step, width }} />
 			{!!helperText && (
 				<Text as="b1" mt="mxs" color="simply-gray">
 					{helperText}

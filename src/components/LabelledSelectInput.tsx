@@ -13,9 +13,10 @@ export interface InputProps {
 	children?: string | React.ReactNode;
 	value?: any;
 	setValue: (any) => void;
+	width?: string;
 }
 
-const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue }: InputProps) => {
+const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue, width }: InputProps) => {
 	return (
 		<Box overflow="visible">
 			<Text as="h6" mb="mxs" color="simply-gray">
@@ -28,7 +29,7 @@ const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue
 					placeholder={placeholder}
 					backgroundColor="white-00"
 					padding="12px 16px"
-					width="32rem"
+					width={width}
 					boxShadow="inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)"
 					borderRadius="8px"
 					border="0.5px solid #E6E6FF"

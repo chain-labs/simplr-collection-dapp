@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Box from 'src/components/Box';
+import DateTime from 'src/components/DateTime';
 import Dropdown from 'src/components/Dropdown';
 import InputSlider from 'src/components/InputSlider';
 import LabelledInput from 'src/components/LabelledSelectInput';
@@ -21,7 +22,7 @@ const InputComponents = () => {
 	const [date, setDate] = useState('');
 	const [price, setPrice] = useState<number>(0);
 	const [search, setSearch] = useState('');
-	const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
+	const [timestamp, setTimestamp] = useState<number>(null);
 
 	const unit = 'ETH';
 
@@ -66,22 +67,13 @@ const InputComponents = () => {
 				<Text as="h3">{percentage}</Text>
 			</Box>
 			<Dropdown
-				setVisible={setDropdown}
 				setValue={setSelectInput}
-				visible={dropdown}
 				value={selectInput}
 				data={networks}
 				label="Network"
 				placeholder="Blockchain"
 			/>
-			<LabelledTextInput
-				label="Enter date"
-				type="time"
-				step="1"
-				value={date}
-				setValue={setDate}
-				placeholder="DD/MM/YY"
-			/>
+			<LabelledTextInput label="Enter date" type="date" value={date} setValue={setDate} placeholder="DD/MM/YY" />
 			<LabelledTextInput
 				label="Enter price"
 				type="number"
@@ -93,6 +85,10 @@ const InputComponents = () => {
 				regexp={'/^[-]?[0-9]+[.]?[0-9]+$/'}
 				required
 			/>
+			<Box gridRow="span 3" pl="5px">
+				<Text as="h6">Date</Text>
+				<DateTime value={timestamp} setValue={setTimestamp} />
+			</Box>
 			<LabelledTextInput
 				label=""
 				type="search"

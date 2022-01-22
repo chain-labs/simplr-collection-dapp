@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import theme from 'src/styleguide/theme';
 import Box from './Box';
 import If from './If';
 import LabelledSelectInput from './LabelledSelectInput';
 import Text from './Text';
 
-const Dropdown = ({ setVisible, setValue, visible, value, data, label, placeholder }) => {
+interface Props {
+	setValue: (any) => void;
+	value: any;
+	data: any[];
+	label?: string;
+	placeholder?: string;
+	width?: string;
+}
+
+const Dropdown = ({ setValue, value, data, label, placeholder, width }: Props) => {
+	const [visible, setVisible] = useState(false);
 	return (
-		<Box position="relative" overflow="visible">
+		<Box className="dropdown" overflow="visible">
 			<LabelledSelectInput
 				label={label}
 				set={setVisible}
@@ -15,8 +25,16 @@ const Dropdown = ({ setVisible, setValue, visible, value, data, label, placehold
 				visible={visible}
 				value={value}
 				setValue={setValue}
+				width={width ?? '32rem'}
 			/>
-			<Box borderRadius="8px" width="32rem" position="absolute" onClick={() => setVisible(!visible)}>
+			<Box
+				borderRadius="8px"
+				width={width ?? '32rem'}
+				overflow="auto"
+				maxHeight="40rem"
+				position="absolute"
+				onClick={() => setVisible(!visible)}
+			>
 				<If
 					condition={visible}
 					then={data.map((item) => (

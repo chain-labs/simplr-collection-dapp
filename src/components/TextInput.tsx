@@ -18,9 +18,10 @@ interface Props {
 	setValue: (any) => void;
 	dropdown?: boolean;
 	unit?: string;
+	width?: string;
 }
 
-const TextInput = ({ disabled, placeholder, type, required, step, regexp, value, setValue, unit }: Props) => {
+const TextInput = ({ disabled, placeholder, type, required, step, regexp, value, setValue, unit, width }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 	const [searchIcon, setSearchIcon] = useState<boolean>(true);
 
@@ -63,6 +64,7 @@ const TextInput = ({ disabled, placeholder, type, required, step, regexp, value,
 				ref={inputRef}
 				onBlur={handleValidity}
 				color="inherit"
+				width={width ?? '32rem'}
 			></InputElement>
 			<If
 				condition={disabled}
@@ -140,7 +142,7 @@ export const InputElement = styled(Box)(
 			: '0.5px solid #E6E6FF'
 	};
 	outline: none;
-	min-width: 32rem;
+	min-width: 30rem;
 	${
 		!props.disabled && !props.value
 			? `box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.2);`
