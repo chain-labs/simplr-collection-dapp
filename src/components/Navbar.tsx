@@ -6,12 +6,10 @@ import useSigner from 'src/ethereum/useSigner';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { setUser, userSelector } from 'src/redux/user';
 import Container from './Container';
-import If from './If';
 import Text from './Text';
 
 import Wordmark from 'public/wordmark.svg';
 import { networks } from 'src/redux/collection/types';
-import { WSAEINVAL } from 'constants';
 
 const Navbar = () => {
 	const dispatch = useAppDispatch();
