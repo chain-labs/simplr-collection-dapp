@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import DateTime from 'src/components/DateTime';
@@ -31,6 +32,14 @@ const SalesPage = () => {
 
 	return (
 		<Box overflow="visible" mb="20rem">
+			<Box overflow="visible">
+				<Toaster
+					position="top-center"
+					toastOptions={{
+						duration: 5000,
+					}}
+				/>
+			</Box>
 			<LabelledTextInput
 				type="number"
 				min="1"

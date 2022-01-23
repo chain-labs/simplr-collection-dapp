@@ -24,7 +24,6 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width }: Props) =
 				placeholder={placeholder}
 				visible={visible}
 				value={value}
-				setValue={setValue}
 				width={width ?? '32rem'}
 			/>
 			<Box

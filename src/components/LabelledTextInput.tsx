@@ -18,6 +18,7 @@ interface Props {
 	width?: string;
 	min?: string;
 	max?: string;
+	disableValidation?: boolean;
 	children?: string | React.ReactNode;
 }
 
@@ -36,6 +37,7 @@ const LabelledTextInput = ({
 	required,
 	min,
 	max,
+	disableValidation,
 	children,
 }: Props) => {
 	return (
@@ -56,7 +58,21 @@ const LabelledTextInput = ({
 				then={children}
 				else={
 					<TextInput
-						{...{ disabled, regexp, required, placeholder, value, type, unit, setValue, step, width, min, max }}
+						{...{
+							disabled,
+							regexp,
+							required,
+							placeholder,
+							value,
+							type,
+							unit,
+							setValue,
+							step,
+							width,
+							min,
+							max,
+							disableValidation,
+						}}
 					/>
 				}
 			/>
