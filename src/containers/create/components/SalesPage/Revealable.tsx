@@ -43,11 +43,12 @@ const Revealable = () => {
 						<Box mt="mxxxl" />
 						<LabelledTextInput
 							type="url"
-							label="Loading Image URL"
+							label="Loading Image URI"
 							placeholder="https://"
 							helperText="Placeholder image that will be displayed until the set reveal time."
 							value={loadingUrl}
 							setValue={setLoadingUrl}
+							width="100%"
 						/>
 					</Box>
 				}
