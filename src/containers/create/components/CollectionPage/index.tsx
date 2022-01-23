@@ -16,6 +16,7 @@ const CollectionPage = () => {
 	const [collectionLogoURL, setCollectionLogoURL] = useState<string>('');
 	const [collectionBannerURL, setCollectionBannerURL] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
+	const [adminAddress, setAdminAddress] = useState<string>('');
 	const [network, setNetwork] = useState({
 		value: '',
 		name: '',
@@ -121,8 +122,8 @@ const CollectionPage = () => {
 				placeholder="0x....abc"
 				helperText="This wallet address will be responsible for managing the smart contracts."
 				width="100%"
-				value={email}
-				setValue={setEmail}
+				value={adminAddress}
+				setValue={setAdminAddress}
 				required
 			/>
 			<ButtonComp bg="primary" height="56px" width="100%" mt="wm">
