@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { debounce } from 'lodash';
 import Head from 'next/head';
+import { Toaster } from 'react-hot-toast';
 
 import theme from 'styleguide/theme';
 

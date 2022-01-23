@@ -1,4 +1,6 @@
+import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import DateTime from 'src/components/DateTime';
@@ -7,12 +9,14 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import Toggle from 'src/components/Toggle';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { presaleableToggleSelector, togglePresale } from 'src/redux/sales';
+import { addWhitelist, presaleableToggleSelector, togglePresale } from 'src/redux/sales';
 import { getUnit } from '..';
+import WhitelistModal from './WhitelistModal';
 
 const Presale = ({ unit }: { unit: number }) => {
 	const checked = useAppSelector(presaleableToggleSelector);
 	const [isChecked, setIsChecked] = useState(checked);
+	const [showWhitelistModal, setShowWhitelistModal] = useState(false);
 
 	const [presaleReservedTokens, setPresaleReservedTokens] = useState<number>();
 	const [presalePrice, setPresalePrice] = useState<number>();
@@ -26,8 +30,25 @@ const Presale = ({ unit }: { unit: number }) => {
 		if (isChecked !== checked) dispatch(togglePresale(isChecked));
 	}, [isChecked]);
 
+	const handleAdd = () => {
+		const valid = ethers.utils.isAddress(whitelist);
+		if (!valid) {
+			toast.error(`Invalid address`);
+			setWhitelist('');
+		} else {
+			try {
+				dispatch(addWhitelist(whitelist));
+				setWhitelist('');
+				toast.success(`Added to whitelist`);
+			} catch (error) {
+				toast.error(`Failed to add to whitelist`);
+			}
+		}
+	};
+
 	return (
 		<Box overflow="visible">
+			<WhitelistModal visible={showWhitelistModal} setVisible={setShowWhitelistModal} />
 			<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 				Pre-sale
 				<Box ml="mxxxl" />
@@ -78,12 +99,13 @@ const Presale = ({ unit }: { unit: number }) => {
 								width="100%"
 								value={whitelist}
 								setValue={setWhitelist}
+								disableValidation
 							/>
 							<Box mt="mm" alignSelf="flex-end">
-								<ButtonComp bg="tertiary" height="40px" px="ml">
+								<ButtonComp bg="tertiary" height="40px" px="ml" onClick={() => setShowWhitelistModal(true)}>
 									View Whitelist
 								</ButtonComp>
-								<ButtonComp bg="primary" height="40px" px="ml" ml="mm">
+								<ButtonComp bg="primary" height="40px" px="ml" ml="mm" disable={!whitelist} onClick={handleAdd}>
 									Add
 								</ButtonComp>
 							</Box>

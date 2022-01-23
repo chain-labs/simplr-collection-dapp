@@ -11,11 +11,10 @@ export interface InputProps {
 	visible: any;
 	children?: string | React.ReactNode;
 	value?: any;
-	setValue: (any) => void;
 	width?: string;
 }
 
-const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue, width }: InputProps) => {
+const LabelledSelectInput = ({ label, placeholder, set, visible, value, width }: InputProps) => {
 	return (
 		<Box overflow="visible">
 			<Text as="h6" mb="mxs" color="simply-black">
@@ -25,6 +24,7 @@ const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue
 				<Box
 					as="input"
 					value={value}
+					readOnly
 					placeholder={placeholder}
 					backgroundColor="white-00"
 					padding="12px 16px"
@@ -42,7 +42,6 @@ const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue
 							border: 0.5px solid ${theme.colors['white-10']};
 						}
 					`}
-					onChange={(e) => setValue(e.target.value)}
 				></Box>
 				<Box ml="-4.2rem" mt="1.1rem" cursor="pointer">
 					<CaretDown size={24} color={theme.colors['disable-black']} />
