@@ -81,9 +81,7 @@ const LabelledTextInput = ({
 							boxShadow="0px 6px 12px -6px rgba(24, 39, 75, 0.12), 0px 8px 24px -4px rgba(24, 39, 75, 0.08)"
 							border="1px solid rgba(171, 171, 178, 0.3)"
 						>
-							<Text as="c1" fontWeight="medium" color="black" fontFamily="Open Sauce One" fontStyle="normal">
-								{tooltipText}
-							</Text>
+							<Text as="c1">{tooltipText}</Text>
 						</Box>
 					}
 				/>
