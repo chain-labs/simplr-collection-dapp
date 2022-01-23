@@ -15,7 +15,7 @@ interface Props {
 	errorText?: string;
 	value: any;
 	step?: string;
-	setValue: (any) => void;
+	setValue?: (any) => void;
 	dropdown?: boolean;
 	unit?: string;
 	width?: string;
@@ -78,13 +78,13 @@ const TextInput = ({
 				onChange={handleChange}
 				validation={validity}
 				onBlur={handleValidity}
-				color="simply-black"
+				color={disabled ? 'disable-black' : 'simply-black'}
 				width={width ?? '32rem'}
 				min={min}
 				max={max}
 			></InputElement>
 			<If
-				condition={disabled}
+				condition={disabled && !disableValidation}
 				then={
 					<Box ml="-3.2rem" mt="0.2rem">
 						<Prohibit size={24} color="#8c8ca1" />
@@ -161,7 +161,6 @@ export const InputElement = styled(Box)(
 			: '0.5px solid #E6E6FF'
 	};
 	outline: none;
-	min-width: 30rem;
 	${
 		!props.disabled && !props.value
 			? `box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.2);`

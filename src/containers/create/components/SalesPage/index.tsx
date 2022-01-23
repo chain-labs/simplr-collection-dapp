@@ -7,9 +7,9 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
-import Affiliable from './SalesPage/Affiliable';
-import Presale from './SalesPage/Presale';
-import Revealable from './SalesPage/Revealable';
+import Affiliable from './Affiliable';
+import Presale from './Presale';
+import Revealable from './Revealable';
 
 export const getUnit = (network) => {
 	switch (network) {
