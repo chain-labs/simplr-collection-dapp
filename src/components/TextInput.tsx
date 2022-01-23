@@ -3,7 +3,7 @@ import theme from 'src/styleguide/theme';
 import styled from 'styled-components';
 import { Prohibit, Check, WarningCircle, MagnifyingGlass } from 'phosphor-react';
 import If from './If';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Text from './Text';
 
 interface Props {
@@ -48,6 +48,7 @@ const TextInput = ({
 		if (e.target.value === '') setSearchIcon(true);
 		else setSearchIcon(false);
 	};
+
 	const handleValidity = (e) => {
 		if (disableValidation) return;
 		if (!value) {
@@ -61,6 +62,11 @@ const TextInput = ({
 			}
 		}
 	};
+
+	useEffect(() => {
+		if (!value) setValidity('clear');
+	}, [value]);
+
 	return (
 		<Box
 			display="flex"
@@ -72,6 +78,7 @@ const TextInput = ({
 			<InputElement
 				as="input"
 				{...{ disabled, required, type, step, disableValidation }}
+				readOnly={!setValue}
 				placeholder={placeholder}
 				pattern={regexp}
 				value={value}
