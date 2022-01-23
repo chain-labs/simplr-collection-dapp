@@ -34,13 +34,9 @@ const CollectionPage = () => {
 
 	return (
 		<Box overflow="visible" mb="20rem">
-			<Dropdown
-				setValue={setNetwork}
-				value={network.name}
-				data={networkData}
-				label="Network"
-				placeholder="Blockchain"
-			/>
+			<LabelledTextInput label="Blockchain" required>
+				<Dropdown setValue={setNetwork} value={network.name} data={networkData} placeholder="Blockchain" />
+			</LabelledTextInput>
 			<Box mt="mxxxl" />
 			<LabelledTextInput
 				type="text"
