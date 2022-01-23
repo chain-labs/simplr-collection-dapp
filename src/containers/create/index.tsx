@@ -4,6 +4,7 @@ import Text from 'src/components/Text';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 import SalesPage from './components';
+import CollectionPage from './components/CollectionPage';
 
 const CreateComp = () => {
 	const [step, setStep] = useState(1);
@@ -11,6 +12,9 @@ const CreateComp = () => {
 	const getFormPage = (step) => {
 		if (step === 1) {
 			return <SalesPage />;
+		}
+		if (step === 0) {
+			return <CollectionPage />;
 		}
 	};
 
