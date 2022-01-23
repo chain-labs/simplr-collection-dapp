@@ -3,7 +3,7 @@ import theme from 'src/styleguide/theme';
 import styled from 'styled-components';
 import { Prohibit, Check, WarningCircle, MagnifyingGlass } from 'phosphor-react';
 import If from './If';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Text from './Text';
 
 interface Props {
@@ -21,6 +21,7 @@ interface Props {
 	width?: string;
 	min?: string;
 	max?: string;
+	disableValidation?: boolean;
 }
 
 const TextInput = ({
@@ -36,11 +37,11 @@ const TextInput = ({
 	width,
 	min,
 	max,
+	disableValidation,
 }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 	const [searchIcon, setSearchIcon] = useState<boolean>(true);
 
-	const inputRef = useRef(null);
 	const handleChange = (e) => {
 		e.preventDefault();
 		setValue(e.target.value);
@@ -48,6 +49,7 @@ const TextInput = ({
 		else setSearchIcon(false);
 	};
 	const handleValidity = (e) => {
+		if (disableValidation) return;
 		if (!value) {
 			setValidity('clear');
 		} else {
@@ -69,13 +71,12 @@ const TextInput = ({
 		>
 			<InputElement
 				as="input"
-				{...{ disabled, required, type, step }}
+				{...{ disabled, required, type, step, disableValidation }}
 				placeholder={placeholder}
 				pattern={regexp}
 				value={value}
 				onChange={handleChange}
 				validation={validity}
-				ref={inputRef}
 				onBlur={handleValidity}
 				color="simply-black"
 				width={width ?? '32rem'}
@@ -90,7 +91,7 @@ const TextInput = ({
 					</Box>
 				}
 			/>
-			{type === 'text' || type === 'email' ? (
+			{type === 'text' || type === 'email' || type === 'url' || (type === 'number' && !unit) ? (
 				<Box overflow="visible">
 					<If
 						condition={validity === 'valid'}
@@ -113,7 +114,7 @@ const TextInput = ({
 				''
 			)}
 			<If
-				condition={type === 'number'}
+				condition={type === 'number' && !!unit}
 				then={
 					<Text ml="-4.2rem" as="h5" color={validity === 'invalid' ? 'red-50' : 'disable-black'}>
 						{unit}
@@ -139,6 +140,8 @@ interface InputProps {
 	disabled?: boolean;
 	value?: any;
 	validation?: 'clear' | 'valid' | 'invalid';
+	type?: string;
+	disableValidation?: boolean;
 }
 
 export const InputElement = styled(Box)(
@@ -151,7 +154,7 @@ export const InputElement = styled(Box)(
 	border: ${
 		props.disabled
 			? `2px solid rgba(140, 140, 161, 0.2)`
-			: props.value
+			: props.value && !props.disableValidation
 			? props.validation === 'valid'
 				? `1px solid ${theme.colors['green-40']}`
 				: `1px solid ${props.theme.colors['red-40']};`
@@ -165,7 +168,7 @@ export const InputElement = styled(Box)(
 			: 'inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)'
 	};
     ${
-			props.value
+			props.value && !props.disableValidation
 				? props.validation === 'valid'
 					? `box-shadow: 0 0 0 4px ${theme.colors['green-50']}33`
 					: `box-shadow: 0px 0px 0px 4px ${props.theme.colors['red-50']}33;`
@@ -174,7 +177,7 @@ export const InputElement = styled(Box)(
 
 
 	&::placeholder {
-		${props.disabled ? `color: #8c8ca1` : `${theme.colors['gray-00']}`};
+		${props.disabled || props.type === 'search' ? `color: #8c8ca1` : `color: ${theme.colors['gray-00']}`};
 	}
 
 	&:focus {

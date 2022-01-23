@@ -23,6 +23,7 @@ interface Props {
 	max?: string;
 	tooltip?: boolean;
 	tooltipText?: string;
+	disableValidation?: boolean;
 	children?: string | React.ReactNode;
 }
 
@@ -43,6 +44,7 @@ const LabelledTextInput = ({
 	max,
 	tooltip,
 	tooltipText,
+	disableValidation,
 	children,
 }: Props) => {
 	const [showTooltip, setShowTooltip] = useState<boolean>();
@@ -91,7 +93,21 @@ const LabelledTextInput = ({
 				then={children}
 				else={
 					<TextInput
-						{...{ disabled, regexp, required, placeholder, value, type, unit, setValue, step, width, min, max }}
+						{...{
+							disabled,
+							regexp,
+							required,
+							placeholder,
+							value,
+							type,
+							unit,
+							setValue,
+							step,
+							width,
+							min,
+							max,
+							disableValidation,
+						}}
 					/>
 				}
 			/>
