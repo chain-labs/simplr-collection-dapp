@@ -64,6 +64,8 @@ const CollectionPage = () => {
 				helperText="Paste the link where your NFT media is stored."
 				value={collectionURI}
 				setValue={setCollectionURI}
+				tooltip
+				tooltipText="Collection URI is the URL where your NFT media and metadata are stored. "
 				required
 			/>
 			<Box mt="mxxxl" />
