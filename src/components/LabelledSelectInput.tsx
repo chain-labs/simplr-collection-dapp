@@ -21,7 +21,7 @@ const LabelledSelectInput = ({ label, placeholder, set, visible, value, setValue
 			<Text as="h6" mb="mxs" color="simply-black">
 				{label}
 			</Text>
-			<Box display="flex" color="disable-black" onClick={() => set(!visible)}>
+			<Box display="flex" color="disable-black" onClick={() => set(!visible)} width={width}>
 				<Box
 					as="input"
 					value={value}

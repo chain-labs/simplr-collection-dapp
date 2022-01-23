@@ -17,25 +17,23 @@ const CollectionPage = () => {
 	const [collectionBannerURL, setCollectionBannerURL] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 	const [adminAddress, setAdminAddress] = useState<string>('');
-	const [network, setNetwork] = useState({
-		value: '',
-		name: '',
-	});
+	const [network, setNetwork] = useState();
 	const [networkData, setNetworkData] = useState([]);
 
 	useEffect(() => {
 		const types = Object.keys(networks);
 		const data = [];
 		types.map((type) => {
-			data.push({ value: type, name: networks[type].name });
+			data[type] = networks[type].name;
 		});
 		setNetworkData(data);
+		console.log(networkData.indexOf(network));
 	}, [networks, network]);
 
 	return (
 		<Box overflow="visible" mb="20rem">
 			<LabelledTextInput label="Blockchain" required>
-				<Dropdown setValue={setNetwork} value={network.name} data={networkData} placeholder="Blockchain" />
+				<Dropdown setValue={setNetwork} value={network} data={networkData} placeholder="Blockchain" />
 			</LabelledTextInput>
 			<Box mt="mxxxl" />
 			<LabelledTextInput

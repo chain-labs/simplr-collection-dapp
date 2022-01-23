@@ -39,7 +39,7 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width }: Props) =
 					condition={visible}
 					then={data.map((item) => (
 						<Box
-							key={item.value}
+							key={item}
 							padding="7px 16px"
 							border={`1px solid ${theme.colors['white-20']}`}
 							backgroundColor="white-00"
@@ -49,10 +49,10 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width }: Props) =
 									background-color: ${theme.colors['blue-00']};
 								}
 							`}
-							onClick={() => setValue({ value: item.value, name: item.name })}
+							onClick={() => setValue(item)}
 						>
 							<Text as="b1" fontFamily="Switzer" fontWeight="medium">
-								{item.name}
+								{item}
 							</Text>
 						</Box>
 					))}
