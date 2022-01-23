@@ -1,13 +1,14 @@
+import { ethers } from 'ethers';
 import { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import DateTime from 'src/components/DateTime';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
-import { useAppSelector } from 'src/redux/hooks';
-import { beneficiariesSelector, paymentSelector } from 'src/redux/payment';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { addBeneficiary, beneficiariesSelector, paymentSelector } from 'src/redux/payment';
 
 const PaymentPage = () => {
 	const [royaltyAddress, setRoyaltyAddress] = useState<string>();
@@ -15,8 +16,32 @@ const PaymentPage = () => {
 	const [beneficiary, setBeneficiary] = useState<string>();
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState<number>();
 
+	const [maxShare, setMaxShare] = useState<number>(85);
+
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 	const payments = useAppSelector(paymentSelector);
+
+	const dispatch = useAppDispatch();
+
+	const handleAdd = (e) => {
+		e.preventDefault();
+
+		const valid = ethers.utils.isAddress(beneficiary);
+
+		if (valid) {
+			if (beneficiaryPercentage <= maxShare) {
+				dispatch(addBeneficiary({ payee: beneficiary, shares: beneficiaryPercentage }));
+				setMaxShare(maxShare - beneficiaryPercentage);
+				toast.success('Beneficiary added');
+				setBeneficiary('');
+				setBeneficiaryPercentage(null);
+			} else {
+				toast.error(`Shares must be less than ${maxShare}%`);
+			}
+		} else {
+			toast.error('Address is not valid');
+		}
+	};
 
 	return (
 		<Box overflow="visible" mb="20rem">
@@ -67,13 +92,20 @@ const PaymentPage = () => {
 					<TextInput
 						value={beneficiaryPercentage}
 						setValue={setBeneficiaryPercentage}
+						max={`${maxShare}`}
 						placeholder="Share%"
 						type="number"
 						width="21.4rem"
 					/>
 				</Box>
 			</LabelledTextInput>
-			<ButtonComp bg="tertiary" width="100%" height="48px">
+			<ButtonComp
+				bg="tertiary"
+				width="100%"
+				height="48px"
+				disable={!beneficiary || !beneficiaryPercentage}
+				onClick={handleAdd}
+			>
 				<Text as="h5">Add Beneficiary</Text>
 			</ButtonComp>
 		</Box>
