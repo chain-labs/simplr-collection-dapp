@@ -28,14 +28,8 @@ const PaymentPage = () => {
 		e.preventDefault();
 
 		const valid = ethers.utils.isAddress(beneficiary);
-		let payeeexist;
-		const payee = payments.paymentSplitter.payees;
-		for (let i = 0; i < payee.length; i++) {
-			if (payee[i] === beneficiary) {
-				payeeexist = true;
-				break;
-			}
-		}
+
+		const payeeexist = payments.paymentSplitter.payees.find((payee) => payee === beneficiary);
 		if (payeeexist) {
 			toast.error('Address already whitelisted');
 			return;
@@ -64,9 +58,7 @@ const PaymentPage = () => {
 	const addPaymentDetails = (e) => {
 		e.preventDefault();
 		const valid = ethers.utils.isAddress(royaltyAddress);
-		if (valid && royaltyPercentage <= 10) {
-			toast.success('Form Validated');
-		} else {
+		if (!valid || royaltyPercentage > 10) {
 			toast.error('Invalid details');
 		}
 	};
