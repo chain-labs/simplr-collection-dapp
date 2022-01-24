@@ -63,6 +63,9 @@ const PaymentPage = () => {
 				toast.error('Invalid details');
 			}
 		}
+		if (!(maxShare === 0)) {
+			toast.error(`${maxShare}% shares still remaining. Add more beneficiaries or re-allocate shares.`);
+		}
 	};
 
 	return (
