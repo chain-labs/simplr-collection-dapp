@@ -15,7 +15,7 @@ const CreateComp = () => {
 			return <SalesPage />;
 		}
 		if (step === 0) {
-			return <CollectionPage />;
+			return <CollectionPage setStep={setStep} />;
 		}
 		if (step === 2) {
 			return <PaymentPage />;
