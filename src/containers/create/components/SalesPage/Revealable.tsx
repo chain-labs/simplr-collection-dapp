@@ -49,6 +49,7 @@ const Revealable = () => {
 							value={loadingUrl}
 							setValue={setLoadingUrl}
 							width="100%"
+							required
 						/>
 					</Box>
 				}
