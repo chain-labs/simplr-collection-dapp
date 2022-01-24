@@ -22,6 +22,7 @@ interface Props {
 	min?: string;
 	max?: string;
 	disableValidation?: boolean;
+	fontSize?: string;
 }
 
 const TextInput = ({
@@ -38,6 +39,7 @@ const TextInput = ({
 	min,
 	max,
 	disableValidation,
+	fontSize,
 }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 	const [searchIcon, setSearchIcon] = useState<boolean>(true);
@@ -77,7 +79,7 @@ const TextInput = ({
 		>
 			<InputElement
 				as="input"
-				{...{ disabled, required, type, step, disableValidation }}
+				{...{ disabled, required, type, step, disableValidation, fontSize }}
 				readOnly={!setValue}
 				placeholder={placeholder}
 				pattern={regexp}
@@ -149,12 +151,13 @@ interface InputProps {
 	validation?: 'clear' | 'valid' | 'invalid';
 	type?: string;
 	disableValidation?: boolean;
+	fontSize?: string;
 }
 
 export const InputElement = styled(Box)(
 	(props: InputProps) => `
 	padding: ${`${props.theme.space.ms} ${props.theme.space.mm}`};
-	font-size: 16px;
+	font-size: ${props.fontSize ?? '1.6rem'};
 	font-family: 'Switzer', sans-serif;
 	border-radius: 8px;
 	background: ${props?.disabled || props.value ? props.theme.colors['simply-white'] : props.theme.colors['white-00']};

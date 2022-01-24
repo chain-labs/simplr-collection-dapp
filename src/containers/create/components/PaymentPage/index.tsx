@@ -4,7 +4,6 @@ import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
-import DateTime from 'src/components/DateTime';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
@@ -69,6 +68,7 @@ const PaymentPage = () => {
 						placeholder="Wallet address"
 						type="text"
 						width="41.7rem"
+						fontSize="1.4rem"
 					/>
 					<Box ml="mxs" />
 					<TextInput
@@ -78,19 +78,27 @@ const PaymentPage = () => {
 						type="number"
 						width="21.4rem"
 						unit="%"
+						fontSize="1.4rem"
 					/>
 				</Box>
 			</LabelledTextInput>
 			<Box mt="ws" />
 			<LabelledTextInput label="Beneficiaries" required>
 				<Box row overflow="visible" mb="ms">
-					<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation />
+					<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
 					<Box ml="mxs" />
-					<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation />
+					<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation fontSize="1.4rem" />
 				</Box>
 				{beneficiaries.payees.map((payee, index) => (
 					<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
-						<TextInput value={null} placeholder={payee} type="text" width="41.7rem" disableValidation />
+						<TextInput
+							value={null}
+							placeholder={payee}
+							type="text"
+							width="41.7rem"
+							fontSize="1.4rem"
+							disableValidation
+						/>
 						<Box ml="mxs" />
 						<TextInput
 							value={null}
@@ -99,6 +107,7 @@ const PaymentPage = () => {
 							type="number"
 							width="21.4rem"
 							disableValidation
+							fontSize="1.4rem"
 						/>
 						<Box ml="mxs" onClick={() => handleRemove(payee, beneficiaries.shares[index])} cursor="pointer">
 							<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
@@ -112,6 +121,7 @@ const PaymentPage = () => {
 						placeholder="Wallet Address"
 						type="text"
 						width="41.7rem"
+						fontSize="1.4rem"
 					/>
 					<Box ml="mxs" />
 					<TextInput
@@ -122,6 +132,7 @@ const PaymentPage = () => {
 						placeholder="Share%"
 						type="number"
 						width="21.4rem"
+						fontSize="1.4rem"
 					/>
 				</Box>
 			</LabelledTextInput>
