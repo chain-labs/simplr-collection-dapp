@@ -3,7 +3,7 @@ import theme from 'src/styleguide/theme';
 import styled from 'styled-components';
 import { Prohibit, Check, WarningCircle, MagnifyingGlass } from 'phosphor-react';
 import If from './If';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Text from './Text';
 
 interface Props {
@@ -15,13 +15,14 @@ interface Props {
 	errorText?: string;
 	value: any;
 	step?: string;
-	setValue: (any) => void;
+	setValue?: (any) => void;
 	dropdown?: boolean;
 	unit?: string;
 	width?: string;
 	min?: string;
 	max?: string;
 	disableValidation?: boolean;
+	fontSize?: string;
 }
 
 const TextInput = ({
@@ -38,6 +39,7 @@ const TextInput = ({
 	min,
 	max,
 	disableValidation,
+	fontSize,
 }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 	const [searchIcon, setSearchIcon] = useState<boolean>(true);
@@ -48,6 +50,7 @@ const TextInput = ({
 		if (e.target.value === '') setSearchIcon(true);
 		else setSearchIcon(false);
 	};
+
 	const handleValidity = (e) => {
 		if (disableValidation) return;
 		if (!value) {
@@ -61,6 +64,11 @@ const TextInput = ({
 			}
 		}
 	};
+
+	useEffect(() => {
+		if (!value) setValidity('clear');
+	}, [value]);
+
 	return (
 		<Box
 			display="flex"
@@ -71,20 +79,21 @@ const TextInput = ({
 		>
 			<InputElement
 				as="input"
-				{...{ disabled, required, type, step, disableValidation }}
+				{...{ disabled, required, type, step, disableValidation, fontSize }}
+				readOnly={!setValue}
 				placeholder={placeholder}
 				pattern={regexp}
 				value={value}
 				onChange={handleChange}
 				validation={validity}
 				onBlur={handleValidity}
-				color="simply-black"
+				color={disabled ? 'disable-black' : 'simply-black'}
 				width={width ?? '32rem'}
 				min={min}
 				max={max}
 			></InputElement>
 			<If
-				condition={disabled}
+				condition={disabled && !disableValidation}
 				then={
 					<Box ml="-3.2rem" mt="0.2rem">
 						<Prohibit size={24} color="#8c8ca1" />
@@ -142,12 +151,13 @@ interface InputProps {
 	validation?: 'clear' | 'valid' | 'invalid';
 	type?: string;
 	disableValidation?: boolean;
+	fontSize?: string;
 }
 
 export const InputElement = styled(Box)(
 	(props: InputProps) => `
 	padding: ${`${props.theme.space.ms} ${props.theme.space.mm}`};
-	font-size: 16px;
+	font-size: ${props.fontSize ?? '1.6rem'};
 	font-family: 'Switzer', sans-serif;
 	border-radius: 8px;
 	background: ${props?.disabled || props.value ? props.theme.colors['simply-white'] : props.theme.colors['white-00']};
@@ -161,7 +171,6 @@ export const InputElement = styled(Box)(
 			: '0.5px solid #E6E6FF'
 	};
 	outline: none;
-	min-width: 30rem;
 	${
 		!props.disabled && !props.value
 			? `box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.2);`

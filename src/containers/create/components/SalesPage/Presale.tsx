@@ -10,7 +10,7 @@ import Text from 'src/components/Text';
 import Toggle from 'src/components/Toggle';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { addWhitelist, presaleableToggleSelector, togglePresale } from 'src/redux/sales';
-import { getUnit } from '..';
+import { getUnit } from '.';
 import WhitelistModal from './WhitelistModal';
 
 const Presale = ({ unit }: { unit: number }) => {

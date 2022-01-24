@@ -29,6 +29,7 @@ export interface ButtonProps extends BoxProps {
 	dangerouslySetInnerHTML?: { __html: string };
 	onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	className?: string;
+	type?: string;
 }
 
 const ButtonComp = ({ bg, disable, height, children, ...restProps }: ButtonProps): JSX.Element => {

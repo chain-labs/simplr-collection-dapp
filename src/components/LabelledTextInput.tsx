@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Question from 'src/icons/question.svg';
-import theme from 'src/styleguide/theme';
 import Box from './Box';
 import If from './If';
 import Text from './Text';
@@ -24,6 +23,7 @@ interface Props {
 	tooltip?: boolean;
 	tooltipText?: string;
 	disableValidation?: boolean;
+	fontSize?: string;
 	children?: string | React.ReactNode;
 }
 
@@ -45,6 +45,7 @@ const LabelledTextInput = ({
 	tooltip,
 	tooltipText,
 	disableValidation,
+	fontSize,
 	children,
 }: Props) => {
 	const [showTooltip, setShowTooltip] = useState<boolean>();
@@ -107,6 +108,7 @@ const LabelledTextInput = ({
 							min,
 							max,
 							disableValidation,
+							fontSize,
 						}}
 					/>
 				}

@@ -5,7 +5,7 @@ import { PaymentState } from './types';
 
 const intitalState: PaymentState = {
 	royalties: {
-		account: '',
+		account: null,
 		value: null,
 	},
 	paymentSplitter: {

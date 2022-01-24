@@ -3,11 +3,12 @@ import Box from 'src/components/Box';
 import Text from 'src/components/Text';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
-import SalesPage from './components';
+import SalesPage from './components/SalesPage';
+import PaymentPage from './components/PaymentPage';
 import CollectionPage from './components/CollectionPage';
 
 const CreateComp = () => {
-	const [step, setStep] = useState(1);
+	const [step, setStep] = useState(2);
 
 	const getFormPage = (step) => {
 		if (step === 1) {
@@ -15,6 +16,9 @@ const CreateComp = () => {
 		}
 		if (step === 0) {
 			return <CollectionPage />;
+		}
+		if (step === 2) {
+			return <PaymentPage />;
 		}
 	};
 
