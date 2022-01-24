@@ -13,6 +13,7 @@ const CollectionPage = () => {
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [edited, setEdited] = useState(false);
+	const [adminAddress, setAdminAddress] = useState('0xd18Cd50a6bDa288d331e3956BAC496AAbCa4960d');
 
 	return (
 		<Box mt="mxxxl" width="116.8rem" mx="auto">
@@ -21,7 +22,13 @@ const CollectionPage = () => {
 			</Text>
 			<Box row flexWrap="wrap" between mt="mxxxl">
 				<DashboardCard Icon={ImageSquare} text="Total NFTs" data="10,000" />
-				<DashboardCard Icon={User} text="Admin Wallet Address" data="0xa4c...abd" editable="address" />
+				<DashboardCard
+					Icon={User}
+					text="Admin Wallet Address"
+					data={adminAddress}
+					setData={setAdminAddress}
+					editable="address"
+				/>
 				<DashboardCard Icon={ImageSquare} text="Reserved Tokens" data="6000" editable="number" />
 				<DashboardCard Icon={CurrencyEth} text="Price per NFT (Pre-sale)" data="0.08 ETH" />
 				<DashboardCard Icon={Timer} text="NFTs reveal in" data="17:00:00" editable="time" />
@@ -31,7 +38,7 @@ const CollectionPage = () => {
 				Sales:
 			</Text>
 			<Box row flexWrap="wrap" between mt="mxxxl">
-				<DashboardCard Icon={Timer} text="Pre-sale" status="Live" editable="status" />
+				<DashboardCard Icon={Timer} text="Pre-sale" status="Paused" editable="status" />
 				<DashboardCard Icon={Timer} text="Public-sale goes live in" data="12:00:59" editable="time" />
 				<DashboardCard Icon={ImageSquare} text="NFTs sold" data="6100" />
 				<DashboardCard Icon={ImageSquare} text="NFTs remaining" data="3900" />
@@ -113,9 +120,30 @@ interface DashboardCardProps {
 	data?: string;
 	editable?: 'address' | 'time' | 'number' | 'status';
 	status?: 'Live' | 'Paused' | 'Sold Out' | 'Ended';
+	setData?: (any) => void;
 }
 
-const DashboardCard = ({ text, data, editable, status, Icon }: DashboardCardProps) => {
+const DashboardCard = ({ text, data, setData, editable, status, Icon }: DashboardCardProps) => {
+	const [drawerOpen, setDrawerOpen] = useState(false);
+	const [editing, setEditing] = useState(false);
+	const [value, setValue] = useState(data);
+
+	const handleAction = () => {
+		if (editable === 'address' || editable === 'number') {
+			setDrawerOpen(false);
+			setEditing(true);
+		}
+	};
+
+	const getData = (data) => {
+		if (editable === 'address') {
+			if (data.length > 10) {
+				return `${value.substr(0, 4)}...${value.substr(-4)}`;
+			}
+			return data;
+		}
+	};
+
 	return (
 		<Box
 			row
@@ -142,17 +170,57 @@ const DashboardCard = ({ text, data, editable, status, Icon }: DashboardCardProp
 						</Text>
 					}
 					else={
-						<Text as="h4" color="simply-blue">
-							{data}
-						</Text>
+						<Box
+							bg={editable === 'address' ? (editing ? 'simply-white' : 'blue-00') : 'transparent'}
+							borderRadius="8px"
+							border={editing ? '1px solid' : 'none'}
+							borderColor={editing ? '#dcdce8' : 'transparent'}
+							outline="none"
+							px={editable === 'address' || editable === 'number' ? (editing ? 'mxs' : 'mxl') : '0'}
+							py={editable === 'address' || editable === 'number' ? 'mxs' : '0'}
+							as={editing ? 'input' : null}
+							type={editing && editable === 'number' ? 'number' : 'text'}
+							value={value}
+							onChange={(e) => setValue(e.target.value)}
+							fontFamily="inherit"
+							fontSize="1.4rem"
+						>
+							{!editing ? (
+								<Text as="h4" color="simply-blue">
+									{editable === 'address' ? getData(value) : value}
+								</Text>
+							) : null}
+						</Box>
 					}
 				/>
 			</Box>
 			<If
-				condition={!!editable}
+				condition={!!editable && (status === 'Sold Out' || status !== 'Ended')}
 				then={
-					<Box ml="mxl" center>
-						<DotsThreeOutlineVertical color={theme.colors['gray-00']} size="20" weight="fill" />
+					<Box position="relative" onMouseLeave={() => setTimeout(() => setDrawerOpen(false), 1000)} cursor="pointer">
+						<Box ml="mxl" center onClick={() => setDrawerOpen(true)}>
+							<DotsThreeOutlineVertical color={theme.colors['gray-00']} size="20" weight="fill" />
+						</Box>
+						<If
+							condition={drawerOpen}
+							then={
+								<Box
+									px="mm"
+									py="mxs"
+									bg="white-00"
+									border="1px solid"
+									borderColor="white-20"
+									boxShadow="0px 2px 4px -2px rgba(24, 39, 75, 0.12), 0px 4px 4px -2px rgba(24, 39, 75, 0.08)"
+									borderRadius="4px"
+									position="absolute"
+									left="25px"
+									cursor="pointer"
+									onClick={handleAction}
+								>
+									<Text as="c3">{status === 'Live' ? 'Pause' : status === 'Paused' ? 'Resume' : 'Edit'}</Text>
+								</Box>
+							}
+						/>
 					</Box>
 				}
 			/>
