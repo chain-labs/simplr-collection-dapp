@@ -83,6 +83,7 @@ const PaymentPage = () => {
 							type="text"
 							width="41.7rem"
 							fontSize="1.4rem"
+							required
 						/>
 						<Box ml="mxs" />
 						<TextInput
@@ -93,6 +94,7 @@ const PaymentPage = () => {
 							width="21.4rem"
 							unit="%"
 							fontSize="1.4rem"
+							required
 						/>
 					</Box>
 				</LabelledTextInput>
