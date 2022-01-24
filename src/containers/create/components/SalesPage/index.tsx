@@ -56,7 +56,10 @@ const SalesPage = () => {
 		} else if (+publicSaleLaunchTimestamp < date) {
 			toast.error('Invalid time');
 			console.log(date, +publicSaleLaunchTimestamp);
-		} else if (isPresaleable) {
+		} else {
+			console.log('Everything is valid');
+		}
+		if (isPresaleable) {
 			if (+presaleReservedTokens > +maxTokens || +presaleReservedTokens > +reserveTokens) {
 				toast.error('Presale reserved tokens cannot be greater than total supply or reserve token supply');
 			} else if (+presaleMaxHolding > +presaleReservedTokens) {
@@ -64,16 +67,8 @@ const SalesPage = () => {
 			} else if (publicSaleLaunchTimestamp < presaleStartTime) {
 				toast.error('Presale start time should be earlier than public sale');
 			} else {
-				console.log('we are good');
+				console.log('Everything is valid');
 			}
-		} else if (isRevealable) {
-			if (revealableTime > publicSaleLaunchTimestamp) {
-				toast.error('Invalid Time');
-			} else {
-				console.log('good');
-			}
-		} else {
-			console.log('Everything is valid');
 		}
 	};
 
