@@ -31,6 +31,10 @@ const PaymentPage = () => {
 
 		if (valid) {
 			if (beneficiaryPercentage <= maxShare) {
+				if (maxShare === 0) {
+					toast.error('Cannot add more benificiaries');
+					return;
+				}
 				dispatch(addBeneficiary({ payee: beneficiary, shares: beneficiaryPercentage }));
 				setMaxShare(maxShare - beneficiaryPercentage);
 				toast.success('Beneficiary added');
