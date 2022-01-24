@@ -6,8 +6,8 @@ import TextInput from 'src/components/TextInput';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, removeWhitelist } from 'src/redux/sales';
 import { X } from 'phosphor-react';
-import toast from 'react-hot-toast';
 import If from 'src/components/If';
+import toast from 'react-hot-toast';
 
 const WhitelistModal = ({ visible, setVisible }) => {
 	const whiteList = useAppSelector(presaleWhitelistSelector);
