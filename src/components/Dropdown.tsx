@@ -32,6 +32,7 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width }: Props) =
 				overflow="auto"
 				maxHeight="40rem"
 				position="absolute"
+				boxShadow="0px 2px 4px -2px rgba(24, 39, 75, 0.12), 0px 4px 4px -2px rgba(24, 39, 75, 0.08)"
 				onClick={() => setVisible(!visible)}
 			>
 				<If
