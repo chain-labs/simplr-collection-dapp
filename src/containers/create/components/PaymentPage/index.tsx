@@ -57,9 +57,11 @@ const PaymentPage = () => {
 
 	const addPaymentDetails = (e) => {
 		e.preventDefault();
-		const valid = ethers.utils.isAddress(royaltyAddress);
-		if (!valid || royaltyPercentage > 10) {
-			toast.error('Invalid details');
+		if (royaltyAddress) {
+			const valid = ethers.utils.isAddress(royaltyAddress);
+			if (!valid || royaltyPercentage > 10) {
+				toast.error('Invalid details');
+			}
 		}
 	};
 
