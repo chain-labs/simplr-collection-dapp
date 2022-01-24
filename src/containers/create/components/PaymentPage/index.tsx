@@ -28,7 +28,18 @@ const PaymentPage = () => {
 		e.preventDefault();
 
 		const valid = ethers.utils.isAddress(beneficiary);
-
+		let payeeexist;
+		const payee = payments.paymentSplitter.payees;
+		for (let i = 0; i < payee.length; i++) {
+			if (payee[i] === beneficiary) {
+				payeeexist = true;
+				break;
+			}
+		}
+		if (payeeexist) {
+			toast.error('Address already whitelisted');
+			return;
+		}
 		if (valid) {
 			if (beneficiaryPercentage <= maxShare) {
 				dispatch(addBeneficiary({ payee: beneficiary, shares: beneficiaryPercentage }));
@@ -50,117 +61,129 @@ const PaymentPage = () => {
 		toast.success('Beneficiary removed');
 	};
 
+	const addPaymentDetails = (e) => {
+		e.preventDefault();
+		const valid = ethers.utils.isAddress(royaltyAddress);
+		if (valid && royaltyPercentage <= 10) {
+			toast.success('Form Validated');
+		} else {
+			toast.error('Invalid details');
+		}
+	};
+
 	return (
-		<Box overflow="visible" mb="10rem">
-			<Box overflow="visible">
-				<Toaster
-					position="top-center"
-					toastOptions={{
-						duration: 5000,
-					}}
-				/>
-			</Box>
-			<LabelledTextInput label="Royalties" helperText="Maximum 10%" required>
-				<Box row overflow="visible">
-					<TextInput
-						value={royaltyAddress}
-						setValue={setRoyaltyAddress}
-						placeholder="Wallet address"
-						type="text"
-						width="41.7rem"
-						fontSize="1.4rem"
-					/>
-					<Box ml="mxs" />
-					<TextInput
-						value={royaltyPercentage}
-						setValue={setRoyaltyPercentage}
-						placeholder="eg. 5"
-						type="number"
-						width="21.4rem"
-						unit="%"
-						fontSize="1.4rem"
+		<form onSubmit={addPaymentDetails}>
+			<Box overflow="visible" mb="10rem">
+				<Box overflow="visible">
+					<Toaster
+						position="top-center"
+						toastOptions={{
+							duration: 5000,
+						}}
 					/>
 				</Box>
-			</LabelledTextInput>
-			<Box mt="ws" />
-			<LabelledTextInput label="Beneficiaries" required>
-				<Box row overflow="visible" mb="ms">
-					<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
-					<Box ml="mxs" />
-					<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation fontSize="1.4rem" />
-				</Box>
-				{beneficiaries.payees.map((payee, index) => (
-					<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
+				<LabelledTextInput label="Royalties" helperText="Maximum 10%" required>
+					<Box row overflow="visible">
 						<TextInput
-							value={null}
-							placeholder={payee}
+							value={royaltyAddress}
+							setValue={setRoyaltyAddress}
+							placeholder="Wallet address"
 							type="text"
 							width="41.7rem"
 							fontSize="1.4rem"
-							disableValidation
 						/>
 						<Box ml="mxs" />
 						<TextInput
-							value={null}
-							placeholder={`${beneficiaries.shares[index]}%`}
-							max={`${maxShare}`}
+							value={royaltyPercentage}
+							setValue={setRoyaltyPercentage}
+							placeholder="eg. 5"
 							type="number"
 							width="21.4rem"
-							disableValidation
+							unit="%"
 							fontSize="1.4rem"
 						/>
-						<Box ml="mxs" onClick={() => handleRemove(payee, beneficiaries.shares[index])} cursor="pointer">
-							<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
-						</Box>
 					</Box>
-				))}
-				<Box row overflow="visible" mb="ms">
-					<TextInput
-						value={beneficiary}
-						setValue={setBeneficiary}
-						placeholder="Wallet Address"
-						type="text"
-						width="41.7rem"
-						fontSize="1.4rem"
-					/>
-					<Box ml="mxs" />
-					<TextInput
-						value={beneficiaryPercentage}
-						setValue={setBeneficiaryPercentage}
-						max={`${maxShare}`}
-						min="1"
-						placeholder="Share%"
-						type="number"
-						width="21.4rem"
-						fontSize="1.4rem"
-					/>
+				</LabelledTextInput>
+				<Box mt="ws" />
+				<LabelledTextInput label="Beneficiaries" required>
+					<Box row overflow="visible" mb="ms">
+						<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
+						<Box ml="mxs" />
+						<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation fontSize="1.4rem" />
+					</Box>
+					{beneficiaries.payees.map((payee, index) => (
+						<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
+							<TextInput
+								value={null}
+								placeholder={payee}
+								type="text"
+								width="41.7rem"
+								fontSize="1.4rem"
+								disableValidation
+							/>
+							<Box ml="mxs" />
+							<TextInput
+								value={null}
+								placeholder={`${beneficiaries.shares[index]}%`}
+								max={`${maxShare}`}
+								type="number"
+								width="21.4rem"
+								disableValidation
+								fontSize="1.4rem"
+							/>
+							<Box ml="mxs" onClick={() => handleRemove(payee, beneficiaries.shares[index])} cursor="pointer">
+								<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
+							</Box>
+						</Box>
+					))}
+					<Box row overflow="visible" mb="ms">
+						<TextInput
+							value={beneficiary}
+							setValue={setBeneficiary}
+							placeholder="Wallet Address"
+							type="text"
+							width="41.7rem"
+							fontSize="1.4rem"
+						/>
+						<Box ml="mxs" />
+						<TextInput
+							value={beneficiaryPercentage}
+							setValue={setBeneficiaryPercentage}
+							max={`${maxShare}`}
+							min="1"
+							placeholder="Share%"
+							type="number"
+							width="21.4rem"
+							fontSize="1.4rem"
+						/>
+					</Box>
+				</LabelledTextInput>
+				<ButtonComp
+					bg="tertiary"
+					width="100%"
+					height="48px"
+					disable={!beneficiary || !beneficiaryPercentage}
+					onClick={handleAdd}
+				>
+					<Text as="h5">Add Beneficiary</Text>
+				</ButtonComp>
+				<Box mt="mxxl" />
+				<Box row mb="mxl">
+					<Text as="b1" color="simply-gray" mr="mm">
+						Total Shares: 100%
+					</Text>
+					<Text as="b1" color="simply-gray" mr="mm">
+						Simplr: 15%
+					</Text>
+					<Text as="b1" color="simply-gray">
+						{`Remaining: ${maxShare}%`}
+					</Text>
 				</Box>
-			</LabelledTextInput>
-			<ButtonComp
-				bg="tertiary"
-				width="100%"
-				height="48px"
-				disable={!beneficiary || !beneficiaryPercentage}
-				onClick={handleAdd}
-			>
-				<Text as="h5">Add Beneficiary</Text>
-			</ButtonComp>
-			<Box mt="mxxl" />
-			<Box row mb="mxl">
-				<Text as="b1" color="simply-gray" mr="mm">
-					Total Shares: 100%
-				</Text>
-				<Text as="b1" color="simply-gray" mr="mm">
-					Simplr: 15%
-				</Text>
-				<Text as="b1" color="simply-gray">
-					{`Remaining: ${maxShare}%`}
-				</Text>
+				<ButtonComp bg="primary" width="100%" height="56px" type="submit">
+					Submit
+				</ButtonComp>
 			</Box>
-			<ButtonComp bg="primary" width="100%" height="56px">
-				Submit
-			</ButtonComp>
-		</Box>
+		</form>
 	);
 };
 
