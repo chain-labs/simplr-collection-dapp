@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
@@ -19,6 +20,7 @@ const AdminDashboardComponent = () => {
 
 	return (
 		<Box>
+			<Toaster position="top-center" />
 			<Box bg="yellow-40" height="36rem" width="100%" />
 			<Box mt={`-${theme.space.wxs}`} mb="wxs" mx="auto" column center>
 				<Box bg="simply-blue" height="10rem" width="10rem" borderRadius="50%" mb="wxxs" />
@@ -26,10 +28,22 @@ const AdminDashboardComponent = () => {
 				<Text as="h3">(TGBC)</Text>
 			</Box>
 			<Box row between mx="auto" width="21.6rem">
-				<Text as="h4" mr="wxs" color={step === 0 ? 'simply-blue' : 'simply-black'}>
+				<Text
+					as="h4"
+					mr="wxs"
+					color={step === 0 ? 'simply-blue' : 'simply-black'}
+					onClick={() => setStep(0)}
+					cursor="pointer"
+				>
 					Collection
 				</Text>
-				<Text as="h4" mr="wxs" color={step === 1 ? 'simply-blue' : 'simply-black'}>
+				<Text
+					as="h4"
+					mr="wxs"
+					color={step === 1 ? 'simply-blue' : 'simply-black'}
+					onClick={() => setStep(1)}
+					cursor="pointer"
+				>
 					Payments
 				</Text>
 			</Box>
