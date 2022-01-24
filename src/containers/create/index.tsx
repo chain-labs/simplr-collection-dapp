@@ -8,14 +8,14 @@ import PaymentPage from './components/PaymentPage';
 import CollectionPage from './components/CollectionPage';
 
 const CreateComp = () => {
-	const [step, setStep] = useState(2);
+	const [step, setStep] = useState(0);
 
 	const getFormPage = (step) => {
 		if (step === 1) {
 			return <SalesPage />;
 		}
 		if (step === 0) {
-			return <CollectionPage />;
+			return <CollectionPage setStep={setStep} />;
 		}
 		if (step === 2) {
 			return <PaymentPage />;
