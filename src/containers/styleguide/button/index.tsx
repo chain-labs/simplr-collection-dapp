@@ -34,7 +34,7 @@ const Button = () => {
 					36
 					<ButtonComp bg="primary" px="12px" mx="mxxs" height="36px">
 						<Text as="h6" fontFamily="Switzer">
-							Action
+							Action it
 						</Text>
 					</ButtonComp>
 					<ButtonComp bg="secondary" px="12px" mx="mxxs" height="36px">
