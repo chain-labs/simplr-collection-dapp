@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import Dropdown from 'src/components/Dropdown';
-import { collectionSelector } from 'src/redux/collection';
-import { useAppSelector } from 'src/redux/hooks';
+import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { networks } from 'src/redux/collection/types';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
@@ -12,17 +12,21 @@ import { Toaster } from 'react-hot-toast';
 import { ethers } from 'ethers';
 
 const CollectionPage = ({ setStep }) => {
-	const [collectionName, setCollectionName] = useState<string>('');
-	const [collectionSymbol, setCollectionSymbol] = useState<string>('');
-	const [collectionURI, setCollectionURI] = useState<string>('');
-	const [collectionWebURL, setCollectionWebURL] = useState<string>('');
-	const [collectionLogoURL, setCollectionLogoURL] = useState<string>('');
-	const [collectionBannerURL, setCollectionBannerURL] = useState<string>('');
-	const [email, setEmail] = useState<string>('');
-	const [adminAddress, setAdminAddress] = useState<string>('');
-	const [network, setNetwork] = useState();
+	const collectionData = useAppSelector(collectionSelector);
+
+	const dispatch = useAppDispatch();
+
+	const [collectionName, setCollectionName] = useState<string>(collectionData.name);
+	const [collectionSymbol, setCollectionSymbol] = useState<string>(collectionData.symbol);
+	const [collectionURI, setCollectionURI] = useState<string>(collectionData.project_uri);
+	const [collectionWebURL, setCollectionWebURL] = useState<string>(collectionData.website_url);
+	const [collectionLogoURL, setCollectionLogoURL] = useState<string>(collectionData.logo_url);
+	const [collectionBannerURL, setCollectionBannerURL] = useState<string>(collectionData.banner_url);
+	const [email, setEmail] = useState<string>(collectionData.contact_email);
+	const [adminAddress, setAdminAddress] = useState<string>(collectionData.admin);
 	const [networkData, setNetworkData] = useState([]);
-	const [networkValue, setNetworkValue] = useState<number>();
+	const [networkValue, setNetworkValue] = useState<number>(collectionData.type);
+	const [network, setNetwork] = useState(networks[networkValue]?.name);
 
 	useEffect(() => {
 		const types = Object.keys(networks);
@@ -42,7 +46,22 @@ const CollectionPage = ({ setStep }) => {
 		} else if (!valid) {
 			toast.error('Invalid wallet address');
 		} else {
-			setStep(1);
+			const data = {
+				type: networkValue,
+				name: collectionName,
+				symbol: collectionSymbol,
+				project_uri: collectionURI,
+				website_url: collectionWebURL,
+				logo_url: collectionLogoURL,
+				banner_url: collectionBannerURL,
+				contact_email: email,
+				admin: adminAddress,
+			};
+
+			dispatch(setCollectionDetails(data));
+			toast.success('Saved');
+
+			// setStep(1);
 		}
 	};
 

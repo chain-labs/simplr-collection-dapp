@@ -66,6 +66,10 @@ const TextInput = ({
 	};
 
 	useEffect(() => {
+		console.log({ validity });
+	}, [validity]);
+
+	useEffect(() => {
 		if (!value) setValidity('clear');
 	}, [value]);
 
@@ -168,7 +172,7 @@ export const InputElement = styled(Box)(
 		props.disabled
 			? `2px solid rgba(140, 140, 161, 0.2)`
 			: props.value && !props.disableValidation
-			? props.validation === 'valid'
+			? props.validation !== 'invalid'
 				? `1px solid ${theme.colors['green-40']}`
 				: `1px solid ${props.theme.colors['red-40']};`
 			: '0.5px solid #E6E6FF'
@@ -181,7 +185,7 @@ export const InputElement = styled(Box)(
 	};
     ${
 			props.value && !props.disableValidation
-				? props.validation === 'valid'
+				? props.validation !== 'invalid'
 					? `box-shadow: 0 0 0 4px ${theme.colors['green-50']}33`
 					: `box-shadow: 0px 0px 0px 4px ${props.theme.colors['red-50']}33;`
 				: ''
