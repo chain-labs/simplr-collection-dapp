@@ -10,9 +10,13 @@ import CollectionPage from './components/CollectionPage';
 const CreateComp = () => {
 	const [step, setStep] = useState(0);
 
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [step]);
+
 	const getFormPage = (step) => {
 		if (step === 1) {
-			return <SalesPage />;
+			return <SalesPage setStep={setStep} />;
 		}
 		if (step === 0) {
 			return <CollectionPage setStep={setStep} />;
@@ -32,11 +36,18 @@ const CreateComp = () => {
 					Collection Details
 				</Text>
 				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
-				<Text as="h5" color={step === 1 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => setStep(1)}>
+				<Text
+					as="h5"
+					color={step === 1 ? 'simply-blue' : 'gray-00'}
+					cursor="pointer"
+					onClick={() => {
+						if (step > 1) setStep(1);
+					}}
+				>
 					Sales
 				</Text>
 				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
-				<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => setStep(2)}>
+				<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer">
 					Payment Details
 				</Text>
 			</Box>

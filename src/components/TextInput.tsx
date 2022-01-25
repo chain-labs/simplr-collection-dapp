@@ -66,10 +66,6 @@ const TextInput = ({
 	};
 
 	useEffect(() => {
-		console.log({ validity });
-	}, [validity]);
-
-	useEffect(() => {
 		if (!value) setValidity('clear');
 	}, [value]);
 

@@ -29,14 +29,17 @@ const CollectionPage = ({ setStep }) => {
 	const [network, setNetwork] = useState(networks[networkValue]?.name);
 
 	useEffect(() => {
+		setNetworkValue(networkData.indexOf(network));
+	}, [networkData, network]);
+
+	useEffect(() => {
 		const types = Object.keys(networks);
 		const data = [];
 		types.map((type) => {
 			data[type] = networks[type].name;
 		});
 		setNetworkData(data);
-		setNetworkValue(networkData.indexOf(network));
-	}, [networks, network]);
+	}, []);
 
 	const addCollectionDetails = (e) => {
 		e.preventDefault();
@@ -60,8 +63,7 @@ const CollectionPage = ({ setStep }) => {
 
 			dispatch(setCollectionDetails(data));
 			toast.success('Saved');
-
-			// setStep(1);
+			setStep(1);
 		}
 	};
 
