@@ -9,20 +9,41 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import Toggle from 'src/components/Toggle';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { addWhitelist, presaleableToggleSelector, togglePresale } from 'src/redux/sales';
+import { addWhitelist, presaleableToggleSelector, presaleWhitelistSelector, togglePresale } from 'src/redux/sales';
 import { getUnit } from '.';
 import WhitelistModal from './WhitelistModal';
 
-const Presale = ({ unit }: { unit: number }) => {
+const Presale = ({
+	unit,
+	isChecked,
+	setIsChecked,
+	presaleReservedTokens,
+	setPresaleReservedTokens,
+	presalePrice,
+	setPresalePrice,
+	presaleMaxHolding,
+	setPresaleMaxHolding,
+	presaleStartTime,
+	setPresaleStartTime,
+	reserveTokens,
+}: {
+	unit: number;
+	isChecked?: boolean;
+	setIsChecked: (boolean) => void;
+	presaleReservedTokens?: number;
+	setPresaleReservedTokens: (number) => void;
+	presalePrice?: number;
+	setPresalePrice: (number) => void;
+	presaleMaxHolding?: number;
+	setPresaleMaxHolding: (number) => void;
+	presaleStartTime?: number;
+	setPresaleStartTime: (number) => void;
+	reserveTokens?: number;
+}) => {
 	const checked = useAppSelector(presaleableToggleSelector);
-	const [isChecked, setIsChecked] = useState(checked);
+	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
 	const [showWhitelistModal, setShowWhitelistModal] = useState(false);
-
-	const [presaleReservedTokens, setPresaleReservedTokens] = useState<number>();
-	const [presalePrice, setPresalePrice] = useState<number>();
-	const [presaleMaxHolding, setPresaleMaxHolding] = useState<number>();
 	const [whitelist, setWhitelist] = useState<string>();
-	const [presaleStartTime, setPresaleStartTime] = useState<number>();
 
 	const dispatch = useAppDispatch();
 
@@ -32,6 +53,17 @@ const Presale = ({ unit }: { unit: number }) => {
 
 	const handleAdd = () => {
 		const valid = ethers.utils.isAddress(whitelist);
+		let isWhitelistexist;
+		for (let i = 0; i < presaleWhitelist.length; i++) {
+			if (presaleWhitelist[i] === whitelist) {
+				isWhitelistexist = true;
+				break;
+			}
+		}
+		if (isWhitelistexist) {
+			toast.error('Address already whitelisted');
+			return;
+		}
 		if (!valid) {
 			toast.error(`Invalid address`);
 			setWhitelist('');
@@ -61,6 +93,7 @@ const Presale = ({ unit }: { unit: number }) => {
 						<LabelledTextInput
 							type="number"
 							min="1"
+							max={reserveTokens?.toString()}
 							label="Maximum NFTs allowed to sell during pre-sale"
 							required
 							placeholder="eg. 500"
@@ -83,6 +116,7 @@ const Presale = ({ unit }: { unit: number }) => {
 						<LabelledTextInput
 							type="number"
 							min="1"
+							max={presaleReservedTokens?.toString()}
 							label="Maximum NFTs allowed to buy per user during pre-sale"
 							required
 							placeholder="eg. 2"

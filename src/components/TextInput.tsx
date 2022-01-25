@@ -85,6 +85,9 @@ const TextInput = ({
 				pattern={regexp}
 				value={value}
 				onChange={handleChange}
+				onWheel={(e) => {
+					if (type === 'number') e.target.blur();
+				}}
 				validation={validity}
 				onBlur={handleValidity}
 				color={disabled ? 'disable-black' : 'simply-black'}

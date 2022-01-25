@@ -8,13 +8,22 @@ import Toggle from 'src/components/Toggle';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { revealableToggleSelector, toggleRevealable } from 'src/redux/sales';
 
-const Revealable = () => {
+const Revealable = ({
+	isChecked,
+	setIsChecked,
+	loadingUrl,
+	setLoadingUrl,
+	revealableTime,
+	setRevealableTime,
+}: {
+	isChecked?: boolean;
+	setIsChecked: (boolean) => void;
+	loadingUrl?: string;
+	setLoadingUrl: (string) => void;
+	revealableTime?: number;
+	setRevealableTime: (number) => void;
+}) => {
 	const checked = useAppSelector(revealableToggleSelector);
-	const [isChecked, setIsChecked] = useState(checked);
-
-	const [loadingUrl, setLoadingUrl] = useState<string>();
-	const [revealableTime, setRevealableTime] = useState<number>();
-
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -49,6 +58,7 @@ const Revealable = () => {
 							value={loadingUrl}
 							setValue={setLoadingUrl}
 							width="100%"
+							required
 						/>
 					</Box>
 				}
