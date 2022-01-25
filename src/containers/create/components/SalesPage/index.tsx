@@ -6,8 +6,16 @@ import DateTime from 'src/components/DateTime';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import { collectionSelector } from 'src/redux/collection';
-import { useAppSelector } from 'src/redux/hooks';
-import { presaleableToggleSelector, revealableToggleSelector } from 'src/redux/sales';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import {
+	affiliableToggleSelector,
+	presaleableToggleSelector,
+	presaleWhitelistSelector,
+	revealableToggleSelector,
+	saleSelector,
+	setSaleDetails,
+} from 'src/redux/sales';
+import { DateType } from 'src/redux/sales/types';
 import Affiliable from './Affiliable';
 import Presale from './Presale';
 import Revealable from './Revealable';
@@ -21,45 +29,100 @@ export const getUnit = (network) => {
 	return 'MATIC';
 };
 
-const SalesPage = () => {
+export const getTimestamp = (timeObject: DateType) => {
+	const { date, time, timezone } = timeObject;
+	const label = timezone?.split(' ')[0];
+	const timestamp =
+		Date.parse(
+			`${date} ${time} ${label?.substring(1, label.length - 1) ?? `GMT${new Date().toString().split('GMT')[1]}`}`
+		) / 1000;
+	return timestamp;
+};
+
+const SalesPage = ({ setStep }) => {
 	const collection = useAppSelector(collectionSelector);
-	const presalable = useAppSelector(presaleableToggleSelector);
+	const sales = useAppSelector(saleSelector);
+	const presaleable = useAppSelector(presaleableToggleSelector);
 	const revealable = useAppSelector(revealableToggleSelector);
+	const affiliable = useAppSelector(affiliableToggleSelector);
+	const whitelist = useAppSelector(presaleWhitelistSelector);
 
+	const dispatch = useAppDispatch();
+
+	const [isAffiliable, setIsAffiliable] = useState(affiliable);
 	const { type } = collection;
-	const [maxTokens, setMaxTokens] = useState<number>();
-	const [maxPurchase, setMaxPurchase] = useState<number>();
-	const [maxHolding, setMaxHolding] = useState<number>();
-	const [price, setPrice] = useState<number>();
-	const [reserveTokens, setReserveTokens] = useState<number>();
-	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<number>();
-	const [isPresaleable, setIsPresaleable] = useState(presalable);
+	const [maxTokens, setMaxTokens] = useState<number>(sales.maximumTokens);
+	const [maxPurchase, setMaxPurchase] = useState<number>(sales.maxPurchase);
+	const [maxHolding, setMaxHolding] = useState<number>(sales.maxHolding);
+	const [price, setPrice] = useState<number>(sales.price);
+	const [reserveTokens, setReserveTokens] = useState<number>(sales.reserveTokens);
+	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<DateType>(sales.publicSaleStartTime);
+	const [isPresaleable, setIsPresaleable] = useState(presaleable);
 
-	const [presaleReservedTokens, setPresaleReservedTokens] = useState<number>();
-	const [presalePrice, setPresalePrice] = useState<number>();
-	const [presaleMaxHolding, setPresaleMaxHolding] = useState<number>();
-	const [presaleStartTime, setPresaleStartTime] = useState<number>();
+	const [presaleReservedTokens, setPresaleReservedTokens] = useState<number>(sales.presaleable.presaleReservedTokens);
+	const [presalePrice, setPresalePrice] = useState<number>(sales.presaleable.presalePrice);
+	const [presaleMaxHolding, setPresaleMaxHolding] = useState<number>(sales.presaleable.presaleMaxHolding);
+	const [presaleStartTime, setPresaleStartTime] = useState<DateType>(sales.presaleable.presaleStartTime);
 
 	const [isRevealable, setIsRevealable] = useState(revealable);
-	const [loadingUrl, setLoadingUrl] = useState<string>();
-	const [revealableTime, setRevealableTime] = useState<number>();
+	const [loadingUrl, setLoadingUrl] = useState<string>(sales.revealable.loadingImageUrl);
+	const [revealableTime, setRevealableTime] = useState<DateType>(sales.revealable.timestamp);
 
 	const addSalesDetails = (e) => {
 		e.preventDefault();
 		const date = Date.now() / 1000;
+		const publicSaleTime = getTimestamp(publicSaleLaunchTimestamp);
 
-		if (+publicSaleLaunchTimestamp < date) {
+		if (+publicSaleTime < date) {
 			toast.error('Invalid time');
-		} else {
-			console.log('Everything is valid');
+			return;
 		}
 		if (isPresaleable) {
-			if (publicSaleLaunchTimestamp < presaleStartTime) {
+			const presaleTime = getTimestamp(presaleStartTime);
+			if (+presaleReservedTokens > +maxTokens) {
+				toast.error('Presale reserved tokens cannot be greater than total supply.');
+				return;
+			} else if (+presaleMaxHolding > +presaleReservedTokens) {
+				toast.error('User cannot buy more than total reserved tokens');
+				return;
+			} else if (publicSaleTime < presaleTime) {
 				toast.error('Presale start time should be earlier than public sale');
-			} else {
-				console.log('Everything is valid');
+				return;
 			}
 		}
+		if (isRevealable) {
+			const revealTime = getTimestamp(revealableTime);
+			if (revealTime > publicSaleTime) {
+				toast.error('Invalid Time');
+				return;
+			}
+		}
+		const data = {
+			maximumTokens: maxTokens,
+			maxPurchase,
+			maxHolding,
+			price,
+			reserveTokens,
+			publicSaleStartTime: publicSaleLaunchTimestamp,
+			presaleable: {
+				enabled: isPresaleable,
+				presaleReservedTokens,
+				presalePrice,
+				presaleMaxHolding,
+				presaleWhitelist: whitelist,
+				presaleStartTime,
+			},
+			revealable: {
+				enabled: isRevealable,
+				timestamp: revealableTime,
+				loadingImageUrl: loadingUrl,
+			},
+			isAffiliable,
+		};
+
+		dispatch(setSaleDetails(data));
+		toast.success('Saved');
+		setStep(2);
 	};
 
 	return (
@@ -147,7 +210,7 @@ const SalesPage = () => {
 					setPresaleMaxHolding={setPresaleMaxHolding}
 					presaleStartTime={presaleStartTime}
 					setPresaleStartTime={setPresaleStartTime}
-					reserveTokens={reserveTokens}
+					maxTokens={maxTokens}
 				/>
 				<Box mt="wm" />
 				<Revealable
@@ -159,7 +222,7 @@ const SalesPage = () => {
 					setRevealableTime={setRevealableTime}
 				/>
 				<Box mt="wm" />
-				<Affiliable />
+				<Affiliable isChecked={isAffiliable} setIsChecked={setIsAffiliable} />
 				<Box mt="wm" />
 				<ButtonComp bg="primary" height="56px" width="100%" type="submit">
 					<Text as="h4" color="simply-white">

@@ -10,6 +10,7 @@ import Text from 'src/components/Text';
 import Toggle from 'src/components/Toggle';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { addWhitelist, presaleableToggleSelector, presaleWhitelistSelector, togglePresale } from 'src/redux/sales';
+import { DateType } from 'src/redux/sales/types';
 import { getUnit } from '.';
 import WhitelistModal from './WhitelistModal';
 
@@ -25,7 +26,7 @@ const Presale = ({
 	setPresaleMaxHolding,
 	presaleStartTime,
 	setPresaleStartTime,
-	reserveTokens,
+	maxTokens,
 }: {
 	unit: number;
 	isChecked?: boolean;
@@ -36,9 +37,9 @@ const Presale = ({
 	setPresalePrice: (number) => void;
 	presaleMaxHolding?: number;
 	setPresaleMaxHolding: (number) => void;
-	presaleStartTime?: number;
+	presaleStartTime?: DateType;
 	setPresaleStartTime: (number) => void;
-	reserveTokens?: number;
+	maxTokens?: number;
 }) => {
 	const checked = useAppSelector(presaleableToggleSelector);
 	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
@@ -93,7 +94,7 @@ const Presale = ({
 						<LabelledTextInput
 							type="number"
 							min="1"
-							max={reserveTokens?.toString()}
+							max={maxTokens?.toString()}
 							label="Maximum NFTs allowed to sell during pre-sale"
 							required
 							placeholder="eg. 500"

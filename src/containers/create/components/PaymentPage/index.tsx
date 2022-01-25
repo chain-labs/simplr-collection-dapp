@@ -9,19 +9,33 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { addBeneficiary, beneficiariesSelector, paymentSelector, removeBeneficiary } from 'src/redux/payment';
+import {
+	addBeneficiary,
+	beneficiariesSelector,
+	paymentSelector,
+	removeBeneficiary,
+	setPaymentDetails,
+} from 'src/redux/payment';
 import theme from 'src/styleguide/theme';
+
+const getMaxShares = (shares) => {
+	let total = 85;
+	shares.forEach((share) => {
+		total -= share;
+	});
+	return total;
+};
 
 const PaymentPage = () => {
 	const payments = useAppSelector(paymentSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 
-	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments.royalties.account);
-	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments.royalties.value);
+	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
+	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
 	const [beneficiary, setBeneficiary] = useState<string>();
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState<number>();
 
-	const [maxShare, setMaxShare] = useState<number>(85);
+	const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares));
 
 	const dispatch = useAppDispatch();
 
@@ -30,7 +44,7 @@ const PaymentPage = () => {
 
 		const valid = ethers.utils.isAddress(beneficiary);
 
-		const payeeexist = payments.paymentSplitter.payees.find((payee) => payee === beneficiary);
+		const payeeexist = payments?.paymentSplitter?.payees?.find((payee) => payee === beneficiary);
 		if (payeeexist) {
 			toast.error('Address already whitelisted');
 			return;
@@ -62,11 +76,22 @@ const PaymentPage = () => {
 			const valid = ethers.utils.isAddress(royaltyAddress);
 			if (!valid || royaltyPercentage > 10) {
 				toast.error('Invalid details');
+				return;
 			}
 		}
 		if (!(maxShare === 0)) {
 			toast.error(`${maxShare}% shares still remaining. Add more beneficiaries or re-allocate shares.`);
+			return;
 		}
+
+		const data = {
+			royalties: {
+				account: royaltyAddress,
+				value: royaltyPercentage,
+			},
+		};
+		dispatch(setPaymentDetails(data));
+		toast.success('Saved');
 	};
 
 	return (
@@ -109,7 +134,7 @@ const PaymentPage = () => {
 						<Box ml="mxs" />
 						<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation fontSize="1.4rem" />
 					</Box>
-					{beneficiaries.payees.map((payee, index) => (
+					{beneficiaries?.payees?.map((payee, index) => (
 						<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
 							<TextInput
 								value={null}
@@ -122,7 +147,7 @@ const PaymentPage = () => {
 							<Box ml="mxs" />
 							<TextInput
 								value={null}
-								placeholder={`${beneficiaries.shares[index]}%`}
+								placeholder={`${beneficiaries?.shares[index]}%`}
 								max={`${maxShare}`}
 								type="number"
 								width="21.4rem"
