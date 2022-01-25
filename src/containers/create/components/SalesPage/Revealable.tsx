@@ -7,6 +7,7 @@ import Text from 'src/components/Text';
 import Toggle from 'src/components/Toggle';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { revealableToggleSelector, toggleRevealable } from 'src/redux/sales';
+import { DateType } from 'src/redux/sales/types';
 
 const Revealable = ({
 	isChecked,
@@ -20,7 +21,7 @@ const Revealable = ({
 	setIsChecked: (boolean) => void;
 	loadingUrl?: string;
 	setLoadingUrl: (string) => void;
-	revealableTime?: number;
+	revealableTime?: DateType;
 	setRevealableTime: (number) => void;
 }) => {
 	const checked = useAppSelector(revealableToggleSelector);

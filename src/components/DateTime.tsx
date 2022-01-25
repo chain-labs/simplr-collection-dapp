@@ -5,21 +5,20 @@ import Dropdown from './Dropdown';
 import { timezones } from 'src/utils/timezones';
 
 const DateTime = ({ value, setValue }) => {
-	const [date, setDate] = useState('');
-	const [time, setTime] = useState('');
-	const [timezone, setTimezone] = useState('(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London');
+	const [date, setDate] = useState(value?.date ?? '');
+	const [time, setTime] = useState(value?.time ?? '');
+	const [timezone, setTimezone] = useState(
+		value?.timezone ?? '(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London'
+	);
 
 	useEffect(() => {
 		setTimezone(timezone);
-
-		const label = timezone?.split(' ')[0];
-
-		setValue(
-			Date.parse(
-				`${date} ${time} ${label?.substring(1, label.length - 1) ?? `GMT${new Date().toString().split('GMT')[1]}`}`
-			) / 1000
-		);
-	}, [date, time, value, timezone, setValue]);
+		setValue({
+			date,
+			time,
+			timezone,
+		});
+	}, [date, time, timezone, setValue]);
 
 	return (
 		<Box overflowX="visible" overflowY="visible">

@@ -15,6 +15,7 @@ import {
 	saleSelector,
 	setSaleDetails,
 } from 'src/redux/sales';
+import { DateType } from 'src/redux/sales/types';
 import Affiliable from './Affiliable';
 import Presale from './Presale';
 import Revealable from './Revealable';
@@ -26,6 +27,16 @@ export const getUnit = (network) => {
 			return 'ETH';
 	}
 	return 'MATIC';
+};
+
+export const getTimestamp = (timeObject: DateType) => {
+	const { date, time, timezone } = timeObject;
+	const label = timezone?.split(' ')[0];
+	const timestamp =
+		Date.parse(
+			`${date} ${time} ${label?.substring(1, label.length - 1) ?? `GMT${new Date().toString().split('GMT')[1]}`}`
+		) / 1000;
+	return timestamp;
 };
 
 const SalesPage = ({ setStep }) => {
@@ -45,72 +56,73 @@ const SalesPage = ({ setStep }) => {
 	const [maxHolding, setMaxHolding] = useState<number>(sales.maxHolding);
 	const [price, setPrice] = useState<number>(sales.price);
 	const [reserveTokens, setReserveTokens] = useState<number>(sales.reserveTokens);
-	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<number>(sales.publicSaleStartTime);
+	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<DateType>(sales.publicSaleStartTime);
 	const [isPresaleable, setIsPresaleable] = useState(presaleable);
 
 	const [presaleReservedTokens, setPresaleReservedTokens] = useState<number>(sales.presaleable.presaleReservedTokens);
 	const [presalePrice, setPresalePrice] = useState<number>(sales.presaleable.presalePrice);
 	const [presaleMaxHolding, setPresaleMaxHolding] = useState<number>(sales.presaleable.presaleMaxHolding);
-	const [presaleStartTime, setPresaleStartTime] = useState<number>(sales.presaleable.presaleStartTime);
+	const [presaleStartTime, setPresaleStartTime] = useState<DateType>(sales.presaleable.presaleStartTime);
 
 	const [isRevealable, setIsRevealable] = useState(revealable);
 	const [loadingUrl, setLoadingUrl] = useState<string>(sales.revealable.loadingImageUrl);
-	const [revealableTime, setRevealableTime] = useState<number>(sales.revealable.timestamp);
+	const [revealableTime, setRevealableTime] = useState<DateType>(sales.revealable.timestamp);
 
 	const addSalesDetails = (e) => {
 		e.preventDefault();
 		const date = Date.now() / 1000;
+		const publicSaleTime = getTimestamp(publicSaleLaunchTimestamp);
 
-		if (+publicSaleLaunchTimestamp < date) {
+		if (+publicSaleTime < date) {
 			toast.error('Invalid time');
-		} else {
-			if (isPresaleable) {
-				if (+presaleReservedTokens > +maxTokens || +presaleReservedTokens > +reserveTokens) {
-					toast.error('Presale reserved tokens cannot be greater than total supply or reserve token supply');
-				} else if (+presaleMaxHolding > +presaleReservedTokens) {
-					toast.error('User cannot buy more than total reserved tokens');
-				} else if (publicSaleLaunchTimestamp < presaleStartTime) {
-					toast.error('Presale start time should be earlier than public sale');
-				}
+			return;
+		}
+		if (isPresaleable) {
+			const presaleTime = getTimestamp(presaleStartTime);
+			if (+presaleReservedTokens > +maxTokens) {
+				toast.error('Presale reserved tokens cannot be greater than total supply.');
+				return;
+			} else if (+presaleMaxHolding > +presaleReservedTokens) {
+				toast.error('User cannot buy more than total reserved tokens');
+				return;
+			} else if (publicSaleTime < presaleTime) {
+				toast.error('Presale start time should be earlier than public sale');
+				return;
 			}
 		}
 		if (isRevealable) {
-			if (revealableTime > publicSaleLaunchTimestamp) {
+			const revealTime = getTimestamp(revealableTime);
+			if (revealTime > publicSaleTime) {
 				toast.error('Invalid Time');
-			} else {
-				console.log('good');
-				} else {
-					const data = {
-						maximumTokens: maxTokens,
-						maxPurchase,
-						maxHolding,
-						price,
-						reserveTokens,
-						publicSaleStartTime: publicSaleLaunchTimestamp,
-						presaleable: {
-							enabled: isPresaleable,
-							presaleReservedTokens,
-							presalePrice,
-							presaleMaxHolding,
-							presaleWhitelist: whitelist,
-							presaleStartTime,
-						},
-						revealable: {
-							enabled: isRevealable,
-							timestamp: revealableTime,
-							loadingImageUrl: loadingUrl,
-						},
-						isAffiliable,
-					};
-
-					dispatch(setSaleDetails(data));
-					toast.success('Saved');
-					setStep(2);
-				}
+				return;
 			}
-		} else {
-			console.log('Everything is valid');
 		}
+		const data = {
+			maximumTokens: maxTokens,
+			maxPurchase,
+			maxHolding,
+			price,
+			reserveTokens,
+			publicSaleStartTime: publicSaleLaunchTimestamp,
+			presaleable: {
+				enabled: isPresaleable,
+				presaleReservedTokens,
+				presalePrice,
+				presaleMaxHolding,
+				presaleWhitelist: whitelist,
+				presaleStartTime,
+			},
+			revealable: {
+				enabled: isRevealable,
+				timestamp: revealableTime,
+				loadingImageUrl: loadingUrl,
+			},
+			isAffiliable,
+		};
+
+		dispatch(setSaleDetails(data));
+		toast.success('Saved');
+		setStep(2);
 	};
 
 	return (
@@ -198,7 +210,7 @@ const SalesPage = ({ setStep }) => {
 					setPresaleMaxHolding={setPresaleMaxHolding}
 					presaleStartTime={presaleStartTime}
 					setPresaleStartTime={setPresaleStartTime}
-					reserveTokens={reserveTokens}
+					maxTokens={maxTokens}
 				/>
 				<Box mt="wm" />
 				<Revealable

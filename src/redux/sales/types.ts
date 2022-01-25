@@ -4,19 +4,25 @@ export interface SaleState {
 	maxHolding?: number;
 	price?: number;
 	reserveTokens?: number;
-	publicSaleStartTime?: number;
+	publicSaleStartTime?: DateType;
 	presaleable?: {
 		enabled?: boolean;
 		presaleReservedTokens?: number;
 		presalePrice?: number;
 		presaleMaxHolding?: number;
 		presaleWhitelist?: string[];
-		presaleStartTime?: number;
+		presaleStartTime?: DateType;
 	};
 	revealable?: {
 		enabled?: boolean;
-		timestamp?: number;
+		timestamp?: DateType;
 		loadingImageUrl?: string;
 	};
 	isAffiliable?: boolean;
+}
+
+export interface DateType {
+	date?: string;
+	time?: string;
+	timezone?: string;
 }
