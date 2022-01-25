@@ -108,7 +108,7 @@ const SalesPage = () => {
 				<LabelledTextInput
 					type="number"
 					min="1"
-					max={maxPurchase?.toString()}
+					max={maxTokens?.toString()}
 					label="Maximum NFTs allowed to buy per wallet"
 					helperText="Maximum number of NFTs a user can hold in their wallet"
 					required
