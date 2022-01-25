@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { ethers } from 'ethers';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import DateTime from 'src/components/DateTime';
@@ -7,6 +9,10 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import Toggle from 'src/components/Toggle';
+import useContract from 'src/ethereum/useContract';
+import useEthers from 'src/ethereum/useEthers';
+import useSigner from 'src/ethereum/useSigner';
+import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
 import { beneficiariesSelector, paymentSelector } from 'src/redux/payment';
 import {
@@ -19,8 +25,12 @@ import {
 import { DateType } from 'src/redux/sales/types';
 import theme from 'src/styleguide/theme';
 import WhitelistModal from '../../SalesPage/WhitelistModal';
+import { createCollection, uploadToIPFS } from '../../utils';
 
 const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
+	const [provider] = useEthers();
+	const [signer] = useSigner(provider);
+	const collection = useAppSelector(collectionSelector);
 	const sales = useAppSelector(saleSelector);
 	const presaleable = useAppSelector(presaleableToggleSelector);
 	const revealable = useAppSelector(revealableToggleSelector);
@@ -38,6 +48,56 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
 
 	// const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares));
+	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
+	const [metadata, setMetadata] = useState<string>();
+	const [transactionResult, setTransactionResult] = useState({});
+	const [ready, setReady] = useState(false);
+	const [simplrAddress, setSimplrAddress] = useState<string>();
+	const [simplrShares, setSimplrShares] = useState<number>(10);
+
+	useEffect(() => {
+		const getAddress = async () => {
+			try {
+				const address = await Simplr?.callStatic.simplr();
+				const share = await Simplr?.callStatic.simplrShares();
+
+				const sharePercentage = ethers.utils.formatUnits(share?.toString());
+				const shareValue = parseFloat(sharePercentage) * 100;
+
+				setSimplrAddress(address);
+				setSimplrShares(shareValue);
+			} catch (err) {
+				console.log({ err });
+			}
+		};
+		getAddress();
+	}, [Simplr]);
+
+	const sendData = () => {
+		uploadToIPFS(collection, sales, payments, simplrAddress).then((hash) => {
+			setMetadata(hash);
+			toast.success('Metadata Pinned to IPFS');
+		});
+		setReady(true);
+	};
+
+	useEffect(() => {
+		if (metadata && ready) {
+			const transaction = async () => {
+				const res = await createCollection(Simplr, metadata, collection, sales, payments, signer);
+				setTransactionResult(res);
+			};
+			transaction();
+		}
+	}, [metadata, ready]);
+
+	useEffect(() => {
+		if (transactionResult) {
+			// const event = transactionResult?.event;
+			// const transaction = transactionResult?.transaction;
+			console.log({ transactionResult });
+		}
+	}, [transactionResult]);
 
 	return (
 		<Box overflow="visible">
@@ -79,7 +139,7 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 						/>
 						<Box mt="mxxxl" />
 						<LabelledTextInput label="Pre-Sale Launch" required>
-							<DateTime value={presaleStartTime} setValue={setPresaleStartTime} disabled disableValidation />
+							<DateTime value={presaleStartTime} setValue={setPresaleStartTime} disabled />
 						</LabelledTextInput>
 						<Box mt="mxxxl" />
 						<Text as="c1" color="simply-blue" textDecoration="underline" cursor="pointer">
@@ -183,7 +243,7 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 				</Text>
 			</Box>
 			<Box mt="mxxxl" />
-			<ButtonComp bg="primary" width="100%" height="56px" type="submit">
+			<ButtonComp bg="primary" width="100%" height="56px" type="submit" onClick={sendData}>
 				Submit
 			</ButtonComp>
 		</Box>

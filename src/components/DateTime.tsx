@@ -51,7 +51,13 @@ const DateTime = ({ value, setValue, disabled, disableValidation }: props) => {
 					{...{ disabled, disableValidation }}
 				/>
 			</Box>
-			<Dropdown data={timezones} value={timezone} setValue={setTimezone} width="64rem" disabled />
+			<Dropdown
+				data={disabled ? [] : timezones}
+				value={timezone}
+				setValue={setTimezone}
+				width="64rem"
+				{...{ disabled }}
+			/>
 		</Box>
 	);
 };

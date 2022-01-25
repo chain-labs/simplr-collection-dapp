@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { XCircle } from 'phosphor-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -8,10 +8,6 @@ import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
-import useContract from 'src/ethereum/useContract';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
-import { collectionSelector } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import {
 	addBeneficiary,
@@ -20,10 +16,7 @@ import {
 	removeBeneficiary,
 	setPaymentDetails,
 } from 'src/redux/payment';
-import { saleSelector } from 'src/redux/sales';
 import theme from 'src/styleguide/theme';
-import { createCollection, uploadToIPFS } from '../utils';
-import WhitelistModal from '../SalesPage/WhitelistModal';
 import SummaryPage from '../SummaryPage';
 
 const getMaxShares = (shares, simplrShares) => {
@@ -35,49 +28,20 @@ const getMaxShares = (shares, simplrShares) => {
 };
 
 const PaymentPage = ({ step, setStep }) => {
-	const collection = useAppSelector(collectionSelector);
 	const payments = useAppSelector(paymentSelector);
-	const sales = useAppSelector(saleSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
-
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
-
 	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
 	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
 	const [beneficiary, setBeneficiary] = useState<string>();
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState<number>();
 	const [showSummaryPage, setShowSummaryPage] = useState<boolean>();
 
-	const [simplrAddress, setSimplrAddress] = useState<string>();
 	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares, simplrShares));
 
 	const dispatch = useAppDispatch();
 
 	// This section is for the creation of the collection
-	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
-	const [metadata, setMetadata] = useState<string>();
-	const [transactionResult, setTransactionResult] = useState({});
-	const [ready, setReady] = useState(false);
-
-	useEffect(() => {
-		const getAddress = async () => {
-			try {
-				const address = await Simplr?.callStatic.simplr();
-				const share = await Simplr?.callStatic.simplrShares();
-
-				const sharePercentage = ethers.utils.formatUnits(share?.toString());
-				const shareValue = parseFloat(sharePercentage) * 100;
-
-				setSimplrAddress(address);
-				setSimplrShares(shareValue);
-			} catch (err) {
-				console.log({ err });
-			}
-		};
-		getAddress();
-	}, [Simplr]);
 
 	const addPaymentDetails = (e) => {
 		e.preventDefault();
@@ -101,32 +65,8 @@ const PaymentPage = ({ step, setStep }) => {
 		};
 		dispatch(setPaymentDetails(data));
 		toast.success('Saved');
-		uploadToIPFS(collection, sales, payments, simplrAddress).then((hash) => {
-			setMetadata(hash);
-			toast.success('Metadata Pinned to IPFS');
-		});
-		setReady(true);
+		setShowSummaryPage(true);
 	};
-
-	useEffect(() => {
-		if (metadata && ready) {
-			const transaction = async () => {
-				const res = await createCollection(Simplr, metadata, collection, sales, payments, signer);
-				setTransactionResult(res);
-			};
-			transaction();
-		}
-	}, [metadata, ready]);
-
-	useEffect(() => {
-		if (transactionResult) {
-			// const event = transactionResult?.event;
-			// const transaction = transactionResult?.transaction;
-			console.log({ transactionResult });
-		}
-	}, [transactionResult]);
-
-	// This is the end of the section for the creation of the collection
 
 	const handleAdd = (e) => {
 		e.preventDefault();

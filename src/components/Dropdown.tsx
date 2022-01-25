@@ -26,6 +26,7 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }
 				visible={visible}
 				value={value}
 				width={width ?? '32rem'}
+				{...{ disabled }}
 			/>
 			<Box
 				borderRadius="8px"
