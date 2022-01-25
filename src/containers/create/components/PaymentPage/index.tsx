@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { XCircle } from 'phosphor-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -8,6 +8,10 @@ import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
+import useContract from 'src/ethereum/useContract';
+import useEthers from 'src/ethereum/useEthers';
+import useSigner from 'src/ethereum/useSigner';
+import { collectionSelector } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import {
 	addBeneficiary,
@@ -16,10 +20,12 @@ import {
 	removeBeneficiary,
 	setPaymentDetails,
 } from 'src/redux/payment';
+import { saleSelector } from 'src/redux/sales';
 import theme from 'src/styleguide/theme';
+import { createCollection, uploadToIPFS } from '../utils';
 
-const getMaxShares = (shares) => {
-	let total = 85;
+const getMaxShares = (shares, simplrShares) => {
+	let total = 100 - simplrShares;
 	shares.forEach((share) => {
 		total -= share;
 	});
@@ -27,17 +33,97 @@ const getMaxShares = (shares) => {
 };
 
 const PaymentPage = () => {
+	const collection = useAppSelector(collectionSelector);
 	const payments = useAppSelector(paymentSelector);
+	const sales = useAppSelector(saleSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
+
+	const [provider] = useEthers();
+	const [signer] = useSigner(provider);
 
 	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
 	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
 	const [beneficiary, setBeneficiary] = useState<string>();
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState<number>();
 
-	const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares));
+	const [simplrAddress, setSimplrAddress] = useState<string>();
+	const [simplrShares, setSimplrShares] = useState<number>(10);
+	const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares, simplrShares));
 
 	const dispatch = useAppDispatch();
+
+	// This section is for the creation of the collection
+	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
+	const [metadata, setMetadata] = useState<string>();
+	const [transactionResult, setTransactionResult] = useState({});
+	const [ready, setReady] = useState(false);
+
+	useEffect(() => {
+		const getAddress = async () => {
+			try {
+				const address = await Simplr?.callStatic.simplr();
+				const share = await Simplr?.callStatic.simplrShares();
+
+				const sharePercentage = ethers.utils.formatUnits(share?.toString());
+				const shareValue = parseFloat(sharePercentage) * 100;
+
+				setSimplrAddress(address);
+				setSimplrShares(shareValue);
+			} catch (err) {
+				console.log({ err });
+			}
+		};
+		getAddress();
+	}, [Simplr]);
+
+	const addPaymentDetails = (e) => {
+		e.preventDefault();
+		if (royaltyAddress) {
+			const valid = ethers.utils.isAddress(royaltyAddress);
+			if (!valid || royaltyPercentage > 10) {
+				toast.error('Invalid details');
+				return;
+			}
+		}
+		if (!(maxShare === 0)) {
+			toast.error(`${maxShare}% shares still remaining. Add more beneficiaries or re-allocate shares.`);
+			return;
+		}
+
+		const data = {
+			royalties: {
+				account: royaltyAddress,
+				value: royaltyPercentage,
+			},
+		};
+		dispatch(setPaymentDetails(data));
+		toast.success('Saved');
+		uploadToIPFS(collection, sales, payments, simplrAddress).then((hash) => {
+			setMetadata(hash);
+			toast.success('Metadata Pinned to IPFS');
+		});
+		setReady(true);
+	};
+
+	useEffect(() => {
+		if (metadata && ready) {
+			const transaction = async () => {
+				const res = await createCollection(Simplr, metadata, collection, sales, payments, signer);
+				setTransactionResult(res);
+			};
+			transaction();
+		}
+	}, [metadata, ready]);
+
+	useEffect(() => {
+		if (transactionResult) {
+			// const event = transactionResult?.event;
+			// const transaction = transactionResult?.transaction;
+			console.log({ transactionResult });
+		}
+	}, [transactionResult]);
+
+	// This is the end of the section for the creation of the collection
 
 	const handleAdd = (e) => {
 		e.preventDefault();
@@ -68,30 +154,6 @@ const PaymentPage = () => {
 		dispatch(removeBeneficiary(payee));
 		setMaxShare(maxShare + parseInt(share));
 		toast.success('Beneficiary removed');
-	};
-
-	const addPaymentDetails = (e) => {
-		e.preventDefault();
-		if (royaltyAddress) {
-			const valid = ethers.utils.isAddress(royaltyAddress);
-			if (!valid || royaltyPercentage > 10) {
-				toast.error('Invalid details');
-				return;
-			}
-		}
-		if (!(maxShare === 0)) {
-			toast.error(`${maxShare}% shares still remaining. Add more beneficiaries or re-allocate shares.`);
-			return;
-		}
-
-		const data = {
-			royalties: {
-				account: royaltyAddress,
-				value: royaltyPercentage,
-			},
-		};
-		dispatch(setPaymentDetails(data));
-		toast.success('Saved');
 	};
 
 	return (
@@ -132,7 +194,14 @@ const PaymentPage = () => {
 					<Box row overflow="visible" mb="ms">
 						<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
 						<Box ml="mxs" />
-						<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation fontSize="1.4rem" />
+						<TextInput
+							value={`${simplrShares}%`}
+							type="text"
+							width="21.4rem"
+							disabled
+							disableValidation
+							fontSize="1.4rem"
+						/>
 					</Box>
 					{beneficiaries?.payees?.map((payee, index) => (
 						<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
@@ -206,7 +275,7 @@ const PaymentPage = () => {
 						Total Shares: 100%
 					</Text>
 					<Text as="b1" color="simply-gray" mr="mm">
-						Simplr: 15%
+						Simplr: {simplrShares}%
 					</Text>
 					<Text as="b1" color="simply-gray">
 						{`Remaining: ${maxShare}%`}
