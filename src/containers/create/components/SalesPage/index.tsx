@@ -47,24 +47,14 @@ const SalesPage = () => {
 	const addSalesDetails = (e) => {
 		e.preventDefault();
 		const date = Date.now() / 1000;
-		if (+maxPurchase > +maxTokens) {
-			toast.error('maximum buy cannot be greater than total supply');
-		} else if (+maxHolding > +maxPurchase) {
-			toast.error('maximum holding cannot be greater than maximum purchase allowed');
-		} else if (+reserveTokens > +maxTokens) {
-			toast.error('Number of reserved tokens cannot be greater than total supply');
-		} else if (+publicSaleLaunchTimestamp < date) {
+
+		if (+publicSaleLaunchTimestamp < date) {
 			toast.error('Invalid time');
-			console.log(date, +publicSaleLaunchTimestamp);
 		} else {
 			console.log('Everything is valid');
 		}
 		if (isPresaleable) {
-			if (+presaleReservedTokens > +maxTokens || +presaleReservedTokens > +reserveTokens) {
-				toast.error('Presale reserved tokens cannot be greater than total supply or reserve token supply');
-			} else if (+presaleMaxHolding > +presaleReservedTokens) {
-				toast.error('User cannot buy more than total reserved tokens');
-			} else if (publicSaleLaunchTimestamp < presaleStartTime) {
+			if (publicSaleLaunchTimestamp < presaleStartTime) {
 				toast.error('Presale start time should be earlier than public sale');
 			} else {
 				console.log('Everything is valid');

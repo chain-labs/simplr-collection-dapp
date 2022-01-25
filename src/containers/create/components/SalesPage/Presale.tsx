@@ -42,14 +42,8 @@ const Presale = ({
 }) => {
 	const checked = useAppSelector(presaleableToggleSelector);
 	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
-	// const [isChecked, setIsChecked] = useState(checked);
 	const [showWhitelistModal, setShowWhitelistModal] = useState(false);
-
-	// const [presaleReservedTokens, setPresaleReservedTokens] = useState<number>();
-	// const [presalePrice, setPresalePrice] = useState<number>();
-	// const [presaleMaxHolding, setPresaleMaxHolding] = useState<number>();
 	const [whitelist, setWhitelist] = useState<string>();
-	// const [presaleStartTime, setPresaleStartTime] = useState<number>();
 
 	const dispatch = useAppDispatch();
 

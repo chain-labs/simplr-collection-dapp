@@ -24,11 +24,6 @@ const Revealable = ({
 	setRevealableTime: (number) => void;
 }) => {
 	const checked = useAppSelector(revealableToggleSelector);
-	// const [isChecked, setIsChecked] = useState(checked);
-
-	// const [loadingUrl, setLoadingUrl] = useState<string>();
-	// const [revealableTime, setRevealableTime] = useState<number>();
-
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
