@@ -4,6 +4,7 @@ import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
+import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
@@ -79,7 +80,7 @@ const PaymentPage = () => {
 						}}
 					/>
 				</Box>
-				<LabelledTextInput label="Royalties" helperText="Maximum 10%" required>
+				<LabelledTextInput label="Royalties" helperText="Maximum 10%">
 					<Box row overflow="visible">
 						<TextInput
 							value={royaltyAddress}
@@ -133,37 +134,47 @@ const PaymentPage = () => {
 							</Box>
 						</Box>
 					))}
-					<Box row overflow="visible" mb="ms">
-						<TextInput
-							value={beneficiary}
-							setValue={setBeneficiary}
-							placeholder="Wallet Address"
-							type="text"
-							width="41.7rem"
-							fontSize="1.4rem"
-						/>
-						<Box ml="mxs" />
-						<TextInput
-							value={beneficiaryPercentage}
-							setValue={setBeneficiaryPercentage}
-							max={`${maxShare}`}
-							min="1"
-							placeholder="Share%"
-							type="number"
-							width="21.4rem"
-							fontSize="1.4rem"
-						/>
-					</Box>
+					<If
+						condition={maxShare > 0}
+						then={
+							<Box row overflow="visible" mb="ms">
+								<TextInput
+									value={beneficiary}
+									setValue={setBeneficiary}
+									placeholder="Wallet Address"
+									type="text"
+									width="41.7rem"
+									fontSize="1.4rem"
+								/>
+								<Box ml="mxs" />
+								<TextInput
+									value={beneficiaryPercentage}
+									setValue={setBeneficiaryPercentage}
+									max={`${maxShare}`}
+									min="1"
+									placeholder="Share%"
+									type="number"
+									width="21.4rem"
+									fontSize="1.4rem"
+								/>
+							</Box>
+						}
+					/>
 				</LabelledTextInput>
-				<ButtonComp
-					bg="tertiary"
-					width="100%"
-					height="48px"
-					disable={!beneficiary || !beneficiaryPercentage}
-					onClick={handleAdd}
-				>
-					<Text as="h5">Add Beneficiary</Text>
-				</ButtonComp>
+				<If
+					condition={maxShare > 0}
+					then={
+						<ButtonComp
+							bg="tertiary"
+							width="100%"
+							height="48px"
+							disable={!beneficiary || !beneficiaryPercentage}
+							onClick={handleAdd}
+						>
+							<Text as="h5">Add Beneficiary</Text>
+						</ButtonComp>
+					}
+				/>
 				<Box mt="mxxl" />
 				<Box row mb="mxl">
 					<Text as="b1" color="simply-gray" mr="mm">
