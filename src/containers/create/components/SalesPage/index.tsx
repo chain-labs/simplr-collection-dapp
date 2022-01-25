@@ -46,7 +46,7 @@ const SalesPage = () => {
 
 	const addSalesDetails = (e) => {
 		e.preventDefault();
-		const date = new Date().getTime() / 1000;
+		const date = Date.now() / 1000;
 		if (+maxPurchase > +maxTokens) {
 			toast.error('maximum buy cannot be greater than total supply');
 		} else if (+maxHolding > +maxPurchase) {
@@ -96,6 +96,7 @@ const SalesPage = () => {
 				<LabelledTextInput
 					type="number"
 					min="1"
+					max={maxTokens?.toString()}
 					label="Maximum NFTs allowed to buy per sale"
 					helperText="Maximum number of NFTs a user can buy at once"
 					required
@@ -107,6 +108,7 @@ const SalesPage = () => {
 				<LabelledTextInput
 					type="number"
 					min="1"
+					max={maxPurchase?.toString()}
 					label="Maximum NFTs allowed to buy per wallet"
 					helperText="Maximum number of NFTs a user can hold in their wallet"
 					required
@@ -130,6 +132,7 @@ const SalesPage = () => {
 				<LabelledTextInput
 					type="number"
 					min="0"
+					max={maxTokens?.toString()}
 					label="Reserved NFTs"
 					helperText=" Reserved NFTs will not be included in the sale and can be transferred directly to any wallet address. Enter “0” if you do not wish to reserve any NFTs."
 					required
@@ -154,6 +157,7 @@ const SalesPage = () => {
 					setPresaleMaxHolding={setPresaleMaxHolding}
 					presaleStartTime={presaleStartTime}
 					setPresaleStartTime={setPresaleStartTime}
+					reserveTokens={reserveTokens}
 				/>
 				<Box mt="wm" />
 				<Revealable

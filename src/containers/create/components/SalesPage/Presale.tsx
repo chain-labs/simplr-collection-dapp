@@ -25,6 +25,7 @@ const Presale = ({
 	setPresaleMaxHolding,
 	presaleStartTime,
 	setPresaleStartTime,
+	reserveTokens,
 }: {
 	unit: number;
 	isChecked?: boolean;
@@ -37,6 +38,7 @@ const Presale = ({
 	setPresaleMaxHolding: (number) => void;
 	presaleStartTime?: number;
 	setPresaleStartTime: (number) => void;
+	reserveTokens?: number;
 }) => {
 	const checked = useAppSelector(presaleableToggleSelector);
 	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
@@ -97,6 +99,7 @@ const Presale = ({
 						<LabelledTextInput
 							type="number"
 							min="1"
+							max={reserveTokens?.toString()}
 							label="Maximum NFTs allowed to sell during pre-sale"
 							required
 							placeholder="eg. 500"
@@ -119,6 +122,7 @@ const Presale = ({
 						<LabelledTextInput
 							type="number"
 							min="1"
+							max={presaleReservedTokens?.toString()}
 							label="Maximum NFTs allowed to buy per user during pre-sale"
 							required
 							placeholder="eg. 2"
