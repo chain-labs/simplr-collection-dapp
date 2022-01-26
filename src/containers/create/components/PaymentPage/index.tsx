@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { XCircle } from 'phosphor-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -8,6 +8,10 @@ import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
+import useContract from 'src/ethereum/useContract';
+import useEthers from 'src/ethereum/useEthers';
+import useSigner from 'src/ethereum/useSigner';
+import { collectionSelector } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import {
 	addBeneficiary,
@@ -28,6 +32,9 @@ const getMaxShares = (shares, simplrShares) => {
 };
 
 const PaymentPage = ({ step, setStep }) => {
+	const [provider] = useEthers();
+	const [signer] = useSigner(provider);
+	const collection = useAppSelector(collectionSelector);
 	const payments = useAppSelector(paymentSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
@@ -38,10 +45,31 @@ const PaymentPage = ({ step, setStep }) => {
 
 	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares, simplrShares));
+	const [simplrAddress, setSimplrAddress] = useState<string>();
+
+	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
 
 	const dispatch = useAppDispatch();
 
 	// This section is for the creation of the collection
+
+	useEffect(() => {
+		const getAddress = async () => {
+			try {
+				const address = await Simplr?.callStatic.simplr();
+				const share = await Simplr?.callStatic.simplrShares();
+
+				const sharePercentage = ethers.utils.formatUnits(share?.toString());
+				const shareValue = parseFloat(sharePercentage) * 100;
+
+				setSimplrAddress(address);
+				setSimplrShares(shareValue);
+			} catch (err) {
+				console.log({ err });
+			}
+		};
+		getAddress();
+	}, [Simplr]);
 
 	const addPaymentDetails = (e) => {
 		e.preventDefault();
