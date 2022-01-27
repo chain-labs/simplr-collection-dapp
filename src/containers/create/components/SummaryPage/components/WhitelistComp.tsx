@@ -7,30 +7,37 @@ import TextInput from 'src/components/TextInput';
 import { useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector } from 'src/redux/sales';
 
-const WhitelistComp = ({ setVisible }) => {
+const WhitelistComp = () => {
 	const whiteList = useAppSelector(presaleWhitelistSelector);
 	const [empty, setEmpty] = useState(false); // Checks if search result is empty
 	const [searchInput, setSearchInput] = useState('');
 	return (
 		<Box
 			mx="auto"
-			bg="pink"
-			height="80vh"
-			width="67rem"
-			borderRadius="16px"
-			p="mxxxl"
-			position="relative"
-			top="50%"
-			left="50%"
-			transform="translate(-50%, -50%)"
+			bg="white"
+			height="32rem"
+			width="65rem"
 			column
+			mt="mxxxl"
+			overflowY="scroll"
+			css={`
+				::-webkit-scrollbar {
+					width: 4px;
+				}
+
+				::-webkit-scrollbar-track {
+					display: none;
+				}
+				::-webkit-scrollbar-button {
+					height: 40px;
+				}
+
+				::-webkit-scrollbar-thumb {
+					border-radius: 10px;
+					background-color: #dcdce5;
+				}
+			`}
 		>
-			<Box position="absolute" right="32px" onClick={() => setVisible(false)} cursor="pointer">
-				<X size="24px" />
-			</Box>
-			<Text as="h2" color="simply-blue" mb="ms">
-				Whitelist addresses:
-			</Text>
 			<TextInput
 				type="search"
 				placeholder="Search Wallet Address"
@@ -64,11 +71,14 @@ const WhitelistComp = ({ setVisible }) => {
 						/>
 					}
 					else={whiteList.map((address, index) => (
-						<Box row key={address.substr(-4)} mb="mxl" between>
+						<Box row key={address.substr(-4)} mb="mxl" between color="simply-gray">
 							<Box row>
 								<Text as="h4" width="4.4rem">{`${index + 1}.`}</Text>
 								<Text as="h4">{address}</Text>
 							</Box>
+							<Text as="h4" color="simply-gray" textAlign="end" cursor="not-allowed">
+								Remove
+							</Text>
 						</Box>
 					))}
 				/>

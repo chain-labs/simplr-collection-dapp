@@ -26,6 +26,7 @@ import { DateType } from 'src/redux/sales/types';
 import theme from 'src/styleguide/theme';
 import WhitelistModal from '../../SalesPage/WhitelistModal';
 import { createCollection, uploadToIPFS } from '../../utils';
+import WhitelistComp from './WhitelistComp';
 
 const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 	const [provider] = useEthers();
@@ -54,6 +55,7 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 	const [ready, setReady] = useState(false);
 	const [simplrAddress, setSimplrAddress] = useState<string>();
 	const [simplrShares, setSimplrShares] = useState<number>(10);
+	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
 
 	useEffect(() => {
 		const getAddress = async () => {
@@ -139,15 +141,22 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 						/>
 						<Box mt="mxxxl" />
 						<LabelledTextInput label="Pre-Sale Launch" required>
-							<DateTime value={presaleStartTime} setValue={setPresaleStartTime} disabled />
+							<DateTime value={presaleStartTime} setValue={setPresaleStartTime} disabled disableValidation />
 						</LabelledTextInput>
 						<Box mt="mxxxl" />
-						<Text as="c1" color="simply-blue" textDecoration="underline" cursor="pointer">
+						<Text
+							as="c1"
+							color="simply-blue"
+							textDecoration="underline"
+							cursor="pointer"
+							onClick={() => setShowWhitelist(!showWhitelist)}
+						>
 							WHITELISTED ADDRESSES
 						</Text>
 					</Box>
 				}
 			/>
+			<If condition={showWhitelist} then={<WhitelistComp />} />
 			<Box mt="mxxxl" />
 			<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 				Make Project Revealable
