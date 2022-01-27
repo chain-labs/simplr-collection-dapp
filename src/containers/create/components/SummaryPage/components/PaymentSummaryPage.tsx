@@ -151,7 +151,7 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 							cursor="pointer"
 							onClick={() => setShowWhitelist(!showWhitelist)}
 						>
-							WHITELISTED ADDRESSES
+							{showWhitelist ? 'HIDE WHITELISTED ADDRESSES' : 'WHITELISTED ADDRESSES'}
 						</Text>
 					</Box>
 				}
