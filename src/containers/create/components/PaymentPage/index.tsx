@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { XCircle } from 'phosphor-react';
+import { CaretRight, XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -32,7 +32,7 @@ const getMaxShares = (shares, simplrShares) => {
 	return total;
 };
 
-const PaymentPage = () => {
+const PaymentPage = ({ step, setStep }) => {
 	const collection = useAppSelector(collectionSelector);
 	const payments = useAppSelector(paymentSelector);
 	const sales = useAppSelector(saleSelector);
@@ -76,6 +76,22 @@ const PaymentPage = () => {
 		getAddress();
 	}, [Simplr]);
 
+	const addData = (Step) => {
+		const data = getData();
+		dispatch(setPaymentDetails(data));
+		setStep(Step);
+	};
+
+	const getData = () => {
+		const data = {
+			royalties: {
+				account: royaltyAddress,
+				value: royaltyPercentage,
+			},
+		};
+		return data;
+	};
+
 	const addPaymentDetails = (e) => {
 		e.preventDefault();
 		if (royaltyAddress) {
@@ -90,14 +106,10 @@ const PaymentPage = () => {
 			return;
 		}
 
-		const data = {
-			royalties: {
-				account: royaltyAddress,
-				value: royaltyPercentage,
-			},
-		};
+		const data = getData();
 		dispatch(setPaymentDetails(data));
 		toast.success('Saved');
+		dispatch(setPaymentDetails({ paymentDetails_validated: true }));
 		uploadToIPFS(collection, sales, payments, simplrAddress).then((hash) => {
 			setMetadata(hash);
 			toast.success('Metadata Pinned to IPFS');
@@ -157,135 +169,153 @@ const PaymentPage = () => {
 	};
 
 	return (
-		<form onSubmit={addPaymentDetails}>
-			<Box overflow="visible" mb="10rem">
-				<Box overflow="visible">
-					<Toaster
-						position="top-center"
-						toastOptions={{
-							duration: 5000,
-						}}
-					/>
-				</Box>
-				<LabelledTextInput label="Royalties" helperText="Maximum 10%">
-					<Box row overflow="visible">
-						<TextInput
-							value={royaltyAddress}
-							setValue={setRoyaltyAddress}
-							placeholder="Wallet address"
-							type="text"
-							width="41.7rem"
-							fontSize="1.4rem"
-						/>
-						<Box ml="mxs" />
-						<TextInput
-							value={royaltyPercentage}
-							setValue={setRoyaltyPercentage}
-							placeholder="eg. 5"
-							type="number"
-							width="21.4rem"
-							unit="%"
-							fontSize="1.4rem"
+		<Box>
+			<Text as="h2" center>
+				Create new collection
+			</Text>
+			<Box center mt="mxxxl" mb="ws">
+				<Text as="h5" color={step === 0 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(0)}>
+					Collection Details
+				</Text>
+				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
+				<Text as="h5" color={step === 1 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(1)}>
+					Sales
+				</Text>
+				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
+				<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(2)}>
+					Payment Details
+				</Text>
+			</Box>
+			<form onSubmit={addPaymentDetails}>
+				<Box overflow="visible" mb="10rem">
+					<Box overflow="visible">
+						<Toaster
+							position="top-center"
+							toastOptions={{
+								duration: 5000,
+							}}
 						/>
 					</Box>
-				</LabelledTextInput>
-				<Box mt="ws" />
-				<LabelledTextInput label="Beneficiaries" required>
-					<Box row overflow="visible" mb="ms">
-						<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
-						<Box ml="mxs" />
-						<TextInput
-							value={`${simplrShares}%`}
-							type="text"
-							width="21.4rem"
-							disabled
-							disableValidation
-							fontSize="1.4rem"
-						/>
-					</Box>
-					{beneficiaries?.payees?.map((payee, index) => (
-						<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
+					<LabelledTextInput label="Royalties" helperText="Maximum 10%">
+						<Box row overflow="visible">
 							<TextInput
-								value={null}
-								placeholder={payee}
+								value={royaltyAddress}
+								setValue={setRoyaltyAddress}
+								placeholder="Wallet address"
 								type="text"
 								width="41.7rem"
 								fontSize="1.4rem"
-								disableValidation
 							/>
 							<Box ml="mxs" />
 							<TextInput
-								value={null}
-								placeholder={`${beneficiaries?.shares[index]}%`}
-								max={`${maxShare}`}
+								value={royaltyPercentage}
+								setValue={setRoyaltyPercentage}
+								placeholder="eg. 5"
 								type="number"
 								width="21.4rem"
+								unit="%"
+								fontSize="1.4rem"
+							/>
+						</Box>
+					</LabelledTextInput>
+					<Box mt="ws" />
+					<LabelledTextInput label="Beneficiaries" required>
+						<Box row overflow="visible" mb="ms">
+							<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
+							<Box ml="mxs" />
+							<TextInput
+								value={`${simplrShares}%`}
+								type="text"
+								width="21.4rem"
+								disabled
 								disableValidation
 								fontSize="1.4rem"
 							/>
-							<Box ml="mxs" onClick={() => handleRemove(payee, beneficiaries.shares[index])} cursor="pointer">
-								<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
-							</Box>
 						</Box>
-					))}
-					<If
-						condition={maxShare > 0}
-						then={
-							<Box row overflow="visible" mb="ms">
+						{beneficiaries?.payees?.map((payee, index) => (
+							<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
 								<TextInput
-									value={beneficiary}
-									setValue={setBeneficiary}
-									placeholder="Wallet Address"
+									value={null}
+									placeholder={payee}
 									type="text"
 									width="41.7rem"
 									fontSize="1.4rem"
+									disableValidation
 								/>
 								<Box ml="mxs" />
 								<TextInput
-									value={beneficiaryPercentage}
-									setValue={setBeneficiaryPercentage}
+									value={null}
+									placeholder={`${beneficiaries?.shares[index]}%`}
 									max={`${maxShare}`}
-									min="1"
-									placeholder="Share%"
 									type="number"
 									width="21.4rem"
+									disableValidation
 									fontSize="1.4rem"
 								/>
+								<Box ml="mxs" onClick={() => handleRemove(payee, beneficiaries.shares[index])} cursor="pointer">
+									<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
+								</Box>
 							</Box>
+						))}
+						<If
+							condition={maxShare > 0}
+							then={
+								<Box row overflow="visible" mb="ms">
+									<TextInput
+										value={beneficiary}
+										setValue={setBeneficiary}
+										placeholder="Wallet Address"
+										type="text"
+										width="41.7rem"
+										fontSize="1.4rem"
+									/>
+									<Box ml="mxs" />
+									<TextInput
+										value={beneficiaryPercentage}
+										setValue={setBeneficiaryPercentage}
+										max={`${maxShare}`}
+										min="1"
+										placeholder="Share%"
+										type="number"
+										width="21.4rem"
+										fontSize="1.4rem"
+									/>
+								</Box>
+							}
+						/>
+					</LabelledTextInput>
+					<If
+						condition={maxShare > 0}
+						then={
+							<ButtonComp
+								bg="tertiary"
+								width="100%"
+								height="48px"
+								disable={!beneficiary || !beneficiaryPercentage}
+								onClick={handleAdd}
+							>
+								<Text as="h5">Add Beneficiary</Text>
+							</ButtonComp>
 						}
 					/>
-				</LabelledTextInput>
-				<If
-					condition={maxShare > 0}
-					then={
-						<ButtonComp
-							bg="tertiary"
-							width="100%"
-							height="48px"
-							disable={!beneficiary || !beneficiaryPercentage}
-							onClick={handleAdd}
-						>
-							<Text as="h5">Add Beneficiary</Text>
-						</ButtonComp>
-					}
-				/>
-				<Box mt="mxxl" />
-				<Box row mb="mxl">
-					<Text as="b1" color="simply-gray" mr="mm">
-						Total Shares: 100%
-					</Text>
-					<Text as="b1" color="simply-gray" mr="mm">
-						Simplr: {simplrShares}%
-					</Text>
-					<Text as="b1" color="simply-gray">
-						{`Remaining: ${maxShare}%`}
-					</Text>
+					<Box mt="mxxl" />
+					<Box row mb="mxl">
+						<Text as="b1" color="simply-gray" mr="mm">
+							Total Shares: 100%
+						</Text>
+						<Text as="b1" color="simply-gray" mr="mm">
+							Simplr: {simplrShares}%
+						</Text>
+						<Text as="b1" color="simply-gray">
+							{`Remaining: ${maxShare}%`}
+						</Text>
+					</Box>
+					<ButtonComp bg="primary" width="100%" height="56px" type="submit">
+						Submit
+					</ButtonComp>
 				</Box>
-				<ButtonComp bg="primary" width="100%" height="56px" type="submit">
-					Submit
-				</ButtonComp>
-			</Box>
-		</form>
+			</form>
+		</Box>
 	);
 };
 

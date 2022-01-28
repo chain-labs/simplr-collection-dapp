@@ -10,8 +10,10 @@ import ButtonComp from 'src/components/Button';
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
 import { ethers } from 'ethers';
+import { CaretRight } from 'phosphor-react';
+import theme from 'src/styleguide/theme';
 
-const CollectionPage = ({ setStep }) => {
+const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
 
 	const dispatch = useAppDispatch();
@@ -41,7 +43,28 @@ const CollectionPage = ({ setStep }) => {
 		setNetworkData(data);
 	}, []);
 
-	const addCollectionDetails = (e) => {
+	const addData = (Step) => {
+		const data = getData();
+		dispatch(setCollectionDetails(data));
+		setStep(Step);
+	};
+
+	const getData = () => {
+		const data = {
+			type: networkValue,
+			name: collectionName,
+			symbol: collectionSymbol,
+			project_uri: collectionURI,
+			website_url: collectionWebURL,
+			logo_url: collectionLogoURL,
+			banner_url: collectionBannerURL,
+			contact_email: email,
+			admin: adminAddress,
+		};
+		return data;
+	};
+
+	const addCollectionDetails = async (e) => {
 		e.preventDefault();
 		const valid = ethers.utils.isAddress(adminAddress);
 		if (networkValue === -1) {
@@ -49,131 +72,139 @@ const CollectionPage = ({ setStep }) => {
 		} else if (!valid) {
 			toast.error('Invalid wallet address');
 		} else {
-			const data = {
-				type: networkValue,
-				name: collectionName,
-				symbol: collectionSymbol,
-				project_uri: collectionURI,
-				website_url: collectionWebURL,
-				logo_url: collectionLogoURL,
-				banner_url: collectionBannerURL,
-				contact_email: email,
-				admin: adminAddress,
-			};
-
+			const data = getData();
 			dispatch(setCollectionDetails(data));
 			toast.success('Saved');
+			dispatch(setCollectionDetails({ collection_validated: true }));
 			setStep(1);
 		}
 	};
 
 	return (
-		<form onSubmit={addCollectionDetails}>
-			<Box overflow="visible" mb="20rem">
-				<Toaster
-					position="top-center"
-					toastOptions={{
-						duration: 5000,
-					}}
-				/>
-				<LabelledTextInput label="Blockchain" required>
-					<Dropdown setValue={setNetwork} value={network} data={networkData} placeholder="Blockchain" />
-				</LabelledTextInput>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="text"
-					label="Collection Name"
-					placeholder="The Boomer Gang Collective"
-					width="100%"
-					value={collectionName}
-					setValue={setCollectionName}
-					required
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="text"
-					label="Collection Symbol"
-					placeholder="TBGC"
-					width="100%"
-					value={collectionSymbol}
-					setValue={setCollectionSymbol}
-					required
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="url"
-					label="Collection URI"
-					placeholder="https://"
-					width="100%"
-					helperText="Paste the link where your NFT media is stored."
-					value={collectionURI}
-					setValue={setCollectionURI}
-					tooltip
-					tooltipText="Collection URI is the URL where your NFT media and metadata are stored. "
-					required
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="url"
-					label="Collection Website URL"
-					placeholder="https://www.theboomergangcollective.com"
-					width="100%"
-					value={collectionWebURL}
-					setValue={setCollectionWebURL}
-					required
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="url"
-					label="Collection Logo URL"
-					placeholder="https://"
-					helperText="Accepts JPEG and PNG files."
-					width="100%"
-					value={collectionLogoURL}
-					setValue={setCollectionLogoURL}
-					required
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="url"
-					label="Collection Banner URL"
-					placeholder="https://"
-					helperText="Accepts JPEG and PNG files."
-					width="100%"
-					value={collectionBannerURL}
-					setValue={setCollectionBannerURL}
-					required
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="email"
-					label="Contact e-mail address"
-					placeholder="contact@tbgc.com"
-					helperText="This e-mail will be used by Simplr for communication."
-					width="100%"
-					value={email}
-					setValue={setEmail}
-					required
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="text"
-					label="Admin wallet address"
-					placeholder="0x....abc"
-					helperText="This wallet address will be responsible for managing the smart contracts."
-					width="100%"
-					value={adminAddress}
-					setValue={setAdminAddress}
-					disableValidation
-					required
-				/>
-				<ButtonComp bg="primary" height="56px" width="100%" mt="wm" type="submit">
-					<Text as="h4" color="simply-white">
-						Next
-					</Text>
-				</ButtonComp>
+		<Box>
+			<Text as="h2" center>
+				Create new collection
+			</Text>
+			<Box center mt="mxxxl" mb="ws">
+				<Text as="h5" color={step === 0 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(0)}>
+					Collection Details
+				</Text>
+				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
+				<Text as="h5" color={step === 1 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(1)}>
+					Sales
+				</Text>
+				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
+				<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(2)}>
+					Payment Details
+				</Text>
 			</Box>
-		</form>
+			<form onSubmit={addCollectionDetails}>
+				<Box overflow="visible" mb="20rem">
+					<Toaster
+						position="top-center"
+						toastOptions={{
+							duration: 5000,
+						}}
+					/>
+					<LabelledTextInput label="Blockchain" required>
+						<Dropdown setValue={setNetwork} value={network} data={networkData} placeholder="Blockchain" />
+					</LabelledTextInput>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="text"
+						label="Collection Name"
+						placeholder="The Boomer Gang Collective"
+						width="100%"
+						value={collectionName}
+						setValue={setCollectionName}
+						required
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="text"
+						label="Collection Symbol"
+						placeholder="TBGC"
+						width="100%"
+						value={collectionSymbol}
+						setValue={setCollectionSymbol}
+						required
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="url"
+						label="Collection URI"
+						placeholder="https://"
+						width="100%"
+						helperText="Paste the link where your NFT media is stored."
+						value={collectionURI}
+						setValue={setCollectionURI}
+						tooltip
+						tooltipText="Collection URI is the URL where your NFT media and metadata are stored. "
+						required
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="url"
+						label="Collection Website URL"
+						placeholder="https://www.theboomergangcollective.com"
+						width="100%"
+						value={collectionWebURL}
+						setValue={setCollectionWebURL}
+						required
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="url"
+						label="Collection Logo URL"
+						placeholder="https://"
+						helperText="Accepts JPEG and PNG files."
+						width="100%"
+						value={collectionLogoURL}
+						setValue={setCollectionLogoURL}
+						required
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="url"
+						label="Collection Banner URL"
+						placeholder="https://"
+						helperText="Accepts JPEG and PNG files."
+						width="100%"
+						value={collectionBannerURL}
+						setValue={setCollectionBannerURL}
+						required
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="email"
+						label="Contact e-mail address"
+						placeholder="contact@tbgc.com"
+						helperText="This e-mail will be used by Simplr for communication."
+						width="100%"
+						value={email}
+						setValue={setEmail}
+						required
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="text"
+						label="Admin wallet address"
+						placeholder="0x....abc"
+						helperText="This wallet address will be responsible for managing the smart contracts."
+						width="100%"
+						value={adminAddress}
+						setValue={setAdminAddress}
+						disableValidation
+						required
+					/>
+					<ButtonComp bg="primary" height="56px" width="100%" mt="wm" type="submit">
+						<Text as="h4" color="simply-white">
+							Next
+						</Text>
+					</ButtonComp>
+				</Box>
+			</form>
+		</Box>
 	);
 };
 

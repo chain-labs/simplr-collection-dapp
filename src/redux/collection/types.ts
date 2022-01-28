@@ -8,6 +8,7 @@ export interface CollectionState {
 	banner_url?: string;
 	contact_email?: string;
 	admin?: string;
+	collection_validated?: boolean;
 }
 
 export const networks = {

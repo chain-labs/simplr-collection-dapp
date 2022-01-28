@@ -16,41 +16,18 @@ const CreateComp = () => {
 
 	const getFormPage = (step) => {
 		if (step === 1) {
-			return <SalesPage setStep={setStep} />;
+			return <SalesPage setStep={setStep} step={step} />;
 		}
 		if (step === 0) {
-			return <CollectionPage setStep={setStep} />;
+			return <CollectionPage setStep={setStep} step={step} />;
 		}
 		if (step === 2) {
-			return <PaymentPage />;
+			return <PaymentPage setStep={setStep} step={step} />;
 		}
 	};
 
 	return (
 		<Box pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
-			<Text as="h2" center>
-				Create new collection
-			</Text>
-			<Box center mt="mxxxl" mb="ws">
-				<Text as="h5" color={step === 0 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => setStep(0)}>
-					Collection Details
-				</Text>
-				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
-				<Text
-					as="h5"
-					color={step === 1 ? 'simply-blue' : 'gray-00'}
-					cursor="pointer"
-					onClick={() => {
-						if (step > 1) setStep(1);
-					}}
-				>
-					Sales
-				</Text>
-				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
-				<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer">
-					Payment Details
-				</Text>
-			</Box>
 			{getFormPage(step)}
 		</Box>
 	);
