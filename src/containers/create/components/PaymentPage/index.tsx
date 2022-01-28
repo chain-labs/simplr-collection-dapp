@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { XCircle } from 'phosphor-react';
+import { CaretRight, XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -66,6 +66,22 @@ const PaymentPage = ({ step, setStep }) => {
 		getAddress();
 	}, [Simplr]);
 
+	const addData = (Step) => {
+		const data = getData();
+		dispatch(setPaymentDetails(data));
+		setStep(Step);
+	};
+
+	const getData = () => {
+		const data = {
+			royalties: {
+				account: royaltyAddress,
+				value: royaltyPercentage,
+			},
+		};
+		return data;
+	};
+
 	const addPaymentDetails = (e) => {
 		e.preventDefault();
 		if (royaltyAddress) {
@@ -80,12 +96,7 @@ const PaymentPage = ({ step, setStep }) => {
 			return;
 		}
 
-		const data = {
-			royalties: {
-				account: royaltyAddress,
-				value: royaltyPercentage,
-			},
-		};
+		const data = getData();
 		dispatch(setPaymentDetails(data));
 		toast.success('Saved');
 		setShowSummaryPage(true);
@@ -145,6 +156,7 @@ const PaymentPage = ({ step, setStep }) => {
 									type="text"
 									width="41.7rem"
 									fontSize="1.4rem"
+									disableValidation
 								/>
 								<Box ml="mxs" />
 								<TextInput
@@ -173,6 +185,9 @@ const PaymentPage = ({ step, setStep }) => {
 									disableValidation
 									fontSize="1.4rem"
 								/>
+								<Box ml="mxs" onClick={() => handleRemove(payee, beneficiaries.shares[index])} cursor="pointer">
+									<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
+								</Box>
 							</Box>
 							{beneficiaries?.payees?.map((payee, index) => (
 								<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>

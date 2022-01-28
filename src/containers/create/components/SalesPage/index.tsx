@@ -1,3 +1,4 @@
+import { CaretRight } from 'phosphor-react';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -16,6 +17,7 @@ import {
 	setSaleDetails,
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
+import theme from 'src/styleguide/theme';
 import Affiliable from './Affiliable';
 import Presale from './Presale';
 import Revealable from './Revealable';
@@ -39,7 +41,7 @@ export const getTimestamp = (timeObject: DateType) => {
 	return timestamp;
 };
 
-const SalesPage = ({ setStep }) => {
+const SalesPage = ({ step, setStep }) => {
 	const collection = useAppSelector(collectionSelector);
 	const sales = useAppSelector(saleSelector);
 	const presaleable = useAppSelector(presaleableToggleSelector);
@@ -68,7 +70,39 @@ const SalesPage = ({ setStep }) => {
 	const [loadingUrl, setLoadingUrl] = useState<string>(sales.revealable.loadingImageUrl);
 	const [revealableTime, setRevealableTime] = useState<DateType>(sales.revealable.timestamp);
 
-	const addSalesDetails = (e) => {
+	const addData = (Step) => {
+		const data = getData();
+		dispatch(setSaleDetails(data));
+		setStep(Step);
+	};
+
+	const getData = () => {
+		const data = {
+			maximumTokens: maxTokens,
+			maxPurchase,
+			maxHolding,
+			price,
+			reserveTokens,
+			publicSaleStartTime: publicSaleLaunchTimestamp,
+			presaleable: {
+				enabled: isPresaleable,
+				presaleReservedTokens,
+				presalePrice,
+				presaleMaxHolding,
+				presaleWhitelist: whitelist,
+				presaleStartTime,
+			},
+			revealable: {
+				enabled: isRevealable,
+				timestamp: revealableTime,
+				loadingImageUrl: loadingUrl,
+			},
+			isAffiliable,
+		};
+		return data;
+	};
+
+	const addSalesDetails = async (e) => {
 		e.preventDefault();
 		const date = Date.now() / 1000;
 		const publicSaleTime = getTimestamp(publicSaleLaunchTimestamp);
@@ -97,140 +131,137 @@ const SalesPage = ({ setStep }) => {
 				return;
 			}
 		}
-		const data = {
-			maximumTokens: maxTokens,
-			maxPurchase,
-			maxHolding,
-			price,
-			reserveTokens,
-			publicSaleStartTime: publicSaleLaunchTimestamp,
-			presaleable: {
-				enabled: isPresaleable,
-				presaleReservedTokens,
-				presalePrice,
-				presaleMaxHolding,
-				presaleWhitelist: whitelist,
-				presaleStartTime,
-			},
-			revealable: {
-				enabled: isRevealable,
-				timestamp: revealableTime,
-				loadingImageUrl: loadingUrl,
-			},
-			isAffiliable,
-		};
-
+		const data = await getData();
 		dispatch(setSaleDetails(data));
 		toast.success('Saved');
+		dispatch(setSaleDetails({ salesDetails_validated: true }));
 		setStep(2);
 	};
 
 	return (
-		<form onSubmit={addSalesDetails}>
-			<Box overflow="visible" mb="20rem">
-				<Box overflow="visible">
-					<Toaster
-						position="top-center"
-						toastOptions={{
-							duration: 5000,
-						}}
-					/>
-				</Box>
-				<LabelledTextInput
-					type="number"
-					min="1"
-					label="Total NFTs in the collection"
-					required
-					placeholder="eg.10,000"
-					value={maxTokens}
-					setValue={setMaxTokens}
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="number"
-					min="1"
-					max={maxTokens?.toString()}
-					label="Maximum NFTs allowed to buy per sale"
-					helperText="Maximum number of NFTs a user can buy at once"
-					required
-					placeholder="eg. 2"
-					value={maxPurchase}
-					setValue={setMaxPurchase}
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="number"
-					min="1"
-					max={maxTokens?.toString()}
-					label="Maximum NFTs allowed to buy per wallet"
-					helperText="Maximum number of NFTs a user can hold in their wallet"
-					required
-					placeholder="eg. 5"
-					value={maxHolding}
-					setValue={setMaxHolding}
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="number"
-					step="0.01"
-					min="0.01"
-					unit={type ? getUnit(type) : 'ETH'}
-					label="Price per NFT"
-					required
-					placeholder="eg. 0.08"
-					value={price}
-					setValue={setPrice}
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput
-					type="number"
-					min="0"
-					max={maxTokens?.toString()}
-					label="Reserved NFTs"
-					helperText=" Reserved NFTs will not be included in the sale and can be transferred directly to any wallet address. Enter “0” if you do not wish to reserve any NFTs."
-					required
-					placeholder="eg.10,000"
-					value={reserveTokens}
-					setValue={setReserveTokens}
-				/>
-				<Box mt="mxxxl" />
-				<LabelledTextInput label="Public Sale Launch" required type="date">
-					<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} />
-				</LabelledTextInput>
-				<Box mt="wm" />
-				<Presale
-					unit={type}
-					isChecked={isPresaleable}
-					setIsChecked={setIsPresaleable}
-					presaleReservedTokens={presaleReservedTokens}
-					setPresaleReservedTokens={setPresaleReservedTokens}
-					presalePrice={presalePrice}
-					setPresalePrice={setPresalePrice}
-					presaleMaxHolding={presaleMaxHolding}
-					setPresaleMaxHolding={setPresaleMaxHolding}
-					presaleStartTime={presaleStartTime}
-					setPresaleStartTime={setPresaleStartTime}
-					maxTokens={maxTokens}
-				/>
-				<Box mt="wm" />
-				<Revealable
-					isChecked={isRevealable}
-					setIsChecked={setIsRevealable}
-					loadingUrl={loadingUrl}
-					setLoadingUrl={setLoadingUrl}
-					revealableTime={revealableTime}
-					setRevealableTime={setRevealableTime}
-				/>
-				<Box mt="wm" />
-				<Affiliable isChecked={isAffiliable} setIsChecked={setIsAffiliable} />
-				<Box mt="wm" />
-				<ButtonComp bg="primary" height="56px" width="100%" type="submit">
-					<Text as="h4" color="simply-white">
-						Next
-					</Text>
-				</ButtonComp>
+		<Box>
+			<Text as="h2" center>
+				Create new collection
+			</Text>
+			<Box center mt="mxxxl" mb="ws">
+				<Text as="h5" color={step === 0 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(0)}>
+					Collection Details
+				</Text>
+				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
+				<Text as="h5" color={step === 1 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(1)}>
+					Sales
+				</Text>
+				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
+				<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(2)}>
+					Payment Details
+				</Text>
 			</Box>
-		</form>
+			<form onSubmit={addSalesDetails}>
+				<Box overflow="visible" mb="20rem">
+					<Box overflow="visible">
+						<Toaster
+							position="top-center"
+							toastOptions={{
+								duration: 5000,
+							}}
+						/>
+					</Box>
+					<LabelledTextInput
+						type="number"
+						min="1"
+						label="Total NFTs in the collection"
+						required
+						placeholder="eg.10,000"
+						value={maxTokens}
+						setValue={setMaxTokens}
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="number"
+						min="1"
+						max={maxTokens?.toString()}
+						label="Maximum NFTs allowed to buy per sale"
+						helperText="Maximum number of NFTs a user can buy at once"
+						required
+						placeholder="eg. 2"
+						value={maxPurchase}
+						setValue={setMaxPurchase}
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="number"
+						min="1"
+						max={maxTokens?.toString()}
+						label="Maximum NFTs allowed to buy per wallet"
+						helperText="Maximum number of NFTs a user can hold in their wallet"
+						required
+						placeholder="eg. 5"
+						value={maxHolding}
+						setValue={setMaxHolding}
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="number"
+						step="0.01"
+						min="0.01"
+						unit={type ? getUnit(type) : 'ETH'}
+						label="Price per NFT"
+						required
+						placeholder="eg. 0.08"
+						value={price}
+						setValue={setPrice}
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						type="number"
+						min="0"
+						max={maxTokens?.toString()}
+						label="Reserved NFTs"
+						helperText=" Reserved NFTs will not be included in the sale and can be transferred directly to any wallet address. Enter “0” if you do not wish to reserve any NFTs."
+						required
+						placeholder="eg.10,000"
+						value={reserveTokens}
+						setValue={setReserveTokens}
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput label="Public Sale Launch" required type="date">
+						<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} />
+					</LabelledTextInput>
+					<Box mt="wm" />
+					<Presale
+						unit={type}
+						isChecked={isPresaleable}
+						setIsChecked={setIsPresaleable}
+						presaleReservedTokens={presaleReservedTokens}
+						setPresaleReservedTokens={setPresaleReservedTokens}
+						presalePrice={presalePrice}
+						setPresalePrice={setPresalePrice}
+						presaleMaxHolding={presaleMaxHolding}
+						setPresaleMaxHolding={setPresaleMaxHolding}
+						presaleStartTime={presaleStartTime}
+						setPresaleStartTime={setPresaleStartTime}
+						maxTokens={maxTokens}
+					/>
+					<Box mt="wm" />
+					<Revealable
+						isChecked={isRevealable}
+						setIsChecked={setIsRevealable}
+						loadingUrl={loadingUrl}
+						setLoadingUrl={setLoadingUrl}
+						revealableTime={revealableTime}
+						setRevealableTime={setRevealableTime}
+					/>
+					<Box mt="wm" />
+					<Affiliable isChecked={isAffiliable} setIsChecked={setIsAffiliable} />
+					<Box mt="wm" />
+					<ButtonComp bg="primary" height="56px" width="100%" type="submit">
+						<Text as="h4" color="simply-white">
+							Next
+						</Text>
+					</ButtonComp>
+				</Box>
+			</form>
+		</Box>
 	);
 };
 
