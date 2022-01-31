@@ -42,16 +42,11 @@ const PaymentPage = ({ step, setStep }) => {
 	const [beneficiary, setBeneficiary] = useState<string>();
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState<number>();
 	const [showSummaryPage, setShowSummaryPage] = useState<boolean>();
-
 	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares, simplrShares));
 	const [simplrAddress, setSimplrAddress] = useState<string>();
-
 	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
-
 	const dispatch = useAppDispatch();
-
-	// This section is for the creation of the collection
 
 	useEffect(() => {
 		const getAddress = async () => {

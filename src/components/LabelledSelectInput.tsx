@@ -49,7 +49,8 @@ const LabelledSelectInput = ({ label, placeholder, set, visible, value, width, d
 					`}
 					cursor={disabled === true ? 'not-allowed' : 'pointer'}
 				></Box>
-				<Box ml="-4.2rem" mt="1.1rem" cursor={disabled === true ? 'not-allowed' : 'pointer'}>
+				<Box ml="-4.2rem" mt="1.1rem" cursor={disabled ? 'not-allowed' : 'pointer'}>
+					{' '}
 					<CaretDown size={24} color={theme.colors['disable-black']} />
 				</Box>
 			</Box>
