@@ -1,19 +1,52 @@
+import { ethers } from 'ethers';
 import { CurrencyEth, DotsThreeOutlineVertical, ImageSquare, Timer, User } from 'phosphor-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
+import { dashboardSelector, setDashboardInfo } from 'src/redux/dashboard';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
 
-const CollectionPage = () => {
+const CollectionPage = ({ contract }) => {
+	const dispatch = useAppDispatch();
+	const collection = useAppSelector(dashboardSelector);
 	const [collectionUri, setCollectionURI] = useState('');
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [edited, setEdited] = useState(false);
 	const [adminAddress, setAdminAddress] = useState('0xd18Cd50a6bDa288d331e3956BAC496AAbCa4960d');
+
+	useEffect(() => {
+		const getDetails = async () => {
+			console.log({ contract });
+
+			const maxTokens = await contract.callStatic.maximumTokens();
+			const adminAddress = await contract.callStatic.owner();
+			const reservedTokens = await contract.callStatic.reservedTokens();
+			const price = await contract.callStatic.price();
+			const revealTime = await contract.callStatic.revealAfterTimestamp();
+			const presalePrice = await contract.callStatic.presalePrice();
+
+			const details = {
+				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
+				adminAddress,
+				reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
+				price: ethers.utils.formatUnits(price, 18),
+				revealTime: ethers.utils.formatUnits(revealTime, 0),
+				presalePrice: ethers.utils.formatUnits(presalePrice, 18),
+			};
+
+			dispatch(setDashboardInfo({ collection: details }));
+		};
+
+		if (contract) {
+			getDetails();
+		}
+	}, [contract]);
 
 	return (
 		<Box mt="mxxxl" width="116.8rem" mx="auto">
@@ -21,18 +54,18 @@ const CollectionPage = () => {
 				Overview:
 			</Text>
 			<Box row flexWrap="wrap" between mt="mxxxl">
-				<DashboardCard Icon={ImageSquare} text="Total NFTs" data="10,000" />
+				<DashboardCard Icon={ImageSquare} text="Total NFTs" data={collection.maxTokens} />
 				<DashboardCard
 					Icon={User}
 					text="Admin Wallet Address"
-					data={adminAddress}
+					data={collection.adminAddress}
 					setData={setAdminAddress}
 					editable="address"
 				/>
-				<DashboardCard Icon={ImageSquare} text="Reserved Tokens" data="6000" editable="number" />
-				<DashboardCard Icon={CurrencyEth} text="Price per NFT (Pre-sale)" data="0.08 ETH" />
+				<DashboardCard Icon={ImageSquare} text="Reserved Tokens" data={collection.reservedTokens} editable="number" />
+				<DashboardCard Icon={CurrencyEth} text="Price per NFT (Pre-sale)" data={`${collection.presalePrice} ETH`} />
 				<DashboardCard Icon={Timer} text="NFTs reveal in" data="17:00:00" editable="time" />
-				<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data="0.01 ETH" />
+				<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
 			</Box>
 			<Text as="h3" color="simply-blue" mt="wxl">
 				Sales:
@@ -135,6 +168,10 @@ const DashboardCard = ({ text, data, setData, editable, status, Icon }: Dashboar
 		}
 	};
 
+	useEffect(() => {
+		setValue(data);
+	}, [data]);
+
 	const getData = (data) => {
 		if (editable === 'address') {
 			if (data.length > 10) {
@@ -187,7 +224,7 @@ const DashboardCard = ({ text, data, setData, editable, status, Icon }: Dashboar
 						>
 							{!editing ? (
 								<Text as="h4" color="simply-blue">
-									{editable === 'address' ? getData(value) : value}
+									{editable === 'address' ? getData(value) : data}
 								</Text>
 							) : null}
 						</Box>
