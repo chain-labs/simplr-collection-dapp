@@ -122,31 +122,6 @@ const PaymentPage = ({ step, setStep }) => {
 		toast.success('Beneficiary removed');
 	};
 
-	// const addPaymentDetails = (e) => {
-	// 	e.preventDefault();
-	// 	if (royaltyAddress) {
-	// 		const valid = ethers.utils.isAddress(royaltyAddress);
-	// 		if (!valid || royaltyPercentage > 10) {
-	// 			toast.error('Invalid details');
-	// 			return;
-	// 		}
-	// 	}
-	// 	if (!(maxShare === 0)) {
-	// 		toast.error(`${maxShare}% shares still remaining. Add more beneficiaries or re-allocate shares.`);
-	// 		return;
-	// 	}
-
-	// 	const data = {
-	// 		royalties: {
-	// 			account: royaltyAddress,
-	// 			value: royaltyPercentage,
-	// 		},
-	// 	};
-	// 	dispatch(setPaymentDetails(data));
-	// 	toast.success('Saved');
-	// 	setShowSummaryPage(true);
-	// };
-
 	return (
 		<Box overflow="visible">
 			<SummaryPage visible={showSummaryPage} setVisible={setShowSummaryPage} step={step} setStep={setStep} />
@@ -175,6 +150,8 @@ const PaymentPage = ({ step, setStep }) => {
 								<TextInput
 									value={royaltyPercentage}
 									setValue={setRoyaltyPercentage}
+									max="10"
+									min="0"
 									placeholder="eg. 5"
 									type="number"
 									width="21.4rem"
@@ -188,7 +165,14 @@ const PaymentPage = ({ step, setStep }) => {
 							<Box row overflow="visible" mb="ms">
 								<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
 								<Box ml="mxs" />
-								<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation fontSize="1.4rem" />
+								<TextInput
+									value={`${simplrShares}%`}
+									type="text"
+									width="21.4rem"
+									disabled
+									disableValidation
+									fontSize="1.4rem"
+								/>
 							</Box>
 							{beneficiaries?.payees?.map((payee, index) => (
 								<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>

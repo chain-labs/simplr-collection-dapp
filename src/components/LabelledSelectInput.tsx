@@ -16,10 +16,6 @@ export interface InputProps {
 }
 
 const LabelledSelectInput = ({ label, placeholder, set, visible, value, width, disabled }: InputProps) => {
-	useEffect(() => {
-		console.log(disabled);
-	}, []);
-
 	return (
 		<Box overflow="visible">
 			<Text as="h6" mb="mxs" color="simply-black">
@@ -50,7 +46,6 @@ const LabelledSelectInput = ({ label, placeholder, set, visible, value, width, d
 					cursor={disabled === true ? 'not-allowed' : 'pointer'}
 				></Box>
 				<Box ml="-4.2rem" mt="1.1rem" cursor={disabled ? 'not-allowed' : 'pointer'}>
-					{' '}
 					<CaretDown size={24} color={theme.colors['disable-black']} />
 				</Box>
 			</Box>
