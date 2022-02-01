@@ -8,13 +8,14 @@ import Text from './Text';
 interface Props {
 	setValue: (any) => void;
 	value: any;
-	data: any[];
+	data?: any[];
 	label?: string;
 	placeholder?: string;
 	width?: string;
+	disabled?: boolean;
 }
 
-const Dropdown = ({ setValue, value, data, label, placeholder, width }: Props) => {
+const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }: Props) => {
 	const [visible, setVisible] = useState(false);
 	return (
 		<Box className="dropdown" overflow="visible">
@@ -25,6 +26,7 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width }: Props) =
 				visible={visible}
 				value={value}
 				width={width ?? '32rem'}
+				{...{ disabled }}
 			/>
 			<Box
 				borderRadius="8px"

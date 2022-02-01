@@ -22,7 +22,7 @@ const CreateComp = () => {
 			return <CollectionPage setStep={setStep} />;
 		}
 		if (step === 2) {
-			return <PaymentPage />;
+			return <PaymentPage step={step} setStep={setStep} />;
 		}
 	};
 

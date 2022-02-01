@@ -84,7 +84,7 @@ const InputComponents = () => {
 			/>
 			<Box gridRow="span 3" pl="5px">
 				<Text as="h6">Date</Text>
-				<DateTime value={timestamp} setValue={setTimestamp} />
+				{/* <DateTime value={timestamp} setValue={setTimestamp} /> */}
 			</Box>
 			<LabelledTextInput
 				label=""

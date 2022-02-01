@@ -128,7 +128,7 @@ const TextInput = ({
 			<If
 				condition={type === 'number' && !!unit}
 				then={
-					<Text ml="-4.2rem" as="h5" color={validity === 'invalid' ? 'red-50' : 'disable-black'}>
+					<Text ml="-9%" as="h5" color={validity === 'invalid' ? 'red-50' : 'disable-black'}>
 						{unit}
 					</Text>
 				}

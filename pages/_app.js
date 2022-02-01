@@ -50,6 +50,7 @@ const MyApp = ({ Component, pageProps }) => {
 				<ThemeProvider theme={theme}>
 					<Navbar />
 					<Component {...pageProps} />
+					<div id="portal"></div>
 				</ThemeProvider>
 			</Provider>
 		</>

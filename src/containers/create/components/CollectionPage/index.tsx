@@ -45,7 +45,7 @@ const CollectionPage = ({ setStep }) => {
 		e.preventDefault();
 		const valid = ethers.utils.isAddress(adminAddress);
 		if (networkValue === -1) {
-			toast.error('Please select the newtork');
+			toast.error('Please select the newwork');
 		} else if (!valid) {
 			toast.error('Invalid wallet address');
 		} else {
