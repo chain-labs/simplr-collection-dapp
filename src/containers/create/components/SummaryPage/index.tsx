@@ -28,7 +28,7 @@ const SummaryPage = ({ visible, setVisible, step, setStep }) => {
 		} else if (modalStep === 1) {
 			return <SalesSummaryPage setModalStep={setModalStep} modalStep={modalStep} />;
 		} else if (modalStep === 2) {
-			return <PaymentSummaryPage setModalStep={setModalStep} modalStep={modalStep} />;
+			return <PaymentSummaryPage setModalStep={setModalStep} modalStep={modalStep} setVisible={setVisible} />;
 		}
 	};
 	if (visible) {

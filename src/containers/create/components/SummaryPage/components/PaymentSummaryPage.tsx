@@ -26,9 +26,10 @@ import { DateType } from 'src/redux/sales/types';
 import theme from 'src/styleguide/theme';
 import WhitelistModal from '../../SalesPage/WhitelistModal';
 import { createCollection, uploadToIPFS } from '../../utils';
+import DeployedModal from './DeployedModal';
 import WhitelistComp from './WhitelistComp';
 
-const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
+const PaymentSummaryPage = ({ modalStep, setModalStep, setVisible }) => {
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
 	const collection = useAppSelector(collectionSelector);
@@ -51,11 +52,12 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 	// const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares));
 	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
 	const [metadata, setMetadata] = useState<string>();
-	const [transactionResult, setTransactionResult] = useState({});
+	const [transactionResult, setTransactionResult] = useState<any>();
 	const [ready, setReady] = useState(false);
 	const [simplrAddress, setSimplrAddress] = useState<string>();
 	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
+	const [isDeploymentComplete, setIsDeploymentComplete] = useState<boolean>(false);
 
 	useEffect(() => {
 		const getAddress = async () => {
@@ -75,10 +77,14 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 		getAddress();
 	}, [Simplr]);
 
-	const sendData = () => {
-		uploadToIPFS(collection, sales, payments, simplrAddress).then((hash) => {
+	const sendData = async () => {
+		const res = uploadToIPFS(collection, sales, payments, simplrAddress).then((hash) => {
 			setMetadata(hash);
-			toast.success('Metadata Pinned to IPFS');
+		});
+		toast.promise(res, {
+			loading: 'Pinning Metadata to IPFS',
+			success: 'Metadata Pinned to IPFS',
+			error: 'Something went wrong! Try Again.',
 		});
 		setReady(true);
 	};
@@ -86,18 +92,39 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 	useEffect(() => {
 		if (metadata && ready) {
 			const transaction = async () => {
-				const res = await createCollection(Simplr, metadata, collection, sales, payments, signer);
-				setTransactionResult(res);
+				const res = createCollection(Simplr, metadata, collection, sales, payments, signer).then((tx) => {
+					setTransactionResult(tx);
+				});
+				toast.promise(
+					res,
+					{
+						loading: 'Transaction is processing!',
+						success: 'Transaction was completed succesfully',
+						error: 'Something went wrong! Try Again.',
+					},
+					{
+						success: {
+							duration: 3000,
+						},
+						error: {
+							duration: 3000,
+						},
+						loading: {
+							duration: Infinity,
+						},
+					}
+				);
 			};
 			transaction();
 		}
 	}, [metadata, ready]);
 
 	useEffect(() => {
-		if (transactionResult) {
+		if (transactionResult?.event) {
 			// const event = transactionResult?.event;
 			// const transaction = transactionResult?.transaction;
 			console.log({ transactionResult });
+			setIsDeploymentComplete(true);
 		}
 	}, [transactionResult]);
 
@@ -252,9 +279,10 @@ const PaymentSummaryPage = ({ modalStep, setModalStep }) => {
 				</Text>
 			</Box>
 			<Box mt="mxxxl" />
-			<ButtonComp bg="primary" width="100%" height="56px" type="submit" onClick={sendData}>
-				Submit
+			<ButtonComp bg="primary" width="100%" height="56px" type="submit" onClick={() => sendData()}>
+				<Text as="h4">Create Collection</Text>
 			</ButtonComp>
+			<DeployedModal isOpen={isDeploymentComplete} transactionResult={transactionResult} />
 		</Box>
 	);
 };
