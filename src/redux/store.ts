@@ -1,6 +1,5 @@
 import { configureStore, Action, ThunkAction } from '@reduxjs/toolkit';
 import { collectionReducer } from './collection';
-import { dashboardReducer } from './dashboard';
 import { paymentReducer } from './payment';
 import { saleReducer } from './sales';
 import { userReducer } from './user/reducers';
@@ -11,7 +10,6 @@ export const store = configureStore({
 		collection: collectionReducer,
 		sales: saleReducer,
 		payment: paymentReducer,
-		dashboard: dashboardReducer,
 	},
 });
 

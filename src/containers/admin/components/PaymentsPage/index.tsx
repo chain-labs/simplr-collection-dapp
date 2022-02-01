@@ -10,7 +10,7 @@ import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 
-const PaymentsPage = () => {
+const PaymentsPage = ({ contract }) => {
 	const [payees, setPayees] = useState<string[]>([
 		'0xd18Cd50a6bDa288d331e3956BAC496AAbCa4960d',
 		'0x76713821424e866b365Be8512B47f0A16F85d3b4',

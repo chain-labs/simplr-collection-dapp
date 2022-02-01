@@ -7,23 +7,27 @@ import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
-import { dashboardSelector, setDashboardInfo } from 'src/redux/dashboard';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
 
 const CollectionPage = ({ contract }) => {
 	const dispatch = useAppDispatch();
-	const collection = useAppSelector(dashboardSelector);
 	const [collectionUri, setCollectionURI] = useState('');
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [edited, setEdited] = useState(false);
 	const [adminAddress, setAdminAddress] = useState('0xd18Cd50a6bDa288d331e3956BAC496AAbCa4960d');
+	const [collection, setCollection] = useState({
+		maxTokens: '',
+		adminAddress: '',
+		reservedTokens: '',
+		price: '',
+		revealTime: '',
+		presalePrice: '',
+	});
 
 	useEffect(() => {
 		const getDetails = async () => {
-			console.log({ contract });
-
 			const maxTokens = await contract.callStatic.maximumTokens();
 			const adminAddress = await contract.callStatic.owner();
 			const reservedTokens = await contract.callStatic.reservedTokens();
@@ -39,8 +43,7 @@ const CollectionPage = ({ contract }) => {
 				revealTime: ethers.utils.formatUnits(revealTime, 0),
 				presalePrice: ethers.utils.formatUnits(presalePrice, 18),
 			};
-
-			dispatch(setDashboardInfo({ collection: details }));
+			setCollection(details);
 		};
 
 		if (contract) {
