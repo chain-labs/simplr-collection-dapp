@@ -185,9 +185,6 @@ const PaymentPage = ({ step, setStep }) => {
 									disableValidation
 									fontSize="1.4rem"
 								/>
-								<Box ml="mxs" onClick={() => handleRemove(payee, beneficiaries.shares[index])} cursor="pointer">
-									<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
-								</Box>
 							</Box>
 							{beneficiaries?.payees?.map((payee, index) => (
 								<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
