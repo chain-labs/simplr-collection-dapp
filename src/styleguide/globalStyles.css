@@ -48,3 +48,8 @@ a:visited {
 svg {
 	z-index: 2;
 }
+
+
+.hidden-scrollbar::-webkit-scrollbar {
+	display: none;
+}

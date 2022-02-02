@@ -8,21 +8,14 @@ import CollectionSummaryPage from './components/CollectionSummaryPage';
 import PaymentSummaryPage from './components/PaymentSummaryPage';
 import SalesSummaryPage from './components/SalesSummaryPage';
 
-const SummaryPage = ({ visible, setVisible, step, setStep }) => {
+const SummaryPage = ({ visible, setVisible, setStep }) => {
 	const handleVisibility = () => {
 		setVisible(false);
 		setStep(modalStep);
 	};
 	const [modalStep, setModalStep] = useState(0);
-	const [marginTop, setMarginTop] = useState('120%');
 
-	useEffect(() => {
-		if (modalStep === 0) setMarginTop('122%');
-		if (modalStep === 1) setMarginTop('102%');
-		if (modalStep === 2) setMarginTop('125%');
-	}, [modalStep]);
-
-	const getFormPage = (step) => {
+	const getFormPage = () => {
 		if (modalStep === 0) {
 			return <CollectionSummaryPage setModalStep={setModalStep} modalStep={modalStep} />;
 		} else if (modalStep === 1) {
@@ -35,21 +28,21 @@ const SummaryPage = ({ visible, setVisible, step, setStep }) => {
 		return (
 			<Modal visible={visible}>
 				<Box
-					mx="auto"
 					bg="simply-white"
 					width="118rem"
 					borderRadius="16px"
 					position="absolute"
-					top={marginTop}
+					top="50%"
 					left="50%"
 					transform="translate(-50%, -50%)"
 					column
 					pb="3rem"
+					boxShadow="shadow-500"
 				>
 					<Box
 						position="absolute"
-						mt="-1%"
-						ml="99%"
+						right={-9}
+						top={-9}
 						borderRadius="100%"
 						cursor="pointer"
 						backgroundColor="black"
@@ -60,7 +53,7 @@ const SummaryPage = ({ visible, setVisible, step, setStep }) => {
 					>
 						<X size={18} style={{ color: 'white' }} />
 					</Box>
-					<Box pt="mxxxl" mx="auto" width="64rem" overflowX="visible">
+					<Box pt="mxxxl" mx="auto" overflowX="visible">
 						<Text as="h2" center>
 							Create new collection
 						</Text>
@@ -92,7 +85,16 @@ const SummaryPage = ({ visible, setVisible, step, setStep }) => {
 								Payment Details
 							</Text>
 						</Box>
-						{getFormPage(modalStep)}
+						<Box
+							className="hidden-scrollbar"
+							maxHeight="65vh"
+							px="2.4rem"
+							overflowY="auto"
+							overflowX="visible"
+							css={``}
+						>
+							{getFormPage()}
+						</Box>
 					</Box>
 				</Box>
 			</Modal>
