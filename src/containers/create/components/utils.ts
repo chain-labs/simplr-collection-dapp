@@ -75,17 +75,17 @@ export const uploadToIPFS = async (
 };
 
 export const createCollection = async (
-	Simplr,
+	contract,
 	metadata: string,
 	collection: CollectionState,
 	sales: SaleState,
 	payments: PaymentState,
 	signer: SignerProps
 ) => {
-	const upfrontFee = await Simplr.upfrontFee(); // it works without callStatic too // upfront fee should be fetched from smart contract
+	const upfrontFee = await contract.upfrontFee(); // it works without callStatic too // upfront fee should be fetched from smart contract
 
-	const simplr = await Simplr.simplr(); // address of simplr should also be fetched from the smart contract
-	const simplrShares = await Simplr.simplrShares(); // simplrShares should be dynamic and be fetched from the smart contract
+	const simplr = await contract.simplr(); // address of simplr should also be fetched from the smart contract
+	const simplrShares = await contract.simplrShares(); // simplrShares should be dynamic and be fetched from the smart contract
 
 	// create params
 	const type = 1; // by default
@@ -151,20 +151,32 @@ export const createCollection = async (
 	const reserveTokens = sales.reserveTokens; // should be default, this will not activate reservable module
 	const isAffiliable = sales.isAffiliable; // true if user wants affiliable to be active
 
-	console.log({ revealable });
-
-	const transaction = await Simplr.connect(signer).createCollection(
-		type,
+	console.log({
+		contract,
 		baseCollection,
 		presaleable,
 		paymentSplitter,
-		revealable,
+		projectURIProvenance: revealable.projectURIProvenance,
 		royalties,
 		reserveTokens,
 		metadata,
 		isAffiliable,
-		{ value: upfrontFee.toString() }
-	);
+	});
+
+	const transaction = await contract
+		.connect(signer)
+		.createCollection(
+			type,
+			baseCollection,
+			presaleable,
+			paymentSplitter,
+			revealable.projectURIProvenance,
+			royalties,
+			reserveTokens,
+			metadata,
+			isAffiliable,
+			{ value: upfrontFee.toString() }
+		);
 	const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
 
 	return { transaction, event };

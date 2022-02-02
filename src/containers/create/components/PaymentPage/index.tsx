@@ -146,7 +146,7 @@ const PaymentPage = ({ step, setStep }) => {
 
 	return (
 		<Box overflow="visible">
-			<SummaryPage visible={showSummaryPage} setVisible={setShowSummaryPage} step={step} setStep={setStep} />
+			<SummaryPage visible={showSummaryPage} setVisible={setShowSummaryPage} setStep={setStep} />
 			<Box overflow="visible" mb="10rem">
 				<Text as="h2" center>
 					Create new collection

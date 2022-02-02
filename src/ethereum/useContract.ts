@@ -13,8 +13,6 @@ const useContract = (contractName: string, chain: number, provider: ProviderProp
 		if (providers?.Provider?.isProvider(provider) && artifact?.abi) {
 			try {
 				const contract = new ethers.Contract(artifact?.address, artifact?.abi, provider);
-				console.log({ contract, artifact });
-
 				setContract(contract);
 			} catch (error) {
 				setContract(undefined);
