@@ -1,5 +1,5 @@
-import { CaretRight, X, XCircle } from 'phosphor-react';
-import React, { useEffect, useState } from 'react';
+import { CaretRight, X } from 'phosphor-react';
+import React, { useState } from 'react';
 import Box from 'src/components/Box';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
@@ -21,7 +21,7 @@ const SummaryPage = ({ visible, setVisible, setStep }) => {
 		} else if (modalStep === 1) {
 			return <SalesSummaryPage setModalStep={setModalStep} modalStep={modalStep} />;
 		} else if (modalStep === 2) {
-			return <PaymentSummaryPage setModalStep={setModalStep} modalStep={modalStep} setVisible={setVisible} />;
+			return <PaymentSummaryPage />;
 		}
 	};
 	if (visible) {
@@ -53,7 +53,7 @@ const SummaryPage = ({ visible, setVisible, setStep }) => {
 					>
 						<X size={18} style={{ color: 'white' }} />
 					</Box>
-					<Box pt="mxxxl" mx="auto" overflowX="visible">
+					<Box pt="mxxxl" mx="auto" width="70rem" overflow="auto">
 						<Text as="h2" center>
 							Create new collection
 						</Text>

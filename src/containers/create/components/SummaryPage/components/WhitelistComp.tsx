@@ -19,7 +19,8 @@ const WhitelistComp = () => {
 			width="65rem"
 			column
 			mt="mxxxl"
-			overflowY="scroll"
+			border="1px solid blue"
+			overflowY="visible"
 			css={`
 				::-webkit-scrollbar {
 					width: 4px;

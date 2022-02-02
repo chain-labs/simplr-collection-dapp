@@ -51,5 +51,13 @@ svg {
 
 
 .hidden-scrollbar::-webkit-scrollbar {
-	display: none;
+	background: transparent;
+	width: 10px;
+	padding: 4px;
+}
+
+.hidden-scrollbar::-webkit-scrollbar-thumb {
+	background: #868686;
+	margin-right: 2px;
+	border-radius: 16px;
 }

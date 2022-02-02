@@ -18,18 +18,15 @@ import { beneficiariesSelector, paymentSelector } from 'src/redux/payment';
 import {
 	affiliableToggleSelector,
 	presaleableToggleSelector,
-	presaleWhitelistSelector,
 	revealableToggleSelector,
 	saleSelector,
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
-import theme from 'src/styleguide/theme';
-import WhitelistModal from '../../SalesPage/WhitelistModal';
 import { createCollection, uploadToIPFS } from '../../utils';
 import DeployedModal from './DeployedModal';
 import WhitelistComp from './WhitelistComp';
 
-const PaymentSummaryPage = ({ modalStep, setModalStep, setVisible }) => {
+const PaymentSummaryPage = () => {
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
 	const collection = useAppSelector(collectionSelector);
@@ -50,7 +47,7 @@ const PaymentSummaryPage = ({ modalStep, setModalStep, setVisible }) => {
 	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
 
 	// const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares));
-	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
+	const CollectionFactory = useContract('CollectionFactoryV2', collection.type, provider);
 	const [metadata, setMetadata] = useState<string>();
 	const [transactionResult, setTransactionResult] = useState<any>();
 	const [ready, setReady] = useState(false);
@@ -62,8 +59,8 @@ const PaymentSummaryPage = ({ modalStep, setModalStep, setVisible }) => {
 	useEffect(() => {
 		const getAddress = async () => {
 			try {
-				const address = await Simplr?.callStatic.simplr();
-				const share = await Simplr?.callStatic.simplrShares();
+				const address = await CollectionFactory?.callStatic.simplr();
+				const share = await CollectionFactory?.callStatic.simplrShares();
 
 				const sharePercentage = ethers.utils.formatUnits(share?.toString());
 				const shareValue = parseFloat(sharePercentage) * 100;
@@ -75,12 +72,16 @@ const PaymentSummaryPage = ({ modalStep, setModalStep, setVisible }) => {
 			}
 		};
 		getAddress();
-	}, [Simplr]);
+	}, [CollectionFactory]);
 
 	const sendData = async () => {
-		const res = uploadToIPFS(collection, sales, payments, simplrAddress).then((hash) => {
-			setMetadata(hash);
-		});
+		const res = uploadToIPFS(collection, sales, payments, simplrAddress)
+			.then((hash) => {
+				setMetadata(hash);
+			})
+			.catch((err) => {
+				console.log({ err });
+			});
 		toast.promise(res, {
 			loading: 'Pinning Metadata to IPFS',
 			success: 'Metadata Pinned to IPFS',
@@ -92,7 +93,7 @@ const PaymentSummaryPage = ({ modalStep, setModalStep, setVisible }) => {
 	useEffect(() => {
 		if (metadata && ready) {
 			const transaction = async () => {
-				const res = createCollection(Simplr, metadata, collection, sales, payments, signer).then((tx) => {
+				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer).then((tx) => {
 					setTransactionResult(tx);
 				});
 				toast.promise(
