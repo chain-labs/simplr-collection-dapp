@@ -54,7 +54,7 @@ export const uploadToIPFS = async (
 			revealable: sales.revealable.enabled
 				? {
 						revealAfterTimestamp: getTimestamp(sales.revealable.timestamp),
-						loadingURI: sales.revealable.loadingImageUrl,
+						projectURI: sales.revealable.loadingImageUrl,
 						projectURIProvenance: ethers.utils.keccak256(
 							ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
 						),
@@ -99,7 +99,7 @@ export const createCollection = async (
 		maxHolding: sales.maxHolding, // maximum tokens that a wallet can hold during the sale
 		price: ethers.utils.parseUnits(sales.price?.toString(), 18), // 0.08 ETH  // price of public sale // expect wei value
 		publicSaleStartTime: getTimestamp(sales.publicSaleStartTime), // timestamp of public sale start
-		loadingURI: sales.revealable.loadingImageUrl, // placeholder or collection uri depending upon what they choose for reveal
+		projectURI: sales.revealable.loadingImageUrl, // placeholder or collection uri depending upon what they choose for reveal
 	};
 	const presaleable = sales.presaleable.enabled
 		? {
