@@ -29,3 +29,8 @@ export const networks = {
 		id: 'mumbai',
 	},
 };
+
+export const rpc_urls = {
+	137: 'https://polygon-rpc.com',
+	80001: 'https://rpc-mumbai.matic.today',
+};

@@ -3,7 +3,7 @@ import Box from 'src/components/Box';
 import Dropdown from 'src/components/Dropdown';
 import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { networks } from 'src/redux/collection/types';
+import { networks, rpc_urls } from 'src/redux/collection/types';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import ButtonComp from 'src/components/Button';
@@ -12,9 +12,11 @@ import { Toaster } from 'react-hot-toast';
 import { ethers } from 'ethers';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
+import { networkSelector } from 'src/redux/user';
 
 const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
+	const currentNetwork = useAppSelector(networkSelector);
 
 	const dispatch = useAppDispatch();
 
@@ -79,6 +81,36 @@ const CollectionPage = ({ step, setStep }) => {
 			setStep(1);
 		}
 	};
+
+	useEffect(() => {
+		if (networkValue > 0 && process.browser) {
+			const chainId = `0x${networkValue.toString(16)}`;
+			const rpc = rpc_urls[networkValue];
+			const name = networkData[networkValue];
+
+			if (networkValue === 137 || networkValue === 80001) {
+				console.log({ chainId, rpc, name, networkValue });
+
+				// @ts-expect-error ethereum in window
+				window.ethereum.request({
+					method: 'wallet_addEthereumChain',
+					params: [
+						{
+							chainId,
+							chainName: name,
+							rpcUrls: [`${rpc}`],
+						},
+					],
+				});
+			}
+
+			// @ts-expect-error ethereum in window
+			window.ethereum.request({
+				method: 'wallet_switchEthereumChain',
+				params: [{ chainId }],
+			});
+		}
+	}, [networkValue]);
 
 	return (
 		<Box>
