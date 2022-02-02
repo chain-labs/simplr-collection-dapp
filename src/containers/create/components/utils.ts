@@ -99,7 +99,7 @@ export const createCollection = async (
 		maxHolding: sales.maxHolding, // maximum tokens that a wallet can hold during the sale
 		price: ethers.utils.parseUnits(sales.price?.toString(), 18), // 0.08 ETH  // price of public sale // expect wei value
 		publicSaleStartTime: getTimestamp(sales.publicSaleStartTime), // timestamp of public sale start
-		projectURI: sales.revealable.loadingImageUrl, // placeholder or collection uri depending upon what they choose for reveal
+		projectURI: sales.revealable.enabled ? sales.revealable.loadingImageUrl : collection.project_uri, // placeholder or collection uri depending upon what they choose for reveal
 	};
 	const presaleable = sales.presaleable.enabled
 		? {
@@ -132,17 +132,14 @@ export const createCollection = async (
 		shares: payeeShares, // list of respective shares for beneficiaries, both array should match
 	}; // should be according to PaymentSplitterStruct
 
-	const revealable = sales.revealable.enabled
-		? {
-				projectURIProvenance: ethers.utils.keccak256(
-					ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
-				), // encoded hash of the project uri
-				revealAfterTimestamp: getTimestamp(sales.revealable.timestamp), // timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
-		  }
-		: {
-				projectURIProvenance: ethers.constants.HashZero, // encoded hash of the project uri
-				revealAfterTimestamp: parseInt(`${Date.now() / 1000 + 172800}`), // passing timestamp as zero, means donot activate revealable module
-		  }; // should be according to RevealableStruct
+	const revealable = {
+		projectURIProvenance: ethers.utils.keccak256(
+			ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
+		), // encoded hash of the project uri
+		revealAfterTimestamp: sales.revealable.enabled
+			? getTimestamp(sales.revealable.timestamp)
+			: parseInt(`${Date.now() / 1000 + 172800}`), // timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
+	};
 	const royalties = {
 		account: payments.royalties.account ?? collection.admin, //account that will receive royalties for secondary sale
 		value: payments.royalties.value ? payments.royalties.value * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
