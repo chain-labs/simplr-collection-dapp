@@ -202,7 +202,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 				</Box>
 				<Box row overflow="visible" mb="ms">
 					<TextInput
-						value={royaltyAddress}
+						value={''}
 						setValue={setRoyaltyAddress}
 						type="text"
 						width="45.2rem"
@@ -212,7 +212,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 					/>
 					<Box ml="mxs" />
 					<TextInput
-						value={royaltyPercentage}
+						value={''}
 						setValue={setRoyaltyPercentage}
 						type="text"
 						width="9.2rem"
