@@ -1962,7 +1962,7 @@
       "chainId": "4",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0x055655958CA48261888E5EB1D5dB68A77BBAB3dd",
+          "address": "0xF5a0c7d1EbbB44e6E187518eE6674298D9DE3e85",
           "abi": [
             {
               "anonymous": false,
@@ -3012,6 +3012,24 @@
                   "internalType": "uint256",
                   "name": "",
                   "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "royalties",
+              "outputs": [
+                {
+                  "internalType": "address payable",
+                  "name": "account",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint96",
+                  "name": "value",
+                  "type": "uint96"
                 }
               ],
               "stateMutability": "view",
@@ -6178,7 +6196,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0xCDbdb7329aC8e7867ce9E1279616B4226038B194",
+          "address": "0xaf3b6AA554006dEE4379CA956d5b0864CDb1F98b",
           "abi": [
             {
               "inputs": [
@@ -11599,7 +11617,7 @@
       "chainId": "80001",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0xBB88528d97b5364FCf842f9843e2C4008A2104Ba",
+          "address": "0x12164dA7FB4A16f03BbdeD2B774F608bA55a6d6F",
           "abi": [
             {
               "anonymous": false,
@@ -12649,6 +12667,24 @@
                   "internalType": "uint256",
                   "name": "",
                   "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "royalties",
+              "outputs": [
+                {
+                  "internalType": "address payable",
+                  "name": "account",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint96",
+                  "name": "value",
+                  "type": "uint96"
                 }
               ],
               "stateMutability": "view",
@@ -15815,7 +15851,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0xec933De8363B9dfcd402E3D8011B9d1fDCb8BAa5",
+          "address": "0x86EBD2Ba0f0e34cEa74F5aa8dC2c6Ed3dD9b017e",
           "abi": [
             {
               "inputs": [
