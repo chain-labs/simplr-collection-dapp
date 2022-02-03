@@ -7,6 +7,7 @@ const intitalState: EditState = {
 	label: '',
 	placeholder: '',
 	data: '',
+	editable: '',
 };
 
 export const EditReducer = createReducer(intitalState, (builder) => {

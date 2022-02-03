@@ -3,4 +3,5 @@ export interface EditState {
 	label?: string;
 	placeholder?: string;
 	data?: string;
+	editable?: string;
 }
