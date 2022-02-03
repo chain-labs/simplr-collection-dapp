@@ -17,23 +17,18 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 	const [contract, setContract] = useState<ethers.Contract>();
 
 	useEffect(() => {
-		if (id) {
+		if (id && provider) {
 			const abi = getContractDetails('AffiliateCollection');
 			const contract = new ethers.Contract(id, abi, provider);
 			setContract(contract);
 		}
-	}, [id]);
-
-	useEffect(() => {
-		console.log({ metadata });
-	}, [metadata]);
-
+	}, [id, provider]);
 	const getPage = (step) => {
 		if (step === 0) {
 			return <CollectionPage contract={contract} />;
 		}
 		if (step === 1) {
-			return <PaymentsPage contract={contract} />;
+			return <PaymentsPage contract={contract} metadata={metadata} />;
 		}
 	};
 

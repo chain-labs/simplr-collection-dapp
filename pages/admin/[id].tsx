@@ -12,6 +12,7 @@ const AdminDashboardPage = () => {
 	const { id } = router.query;
 	const [provider] = useEthers();
 	const [metadata, setMetadata] = useState();
+
 	const getMetadata = async () => {
 		const abi = getContractDetails('AffiliateCollection');
 		const contract = new ethers.Contract(`${id}`, abi, provider);
@@ -21,10 +22,10 @@ const AdminDashboardPage = () => {
 	};
 
 	useEffect(() => {
-		if (id) {
+		if (id && provider) {
 			getMetadata();
 		}
-	}, [id]);
+	}, [id, provider]);
 
 	return <AdminDashboardComponent metadata={metadata} id={id} />;
 };
