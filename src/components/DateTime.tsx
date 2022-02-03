@@ -29,13 +29,13 @@ const DateTime = ({ value, setValue, disabled, disableValidation, width }: props
 
 	return (
 		<Box overflowX="visible" overflowY="visible">
-			<Box overflow="visible" between width="64rem" mb="mxxs">
+			<Box overflow="visible" between width={width} mb="mxxs">
 				<TextInput
 					placeholder="DD/MM/YYYY"
 					type="date"
 					value={date}
 					setValue={setDate}
-					width="30rem"
+					width="28rem"
 					required
 					{...{ disabled, disableValidation }}
 				/>
