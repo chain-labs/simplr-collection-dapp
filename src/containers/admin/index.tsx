@@ -12,7 +12,7 @@ import CollectionPage from './components/CollectionPage';
 import PaymentsPage from './components/PaymentsPage';
 
 const AdminDashboardComponent = ({ metadata, id }) => {
-	const [step, setStep] = useState(0);
+	const [step, setStep] = useState(1);
 	const [provider] = useEthers();
 	const [contract, setContract] = useState<ethers.Contract>();
 

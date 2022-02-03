@@ -8,9 +8,11 @@ import If from 'src/components/If';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import useEthers from 'src/ethereum/useEthers';
+import useSigner from 'src/ethereum/useSigner';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
+import WithdrawModal from './WithdrawModal';
 
 const PaymentsPage = ({ contract, metadata }) => {
 	const [payees, setPayees] = useState<string[]>([]);
@@ -22,8 +24,10 @@ const PaymentsPage = ({ contract, metadata }) => {
 	const [userShare, setUserShare] = useState('');
 	const [pendingPayment, setPendingPayment] = useState('');
 	const [totalFunds, setTotalFunds] = useState('');
+	const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(0);
 
-	const [provider] = useEthers();
+	const [provider, setProvider] = useEthers();
+	const [signer] = useSigner(provider);
 
 	const user = useAppSelector(userSelector);
 
@@ -38,39 +42,67 @@ const PaymentsPage = ({ contract, metadata }) => {
 	}, [contract]);
 
 	useEffect(() => {
-		if (metadata) {
-			const getPayment = async (share) => {
-				if (provider) {
-					const balance = await provider?.getBalance(contract.address);
-					const totalReleased = await contract.callStatic['totalReleased()']();
-					const totalFunds = balance.add(totalReleased);
-					const totalShares = await contract.callStatic.totalShares();
-					const released = await contract.callStatic['released(address)'](user.address);
-					const userShare = ethers.utils.parseUnits(share.toString(), 16);
-					const pendingPayment = totalFunds.mul(userShare).div(totalShares).sub(released);
-					setTotalFunds(ethers.utils.formatUnits(totalFunds));
-					setPendingPayment(ethers.utils.formatUnits(pendingPayment));
-				}
-			};
-			const { tokenDetails } = metadata;
-			const payees: string[] = tokenDetails.paymentSplitter.payees;
-			const shares = tokenDetails.paymentSplitter.shares;
-			setPayees(payees);
-			setShares(shares);
-			const index = payees.findIndex((payee) => payee === user.address);
-			if (index !== -1) {
-				const share = shares[index];
+		const hydrate = () => {
+			if (metadata) {
+				const getPayment = async (share) => {
+					if (provider) {
+						const balance = await provider?.getBalance(contract.address);
+						const totalReleased = await contract.callStatic['totalReleased()']();
+						const totalFunds = balance.add(totalReleased);
+						const totalShares = await contract.callStatic.totalShares();
+						const released = await contract.callStatic['released(address)'](user.address);
+						const userShare = ethers.utils.parseUnits(share.toString(), 16);
+						const pendingPayment = totalFunds.mul(userShare).div(totalShares).sub(released);
+						setTotalFunds(ethers.utils.formatUnits(totalFunds));
+						setPendingPayment(ethers.utils.formatUnits(pendingPayment));
+					}
+				};
+				const { tokenDetails } = metadata;
+				const payees: string[] = tokenDetails.paymentSplitter.payees;
+				const shares = tokenDetails.paymentSplitter.shares;
+				setPayees(payees);
+				setShares(shares);
+				const index = payees.findIndex((payee) => payee === user.address);
+				if (index !== -1) {
+					const share = shares[index];
 
-				setUserShare(share.toString());
-				if (contract) {
-					getPayment(share);
+					setUserShare(share.toString());
+					if (contract) {
+						getPayment(share);
+					}
 				}
 			}
-		}
-	}, [metadata, user, provider]);
+		};
+		if (isWithdrawModalOpen === 0) hydrate();
+	}, [metadata, user, provider, isWithdrawModalOpen]);
+
+	const withdraw = async () => {
+		toast.loading('Transaction is processing!', {
+			duration: Infinity,
+		});
+
+		const transaction = await contract
+			.connect(signer)
+			['release(address)'](user.address)
+			.catch(() => setIsWithdrawModalOpen(2));
+		const getEvent = async (transaction) => {
+			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'PaymentReleased')[0]?.args;
+			return event;
+		};
+		const event = getEvent(transaction)
+			.then(() => {
+				setIsWithdrawModalOpen(1);
+				toast.dismiss();
+			})
+			.catch(() => {
+				setIsWithdrawModalOpen(2);
+				toast.dismiss();
+			});
+	};
 
 	return (
 		<Box mt="6rem" width="116.8rem" mx="auto">
+			<WithdrawModal isOpen={isWithdrawModalOpen} setIsOpen={setIsWithdrawModalOpen} pendingPayment={pendingPayment} />
 			<Box row between alignItems="flex-start">
 				<Box width="55.2rem">
 					<Box between mb="mm">
@@ -152,7 +184,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 						</Box>
 					</Box>
 					<Box row justifyContent="flex-end" mt="mm">
-						<ButtonComp bg="primary" height="40px" px="mxl">
+						<ButtonComp bg="primary" height="40px" px="mxl" onClick={() => withdraw()}>
 							Withdraw
 						</ButtonComp>
 					</Box>
