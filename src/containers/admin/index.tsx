@@ -21,10 +21,8 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 			const abi = getContractDetails('AffiliateCollection');
 			const contract = new ethers.Contract(id, abi, provider);
 			setContract(contract);
-			console.log({ contract });
 		}
 	}, [id]);
-
 	const getPage = (step) => {
 		if (step === 0) {
 			return <CollectionPage contract={contract} />;
