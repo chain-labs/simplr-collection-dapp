@@ -46,8 +46,8 @@ export const uploadToIPFS = async (
 				  }
 				: {},
 			paymentSplitter: {
-				payees: payments.paymentSplitter.payees,
-				shares: payments.paymentSplitter.shares,
+				payees: [...payments.paymentSplitter.payees, simplrAddress],
+				shares: [...payments.paymentSplitter.shares, ethers.utils.parseUnits('0.1', 18)],
 				simplr: simplrAddress,
 				simplrShares: ethers.utils.parseUnits('0.1', 18),
 			},
@@ -128,8 +128,8 @@ export const createCollection = async (
 	const paymentSplitter = {
 		simplr, // simplr address // can get it from CollectionFactoryV2
 		simplrShares, // 10% // simplr shares // can get it from CollectionFactoryV2
-		payees: payments.paymentSplitter.payees, // list of addresses that will become beneficiaries
-		shares: payeeShares, // list of respective shares for beneficiaries, both array should match
+		payees: [...payments.paymentSplitter.payees, simplr], // list of addresses that will become beneficiaries
+		shares: [...payeeShares, simplrShares], // list of respective shares for beneficiaries, both array should match
 	}; // should be according to PaymentSplitterStruct
 
 	const revealable = sales.revealable.enabled
