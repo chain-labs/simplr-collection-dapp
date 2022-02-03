@@ -133,7 +133,17 @@ const CollectionPage = ({ contract }) => {
 						condition={collection.presalePrice !== '-1'}
 						then={<DashboardCard Icon={Timer} text="Pre-sale" status="Live" editable="status" />}
 					/>
-					<DashboardCard Icon={Timer} text="Public-sale goes live in" data="12:00:59" editable="time" />
+					<DashboardCard
+						Icon={Timer}
+						text="Public-sale goes live in"
+						data="12:00:59"
+						editable="time"
+						type="time"
+						setShowModal={setShowModal}
+						showModal={showModal}
+						edit={edit}
+						setEdit={setEdit}
+					/>
 					<DashboardCard Icon={ImageSquare} text="NFTs sold" data="6100" />
 					<DashboardCard
 						Icon={ImageSquare}
