@@ -18,7 +18,7 @@ const CollectionPage = ({ contract }) => {
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [edited, setEdited] = useState(false);
-	const [adminAddress, setAdminAddress] = useState('0xd18Cd50a6bDa288d331e3956BAC496AAbCa4960d');
+	const [adminAddress, setAdminAddress] = useState('');
 	const [collection, setCollection] = useState({
 		maxTokens: '',
 		adminAddress: '',
@@ -26,6 +26,7 @@ const CollectionPage = ({ contract }) => {
 		price: '',
 		presalePrice: '',
 		totalSupply: 0,
+		tokensCount: '',
 		totalFunds: '',
 	});
 
@@ -39,6 +40,7 @@ const CollectionPage = ({ contract }) => {
 			const balance = await provider?.getBalance(contract.address);
 			const totalReleased = await contract.callStatic['totalReleased()']();
 			const totalFunds = balance.add(totalReleased);
+			const tokensCount = await contract.callStatic.tokensCount();
 			const details = {
 				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
 				adminAddress,
@@ -47,6 +49,7 @@ const CollectionPage = ({ contract }) => {
 				presalePrice: '-1',
 				totalSupply,
 				totalFunds: ethers.utils.formatUnits(totalFunds),
+				tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
 			};
 
 			const isPresaleable = await contract.callStatic.isPresaleAllowed();
@@ -114,7 +117,7 @@ const CollectionPage = ({ contract }) => {
 					then={<DashboardCard Icon={Timer} text="Pre-sale" status="Paused" editable="status" />}
 				/>
 				<DashboardCard Icon={Timer} text="Public-sale goes live in" data="12:00:59" editable="time" />
-				<DashboardCard Icon={ImageSquare} text="NFTs sold" data="6100" />
+				<DashboardCard Icon={ImageSquare} text="NFTs sold" data={collection.tokensCount} />
 				<DashboardCard
 					Icon={ImageSquare}
 					text="NFTs remaining"
