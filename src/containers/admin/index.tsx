@@ -33,7 +33,7 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 			return <CollectionPage contract={contract} />;
 		}
 		if (step === 1) {
-			return <PaymentsPage contract={contract} />;
+			return <PaymentsPage contract={contract} metadata={metadata} />;
 		}
 	};
 
