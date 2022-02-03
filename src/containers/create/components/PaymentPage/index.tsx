@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { XCircle } from 'phosphor-react';
+import { CaretRight, XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -20,6 +20,7 @@ import {
 	removeBeneficiary,
 	setPaymentDetails,
 } from 'src/redux/payment';
+import { saleSelector } from 'src/redux/sales';
 import theme from 'src/styleguide/theme';
 import SummaryPage from '../SummaryPage';
 
@@ -36,11 +37,12 @@ const PaymentPage = ({ step, setStep }) => {
 	const [signer] = useSigner(provider);
 	const collection = useAppSelector(collectionSelector);
 	const payments = useAppSelector(paymentSelector);
+	const sales = useAppSelector(saleSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
 	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
 	const [beneficiary, setBeneficiary] = useState<string>();
-	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState<number>();
+	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState('');
 	const [showSummaryPage, setShowSummaryPage] = useState<boolean>();
 	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares, simplrShares));
@@ -66,8 +68,33 @@ const PaymentPage = ({ step, setStep }) => {
 		getAddress();
 	}, [Simplr]);
 
+	const addData = (Step) => {
+		const data = getData();
+		dispatch(setPaymentDetails(data));
+		setStep(Step);
+	};
+
+	const getData = () => {
+		const data = {
+			royalties: {
+				account: royaltyAddress,
+				value: royaltyPercentage,
+			},
+		};
+		return data;
+	};
+
 	const addPaymentDetails = (e) => {
 		e.preventDefault();
+		if (!collection.collection_validated) {
+			toast.error('Check all the input fields and click next to continue.');
+			setStep(0);
+			return;
+		} else if (!sales.salesDetails_validated) {
+			toast.error('Check all the input fields and click next to continue.');
+			setStep(1);
+			return;
+		}
 		if (royaltyAddress) {
 			const valid = ethers.utils.isAddress(royaltyAddress);
 			if (!valid || royaltyPercentage > 10) {
@@ -80,12 +107,7 @@ const PaymentPage = ({ step, setStep }) => {
 			return;
 		}
 
-		const data = {
-			royalties: {
-				account: royaltyAddress,
-				value: royaltyPercentage,
-			},
-		};
+		const data = getData();
 		dispatch(setPaymentDetails(data));
 		toast.success('Saved');
 		setShowSummaryPage(true);
@@ -102,11 +124,11 @@ const PaymentPage = ({ step, setStep }) => {
 			return;
 		}
 		if (valid) {
-			if (beneficiaryPercentage <= maxShare) {
-				dispatch(addBeneficiary({ payee: beneficiary, shares: beneficiaryPercentage }));
-				setMaxShare(maxShare - beneficiaryPercentage);
+			if (parseFloat(beneficiaryPercentage) <= maxShare) {
+				dispatch(addBeneficiary({ payee: beneficiary, shares: parseInt(beneficiaryPercentage) }));
+				setMaxShare(maxShare - parseInt(beneficiaryPercentage));
 				toast.success('Beneficiary added');
-				setBeneficiaryPercentage(0);
+				setBeneficiaryPercentage('');
 				setBeneficiary('');
 			} else {
 				toast.error(`Shares must be less than ${maxShare}%`);
@@ -124,8 +146,24 @@ const PaymentPage = ({ step, setStep }) => {
 
 	return (
 		<Box overflow="visible">
-			<SummaryPage visible={showSummaryPage} setVisible={setShowSummaryPage} step={step} setStep={setStep} />
+			<SummaryPage visible={showSummaryPage} setVisible={setShowSummaryPage} setStep={setStep} />
 			<Box overflow="visible" mb="10rem">
+				<Text as="h2" center>
+					Create new collection
+				</Text>
+				<Box center mt="mxxxl" mb="ws">
+					<Text as="h5" color={step === 0 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(0)}>
+						Collection Details
+					</Text>
+					<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
+					<Text as="h5" color={step === 1 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(1)}>
+						Sales
+					</Text>
+					<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
+					<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(2)}>
+						Payment Details
+					</Text>
+				</Box>
 				<form onSubmit={addPaymentDetails}>
 					<Box overflow="visible" mb="10rem">
 						<Box overflow="visible">
@@ -145,6 +183,7 @@ const PaymentPage = ({ step, setStep }) => {
 									type="text"
 									width="41.7rem"
 									fontSize="1.4rem"
+									disableValidation
 								/>
 								<Box ml="mxs" />
 								<TextInput
@@ -175,29 +214,14 @@ const PaymentPage = ({ step, setStep }) => {
 								/>
 							</Box>
 							{beneficiaries?.payees?.map((payee, index) => (
-								<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
-									<TextInput
-										value={null}
-										placeholder={payee}
-										type="text"
-										width="41.7rem"
-										fontSize="1.4rem"
-										disableValidation
-									/>
-									<Box ml="mxs" />
-									<TextInput
-										value={null}
-										placeholder={`${beneficiaries?.shares[index]}%`}
-										max={`${maxShare}`}
-										type="number"
-										width="21.4rem"
-										disableValidation
-										fontSize="1.4rem"
-									/>
-									<Box ml="mxs" onClick={() => handleRemove(payee, beneficiaries.shares[index])} cursor="pointer">
-										<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
-									</Box>
-								</Box>
+								<Payee
+									percentage={beneficiaries?.shares[index]}
+									payee={payee}
+									key={index}
+									handleRemove={handleRemove}
+									index={index}
+									maxShare={maxShare}
+								/>
 							))}
 							<If
 								condition={maxShare > 0}
@@ -263,3 +287,39 @@ const PaymentPage = ({ step, setStep }) => {
 };
 
 export default PaymentPage;
+
+const Payee = ({ percentage, payee, index, maxShare, handleRemove }) => {
+	const [deleteButton, setDeleteButton] = useState(false);
+	return (
+		<Box
+			row
+			overflow="visible"
+			mb="ms"
+			key={payee.substr(-4)}
+			onMouseOver={() => setDeleteButton(true)}
+			onMouseOut={() => setDeleteButton(false)}
+			width="105%"
+		>
+			<TextInput value={null} placeholder={payee} type="text" width="41.7rem" fontSize="1.4rem" disableValidation />
+			<Box ml="mxs" />
+			<TextInput
+				value={null}
+				placeholder={`${percentage}%`}
+				max={`${maxShare}`}
+				type="number"
+				width="21.4rem"
+				disableValidation
+				fontSize="1.4rem"
+			/>
+			<Box
+				ml="mxs"
+				onClick={() => handleRemove(payee, percentage)}
+				cursor="pointer"
+				display={deleteButton ? 'block' : 'none'}
+				height="20px"
+			>
+				<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
+			</Box>
+		</Box>
+	);
+};

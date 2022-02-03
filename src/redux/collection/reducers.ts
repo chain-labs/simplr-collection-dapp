@@ -12,6 +12,7 @@ const intitalState: CollectionState = {
 	banner_url: '',
 	contact_email: '',
 	admin: '',
+	collection_validated: false,
 };
 
 export const collectionReducer = createReducer(intitalState, (builder) => {

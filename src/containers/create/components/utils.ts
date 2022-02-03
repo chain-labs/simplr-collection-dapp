@@ -46,15 +46,15 @@ export const uploadToIPFS = async (
 				  }
 				: {},
 			paymentSplitter: {
-				payees: payments.paymentSplitter.payees,
-				shares: payments.paymentSplitter.shares,
+				payees: [...payments.paymentSplitter.payees, simplrAddress],
+				shares: [...payments.paymentSplitter.shares, ethers.utils.parseUnits('0.1', 18)],
 				simplr: simplrAddress,
 				simplrShares: ethers.utils.parseUnits('0.1', 18),
 			},
 			revealable: sales.revealable.enabled
 				? {
 						revealAfterTimestamp: getTimestamp(sales.revealable.timestamp),
-						loadingURI: sales.revealable.loadingImageUrl,
+						projectURI: sales.revealable.loadingImageUrl,
 						projectURIProvenance: ethers.utils.keccak256(
 							ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
 						),
@@ -75,17 +75,17 @@ export const uploadToIPFS = async (
 };
 
 export const createCollection = async (
-	Simplr,
+	contract,
 	metadata: string,
 	collection: CollectionState,
 	sales: SaleState,
 	payments: PaymentState,
 	signer: SignerProps
 ) => {
-	const upfrontFee = await Simplr.upfrontFee(); // it works without callStatic too // upfront fee should be fetched from smart contract
+	const upfrontFee = await contract.upfrontFee(); // it works without callStatic too // upfront fee should be fetched from smart contract
 
-	const simplr = await Simplr.simplr(); // address of simplr should also be fetched from the smart contract
-	const simplrShares = await Simplr.simplrShares(); // simplrShares should be dynamic and be fetched from the smart contract
+	const simplr = await contract.simplr(); // address of simplr should also be fetched from the smart contract
+	const simplrShares = await contract.simplrShares(); // simplrShares should be dynamic and be fetched from the smart contract
 
 	// create params
 	const type = 1; // by default
@@ -99,7 +99,7 @@ export const createCollection = async (
 		maxHolding: sales.maxHolding, // maximum tokens that a wallet can hold during the sale
 		price: ethers.utils.parseUnits(sales.price?.toString(), 18), // 0.08 ETH  // price of public sale // expect wei value
 		publicSaleStartTime: getTimestamp(sales.publicSaleStartTime), // timestamp of public sale start
-		loadingURI: sales.revealable.loadingImageUrl, // placeholder or collection uri depending upon what they choose for reveal
+		projectURI: sales.revealable.enabled ? sales.revealable.loadingImageUrl : collection.project_uri, // placeholder or collection uri depending upon what they choose for reveal
 	};
 	const presaleable = sales.presaleable.enabled
 		? {
@@ -128,21 +128,18 @@ export const createCollection = async (
 	const paymentSplitter = {
 		simplr, // simplr address // can get it from CollectionFactoryV2
 		simplrShares, // 10% // simplr shares // can get it from CollectionFactoryV2
-		payees: payments.paymentSplitter.payees, // list of addresses that will become beneficiaries
-		shares: payeeShares, // list of respective shares for beneficiaries, both array should match
+		payees: [...payments.paymentSplitter.payees, simplr], // list of addresses that will become beneficiaries
+		shares: [...payeeShares, simplrShares], // list of respective shares for beneficiaries, both array should match
 	}; // should be according to PaymentSplitterStruct
 
-	const revealable = sales.revealable.enabled
-		? {
-				projectURIProvenance: ethers.utils.keccak256(
-					ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
-				), // encoded hash of the project uri
-				revealAfterTimestamp: getTimestamp(sales.revealable.timestamp), // timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
-		  }
-		: {
-				projectURIProvenance: ethers.constants.HashZero, // encoded hash of the project uri
-				revealAfterTimestamp: parseInt(`${Date.now() / 1000 + 172800}`), // passing timestamp as zero, means donot activate revealable module
-		  }; // should be according to RevealableStruct
+	const revealable = {
+		projectURIProvenance: ethers.utils.keccak256(
+			ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
+		), // encoded hash of the project uri
+		revealAfterTimestamp: sales.revealable.enabled
+			? getTimestamp(sales.revealable.timestamp)
+			: parseInt(`${Date.now() / 1000 + 172800}`), // timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
+	};
 	const royalties = {
 		account: payments.royalties.account ?? collection.admin, //account that will receive royalties for secondary sale
 		value: payments.royalties.value ? payments.royalties.value * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
@@ -151,20 +148,32 @@ export const createCollection = async (
 	const reserveTokens = sales.reserveTokens; // should be default, this will not activate reservable module
 	const isAffiliable = sales.isAffiliable; // true if user wants affiliable to be active
 
-	console.log({ revealable });
-
-	const transaction = await Simplr.connect(signer).createCollection(
-		type,
+	console.log({
+		contract,
 		baseCollection,
 		presaleable,
 		paymentSplitter,
-		revealable,
+		projectURIProvenance: revealable.projectURIProvenance,
 		royalties,
 		reserveTokens,
 		metadata,
 		isAffiliable,
-		{ value: upfrontFee.toString() }
-	);
+	});
+
+	const transaction = await contract
+		.connect(signer)
+		.createCollection(
+			type,
+			baseCollection,
+			presaleable,
+			paymentSplitter,
+			revealable.projectURIProvenance,
+			royalties,
+			reserveTokens,
+			metadata,
+			isAffiliable,
+			{ value: upfrontFee.toString() }
+		);
 	const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
 
 	return { transaction, event };

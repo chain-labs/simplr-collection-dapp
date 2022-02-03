@@ -13,7 +13,7 @@ const Modal = ({ children, visible }) => {
 		<Box
 			display={visible ? 'initial' : 'none'}
 			position="fixed"
-			bg={`${theme.colors['black-90']}20`}
+			bg={`${theme.colors['simply-black']}4c`}
 			top="0"
 			left="0"
 			height="100vh"

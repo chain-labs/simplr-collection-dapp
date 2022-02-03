@@ -19,6 +19,7 @@ export interface SaleState {
 		loadingImageUrl?: string;
 	};
 	isAffiliable?: boolean;
+	salesDetails_validated?: boolean;
 }
 
 export interface DateType {

@@ -4,7 +4,7 @@ import useEthers, { requestAccount } from 'src/ethereum/useEthers';
 import useListeners from 'src/ethereum/useListeners';
 import useSigner from 'src/ethereum/useSigner';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { setUser, userSelector } from 'src/redux/user';
+import { networkSelector, setNetwork, setUser, userSelector } from 'src/redux/user';
 import Container from './Container';
 import Text from './Text';
 
@@ -15,15 +15,17 @@ const Navbar = () => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
 
+	const network = useAppSelector(networkSelector);
+
 	const [provider, setProvider, ethers] = useEthers();
 	const [signer, setSigner] = useSigner(provider);
-	const [chain, setChain] = useState(null);
 	useListeners(provider, setProvider, setSigner);
 
 	useEffect(() => {
 		const getChain = async () => {
 			const network = await provider.getNetwork();
-			setChain(network.chainId);
+			const chainId = network.chainId;
+			dispatch(setNetwork({ chain: chainId, name: networks[chainId].name, id: networks[chainId].id }));
 		};
 		if (provider) {
 			getChain();
@@ -34,8 +36,13 @@ const Navbar = () => {
 		if (process.browser) {
 			// @ts-expect-error ethereum in window is not defined
 			window?.ethereum.on('chainChanged', (chainId) => {
-				setChain(chainId);
-				window.location.reload();
+				const chain = parseInt(chainId, 16);
+				const network = {
+					chain: chain,
+					name: networks?.[chain]?.name,
+					id: networks?.[chain]?.id,
+				};
+				if (chain !== network.chain) dispatch(setNetwork(network));
 			});
 		}
 	}, []);
@@ -58,8 +65,6 @@ const Navbar = () => {
 			} catch (err) {
 				console.log(err);
 			}
-
-			// dispatch(setUser(address));
 		}
 	}, [signer]);
 
@@ -88,7 +93,7 @@ const Navbar = () => {
 					>
 						<Box height="20px" width="20px" borderRadius="50%" bg={user.exists ? 'green-50' : 'red-50'} />
 						<Text as="h5" mx="mxs">
-							{networks[chain]?.name}
+							{network.name}
 						</Text>
 						<Box height="20px" width="0.1rem" bg="black-10" mr="mxs" />
 						<Text as="h5" mx="mxs" color="simply-blue">

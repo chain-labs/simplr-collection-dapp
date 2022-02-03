@@ -24,6 +24,7 @@ const intitalState: SaleState = {
 		loadingImageUrl: '',
 	},
 	isAffiliable: false,
+	salesDetails_validated: false,
 };
 
 export const saleReducer = createReducer(intitalState, (builder) => {

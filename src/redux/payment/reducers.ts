@@ -12,6 +12,7 @@ const intitalState: PaymentState = {
 		payees: [],
 		shares: [],
 	},
+	paymentDetails_validated: false,
 };
 
 export const paymentReducer = createReducer(intitalState, (builder) => {

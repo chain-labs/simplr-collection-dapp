@@ -7,4 +7,5 @@ export interface PaymentState {
 		payees?: string[];
 		shares?: number[];
 	};
+	paymentDetails_validated?: boolean;
 }

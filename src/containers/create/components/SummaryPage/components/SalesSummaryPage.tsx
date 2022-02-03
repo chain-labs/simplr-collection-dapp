@@ -20,7 +20,7 @@ const SalesSummaryPage = ({ modalStep, setModalStep }) => {
 	const [reserveTokens, setReserveTokens] = useState<number>(sales.reserveTokens);
 	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<DateType>(sales.publicSaleStartTime);
 	return (
-		<Box overflow="visible" mb="20rem">
+		<Box overflow="visible" mb="20rem" width="100%">
 			<LabelledTextInput
 				type="number"
 				min="1"
