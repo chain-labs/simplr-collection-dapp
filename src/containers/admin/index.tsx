@@ -12,7 +12,7 @@ import CollectionPage from './components/CollectionPage';
 import PaymentsPage from './components/PaymentsPage';
 
 const AdminDashboardComponent = ({ metadata, id }) => {
-	const [step, setStep] = useState(1);
+	const [step, setStep] = useState(0);
 	const [provider] = useEthers();
 	const [contract, setContract] = useState<ethers.Contract>();
 
@@ -21,10 +21,8 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 			const abi = getContractDetails('AffiliateCollection');
 			const contract = new ethers.Contract(id, abi, provider);
 			setContract(contract);
-			console.log({ contract });
 		}
 	}, [id]);
-
 	const getPage = (step) => {
 		if (step === 0) {
 			return <CollectionPage contract={contract} />;
