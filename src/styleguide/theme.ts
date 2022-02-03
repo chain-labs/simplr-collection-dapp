@@ -110,6 +110,12 @@ const colors: DefaultTheme['colors'] = {
 	'yellow-70': '#B77522',
 	'yellow-80': '#935715',
 	'yellow-90': '#7A410D',
+
+	'white-00': '#FAFAFF',
+	'white-10': '#E6E6FF',
+	'white-20': '#E5E5FF',
+
+	'gray-00': '#ABABB2',
 };
 
 const shadows: DefaultTheme['shadows'] = {

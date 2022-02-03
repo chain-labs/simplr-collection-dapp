@@ -110,7 +110,6 @@ const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProp
 			className={restProps.className}
 			margin={0}
 			padding={0}
-			as={as}
 			color={color as string}
 			fontSize={fs}
 			fontWeight={fw}

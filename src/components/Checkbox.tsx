@@ -1,30 +1,39 @@
-import React, { useState } from 'react';
-import Box from './Box';
+import React from 'react';
+import Box, { BoxProps } from './Box';
 import { Check } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 
-const Checkbox = ({ active, value, setValue, ...restProps }) => {
+interface Props extends BoxProps {
+	disabled?: boolean;
+	value?: boolean;
+	setValue: (boolean) => void;
+	dangerouslySetInnerHTML?: { __html: string };
+	onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+}
+
+const Checkbox = ({ disabled, value, setValue, ...restProps }: Props) => {
 	// const [isChecked, setIsChecked] = useState<boolean>(false);
 
 	return (
+		//@ts-expect-error-box
 		<Box
 			width="32px"
 			height="33px"
-			cursor={active ? 'pointer' : 'not-allowed'}
+			cursor={disabled ? 'not-allowed' : 'pointer'}
 			display="flex"
 			justifyContent="center"
 			alignItems="center"
-			backgroundColor={active ? (value ? 'blue-50' : '#ECF1F4') : '#ECF1F4'}
+			backgroundColor={disabled ? '#ECF1F4' : value ? 'blue-50' : '#ECF1F4'}
 			boxShadow="inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)"
 			borderRadius="8px"
-			border={active ? (value ? `1px solid ${theme.colors['blue-50']}` : 'none') : '1px solid rgba(71, 67, 197, 0.1)'}
+			border={disabled ? '1px solid rgba(71, 67, 197, 0.1)' : value ? `1px solid ${theme.colors['blue-50']}` : 'none'}
 			onClick={
-				active
+				disabled
 					? () => {
-							setValue(!value);
+							setValue(value);
 					  }
 					: () => {
-							setValue(value);
+							setValue(!value);
 					  }
 			}
 			{...restProps}

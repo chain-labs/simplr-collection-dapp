@@ -13,10 +13,10 @@ export const selectPresaleableToggle = (state: RootState) => state.sales.presale
 
 export const presaleableToggleSelector = createSelector(selectPresaleableToggle, (state) => state);
 
-export const selectRevealableToggle = (state: RootState) => state.sales.presaleable.enabled;
+export const selectRevealableToggle = (state: RootState) => state.sales.revealable.enabled;
 
 export const revealableToggleSelector = createSelector(selectRevealableToggle, (state) => state);
 
-export const selectAffiliableToggle = (state: RootState) => state.sales.presaleable.enabled;
+export const selectAffiliableToggle = (state: RootState) => state.sales.isAffiliable;
 
 export const affiliableToggleSelector = createSelector(selectAffiliableToggle, (state) => state);

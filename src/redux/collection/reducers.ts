@@ -12,13 +12,13 @@ const intitalState: CollectionState = {
 	banner_url: '',
 	contact_email: '',
 	admin: '',
+	collection_validated: false,
 };
 
 export const collectionReducer = createReducer(intitalState, (builder) => {
 	builder.addCase(setCollectionDetails, (state, action) => {
 		const updateState: CollectionState = action.payload;
 		const newState = { ...state, ...updateState };
-		state = newState;
-		return state;
+		return newState;
 	});
 });

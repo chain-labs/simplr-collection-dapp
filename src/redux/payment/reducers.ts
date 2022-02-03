@@ -5,13 +5,14 @@ import { PaymentState } from './types';
 
 const intitalState: PaymentState = {
 	royalties: {
-		account: '',
+		account: null,
 		value: null,
 	},
 	paymentSplitter: {
 		payees: [],
 		shares: [],
 	},
+	paymentDetails_validated: false,
 };
 
 export const paymentReducer = createReducer(intitalState, (builder) => {
@@ -23,15 +24,15 @@ export const paymentReducer = createReducer(intitalState, (builder) => {
 			return state;
 		})
 		.addCase(addBeneficiary, (state, action) => {
-			state.paymentSplitter.payees.push(action.payload.payee);
-			state.paymentSplitter.shares.push(action.payload.shares);
+			state?.paymentSplitter?.payees?.push(action.payload.payee);
+			state?.paymentSplitter?.shares?.push(action.payload.shares);
 			return state;
 		})
 		.addCase(removeBeneficiary, (state, action) => {
-			const index = state.paymentSplitter.payees.indexOf(action.payload);
+			const index = state?.paymentSplitter?.payees?.indexOf(action.payload);
 			if (index !== -1) {
-				state.paymentSplitter.payees.splice(index, 1);
-				state.paymentSplitter.shares.splice(index, 1);
+				state?.paymentSplitter?.payees?.splice(index, 1);
+				state?.paymentSplitter?.shares?.splice(index, 1);
 			}
 			return state;
 		});

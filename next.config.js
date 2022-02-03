@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const withTM = require('next-transpile-modules')(['gsap']);
+const withTM = require('next-transpile-modules')(['gsap', 'react-timezone-select']);
 const withPlugins = require('next-compose-plugins');
 
 const nextConfig = {
@@ -16,6 +16,14 @@ module.exports = withPlugins([
 					use: ['@svgr/webpack'],
 				});
 				return config;
+			},
+			async rewrites() {
+				return [
+					{
+						source: '/api/:path*',
+						destination: 'https://simplr.mypinata.cloud/ipfs/:path*',
+					},
+				];
 			},
 		}),
 	],

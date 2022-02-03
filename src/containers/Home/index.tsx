@@ -8,7 +8,7 @@ const HomeComponent = () => {
 	const user = useAppSelector(userSelector);
 	return (
 		<Box color="seaweed" bg="red">
-			Hi! man
+			Hi! man its me
 			<If
 				condition={user.exists}
 				then={<Box fontSize="3.2rem">Your address: {user.address}</Box>}

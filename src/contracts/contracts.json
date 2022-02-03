@@ -1962,7 +1962,7 @@
       "chainId": "4",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0x7dE2783F25F70c9533899E0e1546bC52FdcC7a24",
+          "address": "0x055655958CA48261888E5EB1D5dB68A77BBAB3dd",
           "abi": [
             {
               "anonymous": false,
@@ -2044,6 +2044,31 @@
               "inputs": [
                 {
                   "indexed": true,
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ERC20PaymentReleased",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
                   "internalType": "address",
                   "name": "previousOwner",
                   "type": "address"
@@ -2069,6 +2094,63 @@
                 }
               ],
               "name": "Paused",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "shares",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PayeeAdded",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PaymentReceived",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PaymentReleased",
               "type": "event"
             },
             {
@@ -2137,19 +2219,6 @@
             },
             {
               "inputs": [],
-              "name": "MAX_PAYEES",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
               "name": "SENTINEL_ADDRESS",
               "outputs": [
                 {
@@ -2189,19 +2258,6 @@
             },
             {
               "inputs": [],
-              "name": "TOTAL_SHARES",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
               "name": "VERSION",
               "outputs": [
                 {
@@ -2216,19 +2272,6 @@
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_whitelistAddress",
-                  "type": "address"
-                }
-              ],
-              "name": "addWhitelist",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
                   "internalType": "uint256",
                   "name": "_quantity",
                   "type": "uint256"
@@ -2242,32 +2285,14 @@
                   "internalType": "address",
                   "name": "_affiliate",
                   "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "_saleType",
+                  "type": "bool"
                 }
               ],
               "name": "affiliateBuy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_quantity",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "bytes",
-                  "name": "_signature",
-                  "type": "bytes"
-                },
-                {
-                  "internalType": "address",
-                  "name": "_affiliate",
-                  "type": "address"
-                }
-              ],
-              "name": "affiliatePresaleBuy",
               "outputs": [],
               "stateMutability": "payable",
               "type": "function"
@@ -2310,18 +2335,16 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "buy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
               "inputs": [
                 {
                   "internalType": "uint256",
                   "name": "_quantity",
                   "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "saleType",
+                  "type": "bool"
                 }
               ],
               "name": "buy",
@@ -2528,6 +2551,19 @@
             },
             {
               "inputs": [],
+              "name": "isRevealed",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
               "name": "isSaleActive",
               "outputs": [
                 {
@@ -2553,19 +2589,6 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "isValid",
-              "outputs": [
-                {
-                  "internalType": "bool",
-                  "name": "",
-                  "type": "bool"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
               "inputs": [
                 {
                   "internalType": "address",
@@ -2579,19 +2602,6 @@
                   "internalType": "bool",
                   "name": "",
                   "type": "bool"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "loadingURI",
-              "outputs": [
-                {
-                  "internalType": "string",
-                  "name": "",
-                  "type": "string"
                 }
               ],
               "stateMutability": "view",
@@ -2718,11 +2728,11 @@
               "inputs": [
                 {
                   "internalType": "uint256",
-                  "name": "",
+                  "name": "index",
                   "type": "uint256"
                 }
               ],
-              "name": "payeeAddress",
+              "name": "payee",
               "outputs": [
                 {
                   "internalType": "address",
@@ -2731,69 +2741,6 @@
                 }
               ],
               "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "name": "payees",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "shares",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "amountReleased",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "account",
-                  "type": "address"
-                }
-              ],
-              "name": "pendingPayment",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "presaleBuy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_quantity",
-                  "type": "uint256"
-                }
-              ],
-              "name": "presaleBuy",
-              "outputs": [],
-              "stateMutability": "payable",
               "type": "function"
             },
             {
@@ -2935,14 +2882,75 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint256",
-                  "name": "_amount",
-                  "type": "uint256"
+                  "internalType": "address payable",
+                  "name": "account",
+                  "type": "address"
                 }
               ],
               "name": "release",
               "outputs": [],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "release",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "released",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "released",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -2999,19 +3007,6 @@
             {
               "inputs": [],
               "name": "reservedTokens",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "revealAfterTimestamp",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -3136,37 +3131,6 @@
             {
               "inputs": [
                 {
-                  "internalType": "address[]",
-                  "name": "_payees",
-                  "type": "address[]"
-                },
-                {
-                  "internalType": "uint256[]",
-                  "name": "_shares",
-                  "type": "uint256[]"
-                }
-              ],
-              "name": "setPayees",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_newPresaleStartTime",
-                  "type": "uint256"
-                }
-              ],
-              "name": "setPresaleStartTime",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
                   "internalType": "string",
                   "name": "_projectURI",
                   "type": "string"
@@ -3180,25 +3144,12 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint256",
-                  "name": "_newPublicSaleStartTime",
-                  "type": "uint256"
+                  "internalType": "string",
+                  "name": "_projectURI",
+                  "type": "string"
                 }
               ],
-              "name": "setPublicSaleStartTime",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_revealAfterTimestamp",
-                  "type": "uint256"
-                }
-              ],
-              "name": "setRevealAfterTimestamp",
+              "name": "setProjectURIAndReveal",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -3224,6 +3175,24 @@
                 }
               ],
               "name": "setRoyalties",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newSaleStartTime",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "saleType",
+                  "type": "bool"
+                }
+              ],
+              "name": "setSaleStartTime",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -3274,7 +3243,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -3342,21 +3311,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [
@@ -3432,7 +3389,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -3500,21 +3457,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [
@@ -3552,6 +3497,25 @@
               "name": "setupWithAffiliate",
               "outputs": [],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "shares",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -3675,8 +3639,14 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "totalPayees",
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                }
+              ],
+              "name": "totalReleased",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -3690,6 +3660,19 @@
             {
               "inputs": [],
               "name": "totalReleased",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "totalShares",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -3752,12 +3735,12 @@
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_receiver",
-                  "type": "address"
+                  "internalType": "address[]",
+                  "name": "_receivers",
+                  "type": "address[]"
                 }
               ],
-              "name": "transferReservedToken",
+              "name": "transferReservedTokens",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -3781,6 +3764,10 @@
               ],
               "stateMutability": "view",
               "type": "function"
+            },
+            {
+              "stateMutability": "payable",
+              "type": "receive"
             }
           ]
         },
@@ -6191,7 +6178,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0x59Bf63FC3C518C461C25f0208C68361B9c09584F",
+          "address": "0xCDbdb7329aC8e7867ce9E1279616B4226038B194",
           "abi": [
             {
               "inputs": [
@@ -6442,7 +6429,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -6510,21 +6497,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [
@@ -6802,7 +6777,7 @@
       "chainId": "137",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0x9C9a1144A2b436690f65ed19129FBA3f211a64Aa",
+          "address": "0x1611F187f0c49F41b49D0514aDa95eC5c73764b3",
           "abi": [
             {
               "anonymous": false,
@@ -6884,6 +6859,31 @@
               "inputs": [
                 {
                   "indexed": true,
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ERC20PaymentReleased",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
                   "internalType": "address",
                   "name": "previousOwner",
                   "type": "address"
@@ -6909,6 +6909,63 @@
                 }
               ],
               "name": "Paused",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "shares",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PayeeAdded",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PaymentReceived",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PaymentReleased",
               "type": "event"
             },
             {
@@ -6977,19 +7034,6 @@
             },
             {
               "inputs": [],
-              "name": "MAX_PAYEES",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
               "name": "SENTINEL_ADDRESS",
               "outputs": [
                 {
@@ -7029,19 +7073,6 @@
             },
             {
               "inputs": [],
-              "name": "TOTAL_SHARES",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
               "name": "VERSION",
               "outputs": [
                 {
@@ -7056,19 +7087,6 @@
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_whitelistAddress",
-                  "type": "address"
-                }
-              ],
-              "name": "addWhitelist",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
                   "internalType": "uint256",
                   "name": "_quantity",
                   "type": "uint256"
@@ -7082,32 +7100,14 @@
                   "internalType": "address",
                   "name": "_affiliate",
                   "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "_saleType",
+                  "type": "bool"
                 }
               ],
               "name": "affiliateBuy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_quantity",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "bytes",
-                  "name": "_signature",
-                  "type": "bytes"
-                },
-                {
-                  "internalType": "address",
-                  "name": "_affiliate",
-                  "type": "address"
-                }
-              ],
-              "name": "affiliatePresaleBuy",
               "outputs": [],
               "stateMutability": "payable",
               "type": "function"
@@ -7150,18 +7150,16 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "buy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
               "inputs": [
                 {
                   "internalType": "uint256",
                   "name": "_quantity",
                   "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "saleType",
+                  "type": "bool"
                 }
               ],
               "name": "buy",
@@ -7368,6 +7366,19 @@
             },
             {
               "inputs": [],
+              "name": "isRevealed",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
               "name": "isSaleActive",
               "outputs": [
                 {
@@ -7393,19 +7404,6 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "isValid",
-              "outputs": [
-                {
-                  "internalType": "bool",
-                  "name": "",
-                  "type": "bool"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
               "inputs": [
                 {
                   "internalType": "address",
@@ -7419,19 +7417,6 @@
                   "internalType": "bool",
                   "name": "",
                   "type": "bool"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "loadingURI",
-              "outputs": [
-                {
-                  "internalType": "string",
-                  "name": "",
-                  "type": "string"
                 }
               ],
               "stateMutability": "view",
@@ -7558,11 +7543,11 @@
               "inputs": [
                 {
                   "internalType": "uint256",
-                  "name": "",
+                  "name": "index",
                   "type": "uint256"
                 }
               ],
-              "name": "payeeAddress",
+              "name": "payee",
               "outputs": [
                 {
                   "internalType": "address",
@@ -7571,69 +7556,6 @@
                 }
               ],
               "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "name": "payees",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "shares",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "amountReleased",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "account",
-                  "type": "address"
-                }
-              ],
-              "name": "pendingPayment",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "presaleBuy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_quantity",
-                  "type": "uint256"
-                }
-              ],
-              "name": "presaleBuy",
-              "outputs": [],
-              "stateMutability": "payable",
               "type": "function"
             },
             {
@@ -7775,14 +7697,75 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint256",
-                  "name": "_amount",
-                  "type": "uint256"
+                  "internalType": "address payable",
+                  "name": "account",
+                  "type": "address"
                 }
               ],
               "name": "release",
               "outputs": [],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "release",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "released",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "released",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -7839,19 +7822,6 @@
             {
               "inputs": [],
               "name": "reservedTokens",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "revealAfterTimestamp",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -7976,37 +7946,6 @@
             {
               "inputs": [
                 {
-                  "internalType": "address[]",
-                  "name": "_payees",
-                  "type": "address[]"
-                },
-                {
-                  "internalType": "uint256[]",
-                  "name": "_shares",
-                  "type": "uint256[]"
-                }
-              ],
-              "name": "setPayees",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_newPresaleStartTime",
-                  "type": "uint256"
-                }
-              ],
-              "name": "setPresaleStartTime",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
                   "internalType": "string",
                   "name": "_projectURI",
                   "type": "string"
@@ -8020,25 +7959,12 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint256",
-                  "name": "_newPublicSaleStartTime",
-                  "type": "uint256"
+                  "internalType": "string",
+                  "name": "_projectURI",
+                  "type": "string"
                 }
               ],
-              "name": "setPublicSaleStartTime",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_revealAfterTimestamp",
-                  "type": "uint256"
-                }
-              ],
-              "name": "setRevealAfterTimestamp",
+              "name": "setProjectURIAndReveal",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -8064,6 +7990,24 @@
                 }
               ],
               "name": "setRoyalties",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newSaleStartTime",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "saleType",
+                  "type": "bool"
+                }
+              ],
+              "name": "setSaleStartTime",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -8114,7 +8058,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -8182,21 +8126,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [
@@ -8272,7 +8204,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -8340,21 +8272,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [
@@ -8392,6 +8312,25 @@
               "name": "setupWithAffiliate",
               "outputs": [],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "shares",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -8515,8 +8454,14 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "totalPayees",
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                }
+              ],
+              "name": "totalReleased",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -8530,6 +8475,19 @@
             {
               "inputs": [],
               "name": "totalReleased",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "totalShares",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -8592,12 +8550,12 @@
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_receiver",
-                  "type": "address"
+                  "internalType": "address[]",
+                  "name": "_receivers",
+                  "type": "address[]"
                 }
               ],
-              "name": "transferReservedToken",
+              "name": "transferReservedTokens",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -8621,6 +8579,10 @@
               ],
               "stateMutability": "view",
               "type": "function"
+            },
+            {
+              "stateMutability": "payable",
+              "type": "receive"
             }
           ]
         },
@@ -11031,7 +10993,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0x5fBAC2E1cc71CFa4906AF22f779C5203e804d31F",
+          "address": "0x055655958CA48261888E5EB1D5dB68A77BBAB3dd",
           "abi": [
             {
               "inputs": [
@@ -11282,7 +11244,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -11350,21 +11312,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [
@@ -11649,7 +11599,7 @@
       "chainId": "80001",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0xD0C6B3B09E935738974fb0B2Fe7C89aD2a36e175",
+          "address": "0xBB88528d97b5364FCf842f9843e2C4008A2104Ba",
           "abi": [
             {
               "anonymous": false,
@@ -11731,6 +11681,31 @@
               "inputs": [
                 {
                   "indexed": true,
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ERC20PaymentReleased",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
                   "internalType": "address",
                   "name": "previousOwner",
                   "type": "address"
@@ -11756,6 +11731,63 @@
                 }
               ],
               "name": "Paused",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "shares",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PayeeAdded",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "from",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PaymentReceived",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "to",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PaymentReleased",
               "type": "event"
             },
             {
@@ -11824,19 +11856,6 @@
             },
             {
               "inputs": [],
-              "name": "MAX_PAYEES",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
               "name": "SENTINEL_ADDRESS",
               "outputs": [
                 {
@@ -11876,19 +11895,6 @@
             },
             {
               "inputs": [],
-              "name": "TOTAL_SHARES",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
               "name": "VERSION",
               "outputs": [
                 {
@@ -11903,19 +11909,6 @@
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_whitelistAddress",
-                  "type": "address"
-                }
-              ],
-              "name": "addWhitelist",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
                   "internalType": "uint256",
                   "name": "_quantity",
                   "type": "uint256"
@@ -11929,32 +11922,14 @@
                   "internalType": "address",
                   "name": "_affiliate",
                   "type": "address"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "_saleType",
+                  "type": "bool"
                 }
               ],
               "name": "affiliateBuy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_quantity",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "bytes",
-                  "name": "_signature",
-                  "type": "bytes"
-                },
-                {
-                  "internalType": "address",
-                  "name": "_affiliate",
-                  "type": "address"
-                }
-              ],
-              "name": "affiliatePresaleBuy",
               "outputs": [],
               "stateMutability": "payable",
               "type": "function"
@@ -11997,18 +11972,16 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "buy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
               "inputs": [
                 {
                   "internalType": "uint256",
                   "name": "_quantity",
                   "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "saleType",
+                  "type": "bool"
                 }
               ],
               "name": "buy",
@@ -12215,6 +12188,19 @@
             },
             {
               "inputs": [],
+              "name": "isRevealed",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
               "name": "isSaleActive",
               "outputs": [
                 {
@@ -12240,19 +12226,6 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "isValid",
-              "outputs": [
-                {
-                  "internalType": "bool",
-                  "name": "",
-                  "type": "bool"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
               "inputs": [
                 {
                   "internalType": "address",
@@ -12266,19 +12239,6 @@
                   "internalType": "bool",
                   "name": "",
                   "type": "bool"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "loadingURI",
-              "outputs": [
-                {
-                  "internalType": "string",
-                  "name": "",
-                  "type": "string"
                 }
               ],
               "stateMutability": "view",
@@ -12405,11 +12365,11 @@
               "inputs": [
                 {
                   "internalType": "uint256",
-                  "name": "",
+                  "name": "index",
                   "type": "uint256"
                 }
               ],
-              "name": "payeeAddress",
+              "name": "payee",
               "outputs": [
                 {
                   "internalType": "address",
@@ -12418,69 +12378,6 @@
                 }
               ],
               "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "name": "payees",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "shares",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "amountReleased",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
-                  "name": "account",
-                  "type": "address"
-                }
-              ],
-              "name": "pendingPayment",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "presaleBuy",
-              "outputs": [],
-              "stateMutability": "payable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_quantity",
-                  "type": "uint256"
-                }
-              ],
-              "name": "presaleBuy",
-              "outputs": [],
-              "stateMutability": "payable",
               "type": "function"
             },
             {
@@ -12622,14 +12519,75 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint256",
-                  "name": "_amount",
-                  "type": "uint256"
+                  "internalType": "address payable",
+                  "name": "account",
+                  "type": "address"
                 }
               ],
               "name": "release",
               "outputs": [],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "release",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "released",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "released",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -12686,19 +12644,6 @@
             {
               "inputs": [],
               "name": "reservedTokens",
-              "outputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "",
-                  "type": "uint256"
-                }
-              ],
-              "stateMutability": "view",
-              "type": "function"
-            },
-            {
-              "inputs": [],
-              "name": "revealAfterTimestamp",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -12823,37 +12768,6 @@
             {
               "inputs": [
                 {
-                  "internalType": "address[]",
-                  "name": "_payees",
-                  "type": "address[]"
-                },
-                {
-                  "internalType": "uint256[]",
-                  "name": "_shares",
-                  "type": "uint256[]"
-                }
-              ],
-              "name": "setPayees",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_newPresaleStartTime",
-                  "type": "uint256"
-                }
-              ],
-              "name": "setPresaleStartTime",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
                   "internalType": "string",
                   "name": "_projectURI",
                   "type": "string"
@@ -12867,25 +12781,12 @@
             {
               "inputs": [
                 {
-                  "internalType": "uint256",
-                  "name": "_newPublicSaleStartTime",
-                  "type": "uint256"
+                  "internalType": "string",
+                  "name": "_projectURI",
+                  "type": "string"
                 }
               ],
-              "name": "setPublicSaleStartTime",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "uint256",
-                  "name": "_revealAfterTimestamp",
-                  "type": "uint256"
-                }
-              ],
-              "name": "setRevealAfterTimestamp",
+              "name": "setProjectURIAndReveal",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -12911,6 +12812,24 @@
                 }
               ],
               "name": "setRoyalties",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newSaleStartTime",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "saleType",
+                  "type": "bool"
+                }
+              ],
+              "name": "setSaleStartTime",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -12961,7 +12880,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -13029,21 +12948,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [
@@ -13119,7 +13026,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -13187,21 +13094,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [
@@ -13239,6 +13134,25 @@
               "name": "setupWithAffiliate",
               "outputs": [],
               "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "shares",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -13362,8 +13276,14 @@
               "type": "function"
             },
             {
-              "inputs": [],
-              "name": "totalPayees",
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                }
+              ],
+              "name": "totalReleased",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -13377,6 +13297,19 @@
             {
               "inputs": [],
               "name": "totalReleased",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "totalShares",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -13439,12 +13372,12 @@
             {
               "inputs": [
                 {
-                  "internalType": "address",
-                  "name": "_receiver",
-                  "type": "address"
+                  "internalType": "address[]",
+                  "name": "_receivers",
+                  "type": "address[]"
                 }
               ],
-              "name": "transferReservedToken",
+              "name": "transferReservedTokens",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -13468,6 +13401,10 @@
               ],
               "stateMutability": "view",
               "type": "function"
+            },
+            {
+              "stateMutability": "payable",
+              "type": "receive"
             }
           ]
         },
@@ -15878,7 +15815,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0xba251160eEEF67cECA62f699a8713F987955764E",
+          "address": "0xec933De8363B9dfcd402E3D8011B9d1fDCb8BAa5",
           "abi": [
             {
               "inputs": [
@@ -16129,7 +16066,7 @@
                     },
                     {
                       "internalType": "string",
-                      "name": "loadingURI",
+                      "name": "projectURI",
                       "type": "string"
                     }
                   ],
@@ -16197,21 +16134,9 @@
                   "type": "tuple"
                 },
                 {
-                  "components": [
-                    {
-                      "internalType": "bytes32",
-                      "name": "projectURIProvenance",
-                      "type": "bytes32"
-                    },
-                    {
-                      "internalType": "uint256",
-                      "name": "revealAfterTimestamp",
-                      "type": "uint256"
-                    }
-                  ],
-                  "internalType": "struct ICollectionStruct.RevealableStruct",
-                  "name": "_revealable",
-                  "type": "tuple"
+                  "internalType": "bytes32",
+                  "name": "_projectURIProvenance",
+                  "type": "bytes32"
                 },
                 {
                   "components": [

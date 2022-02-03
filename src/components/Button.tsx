@@ -29,9 +29,10 @@ export interface ButtonProps extends BoxProps {
 	dangerouslySetInnerHTML?: { __html: string };
 	onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	className?: string;
+	type?: string;
 }
 
-const ButtonComp = ({ bg, disable, height, children, ...restProps }: ButtonProps): JSX.Element => {
+const ButtonComp = ({ bg, disable, height, children, type, ...restProps }: ButtonProps): JSX.Element => {
 	const buttonColour = color[bg];
 	const hColor = !disable ? hoverColor[bg] : 'simply-white';
 	const bColor = borderColor(bg);

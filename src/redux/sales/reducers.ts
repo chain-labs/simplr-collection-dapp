@@ -7,13 +7,13 @@ const intitalState: SaleState = {
 	maximumTokens: null,
 	maxPurchase: null,
 	maxHolding: null,
-	price: '',
+	price: null,
 	reserveTokens: null,
 	publicSaleStartTime: null,
 	presaleable: {
 		enabled: false,
 		presaleReservedTokens: null,
-		presalePrice: '',
+		presalePrice: null,
 		presaleMaxHolding: null,
 		presaleWhitelist: [],
 		presaleStartTime: null,
@@ -24,6 +24,7 @@ const intitalState: SaleState = {
 		loadingImageUrl: '',
 	},
 	isAffiliable: false,
+	salesDetails_validated: false,
 };
 
 export const saleReducer = createReducer(intitalState, (builder) => {

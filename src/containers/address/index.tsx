@@ -1,33 +1,48 @@
-import Link from 'next/link';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
-import If from 'src/components/If';
-import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { removeUser, setUser, userSelector } from 'src/redux/user';
+import ButtonComp from 'src/components/Button';
+import LabelledTextInput from 'src/components/LabelledTextInput';
+import { Toaster } from 'react-hot-toast';
 
 const AddressComponent = () => {
-	const dispatch = useAppDispatch();
-	const user = useAppSelector(userSelector);
-
 	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		toast.success('Hoorah');
+	};
 
 	return (
-		<Box>
-			<Box>
-				<If
-					condition={user.exists}
-					then={<Box fontSize="3.2rem">Your address: {user.address}</Box>}
-					else={<Box fontSize="3.2rem">Connect Wallet Address</Box>}
-				/>
-				<Box as="input" placeholder="Enter Name" value={name} onChange={(e) => setName(e.target.value)}></Box>
-				<Box as="button" onClick={() => dispatch(setUser(name))}>
-					Set User
-				</Box>
-				<Box as="button" onClick={() => dispatch(removeUser())}>
-					Remove User
-				</Box>
+		<Box minHeight="90vh" overflow="visible" bg="simply-white">
+			<Toaster />
+			<Box mx="auto" width="110rem">
+				<form onSubmit={handleSubmit}>
+					<LabelledTextInput
+						value={name}
+						required
+						setValue={setName}
+						label="Name"
+						type="text"
+						placeholder="Enter Name"
+					/>
+					<Box mt="mxxxl" />
+					<LabelledTextInput
+						value={email}
+						setValue={setEmail}
+						label="Email"
+						type="email"
+						required
+						placeholder="Enter Email"
+					/>
+					<Box mt="wm" />
+					<ButtonComp type="submit" bg="primary" width="50rem" height="56px">
+						Submit
+					</ButtonComp>
+				</form>
 			</Box>
-			<Link href="/">Home</Link>
 		</Box>
 	);
 };
