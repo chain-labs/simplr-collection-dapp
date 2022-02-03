@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
+import DateTime from 'src/components/DateTime';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
@@ -13,7 +14,7 @@ interface props {
 	visible: boolean;
 	setVisible: (boolean) => void;
 	edit?: string;
-	data?: string;
+	data?: any;
 	label?: any;
 	placeholder?: any;
 }
@@ -41,7 +42,6 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 				<Box
 					mx="auto"
 					bg="simply-white"
-					// height="35rem"
 					width="49rem"
 					borderRadius="16px"
 					p="mxxxl"
@@ -56,16 +56,49 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 						then={
 							<Box>
 								<Text as="b3" fontWeight="medium" mb="ms">
-									{modalData.label}
+									Enter new {modalData.label.toLocaleLowerCase()}
 								</Text>
-								<TextInput
-									type={modalData.type}
-									placeholder={modalData.data}
-									value={value}
-									width="100%"
-									setValue={setValue}
-									disableValidation
+								<If
+									condition={modalData.type === 'time'}
+									then={<DateTime value={data} setValue={setValue} width="43rem" />}
+									else={
+										<If
+											condition={modalData.type === 'number'}
+											then={
+												<Box between>
+													<TextInput
+														type={modalData.type}
+														placeholder={modalData.placeholder}
+														value={value}
+														width="100%"
+														setValue={setValue}
+														disableValidation
+													/>
+													<Box ml="mxs" />
+													<TextInput
+														type={modalData.type}
+														placeholder={modalData.data}
+														value={value}
+														width="100%"
+														setValue={setValue}
+														disableValidation
+													/>
+												</Box>
+											}
+											else={
+												<TextInput
+													type={modalData.type}
+													placeholder={modalData.placeholder}
+													value={value}
+													width="100%"
+													setValue={setValue}
+													disableValidation
+												/>
+											}
+										/>
+									}
 								/>
+
 								<Box mt="mxxl" />
 								<Text as="c1" color="gray-00" fontFamily="Open Sauce One">
 									OLD DATA : {modalData.data}
@@ -114,15 +147,27 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 								<Box mt="mm" />
 								<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex">
 									OLD {modalData.label.toUpperCase()} :{' '}
-									<Text as="c1" color="simply-blue">
-										{modalData.data.slice(0, 4)}...{modalData.data.slice(38, 42)}
-									</Text>
+									{modalData.editable === 'address' ? (
+										<Text as="c1" color="simply-blue">
+											{modalData.data.slice(0, 4)}...{modalData.data.slice(38, 42)}
+										</Text>
+									) : (
+										<Text as="c1" color="simply-blue">
+											{modalData.data}
+										</Text>
+									)}
 								</Text>
 								<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex" mt="mxxs">
 									NEW {modalData.label.toUpperCase()} :{' '}
-									<Text as="c1" color="simply-blue">
-										{modalData.data.slice(0, 4)}...{modalData.data.slice(38, 42)}
-									</Text>
+									{modalData.editable === 'address' ? (
+										<Text as="c1" color="simply-blue">
+											{modalData.data.slice(0, 4)}...{modalData.data.slice(38, 42)}
+										</Text>
+									) : (
+										<Text as="c1" color="simply-blue">
+											{modalData.data}
+										</Text>
+									)}
 								</Text>
 
 								<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex" mt="mm">
@@ -137,14 +182,19 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 
 					<ButtonComp bg="primary" height="40px" onClick={handleAction} mt="mxl">
 						<Text as="h6" fontFamily="Switzer">
-							{step === 0 ? 'proceed' : step === 1 ? 'Commit Change' : 'Return to Dashboard'}
+							{step === 0 ? 'Proceed' : step === 1 ? 'Commit Change' : 'Return to Dashboard'}
 						</Text>
 					</ButtonComp>
-					<ButtonComp bg="secondary" height="40px" onClick={() => setVisible(false)} mt="ml">
-						<Text as="h6" fontFamily="Switzer">
-							Cancel
-						</Text>
-					</ButtonComp>
+					<If
+						condition={step === 0 || step === 1}
+						then={
+							<ButtonComp bg="secondary" height="40px" onClick={() => setVisible(false)} mt="ml">
+								<Text as="h6" fontFamily="Switzer">
+									Cancel
+								</Text>
+							</ButtonComp>
+						}
+					/>
 				</Box>
 			</Modal>
 		);

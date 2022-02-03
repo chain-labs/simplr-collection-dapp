@@ -63,65 +63,127 @@ const CollectionPage = ({ contract }) => {
 	}, [contract]);
 
 	return (
-		<Box mt="mxxxl" width="116.8rem" mx="auto">
-			<Text as="h3" color="simply-blue">
-				Overview:
-			</Text>
-			<Box row flexWrap="wrap" between mt="mxxxl">
-				<DashboardCard Icon={ImageSquare} text="Total NFTs" data={collection.maxTokens} />
-				<DashboardCard
-					Icon={User}
-					text="Admin Wallet Address"
-					data={collection.adminAddress}
-					setData={setAdminAddress}
-					editable="address"
-				/>
-				<If
-					condition={collection.presalePrice !== '-1'}
-					then={
-						<DashboardCard
-							Icon={ImageSquare}
-							text="Reserved Tokens"
-							data={collection.reservedTokens}
-							editable="number"
+		<Box overflow="visible">
+			<Box mt="mxxxl" width="116.8rem" mx="auto">
+				<Text as="h3" color="simply-blue">
+					Overview:
+				</Text>
+				<Box row flexWrap="wrap" between mt="mxxxl">
+					<DashboardCard Icon={ImageSquare} text="Total NFTs" data={collection.maxTokens} />
+					<DashboardCard
+						Icon={User}
+						text="Admin Wallet Address"
+						data={collection.adminAddress}
+						setData={setAdminAddress}
+						editable="address"
+						type="string"
+						setShowModal={setShowModal}
+						showModal={showModal}
+						edit={edit}
+						setEdit={setEdit}
+						placeholder="new_admin_address"
+					/>
+					<If
+						condition={collection.presalePrice !== '-1'}
+						then={
+							<DashboardCard
+								Icon={ImageSquare}
+								text="Reserved Tokens"
+								data={collection.reservedTokens}
+								editable="number"
+								type="number"
+								setShowModal={setShowModal}
+								showModal={showModal}
+								edit={edit}
+								setEdit={setEdit}
+								placeholder="Reserved Tokens"
+							/>
+						}
+					/>
+					<If
+						condition={collection.presalePrice !== '-1'}
+						then={
+							<DashboardCard
+								Icon={CurrencyEth}
+								text="Price per NFT (Pre-sale)"
+								data={`${collection.presalePrice} ETH`}
+							/>
+						}
+					/>
+
+					<DashboardCard
+						Icon={Timer}
+						text="NFTs reveal in"
+						data="17:00:00"
+						editable="time"
+						type="time"
+						setShowModal={setShowModal}
+						showModal={showModal}
+						edit={edit}
+						setEdit={setEdit}
+					/>
+
+					<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
+				</Box>
+				<Text as="h3" color="simply-blue" mt="wxl">
+					Sales:
+				</Text>
+				<Box row flexWrap="wrap" between mt="mxxxl">
+					<If
+						condition={collection.presalePrice !== '-1'}
+						then={<DashboardCard Icon={Timer} text="Pre-sale" status="Live" editable="status" />}
+					/>
+					<DashboardCard Icon={Timer} text="Public-sale goes live in" data="12:00:59" editable="time" />
+					<DashboardCard Icon={ImageSquare} text="NFTs sold" data="6100" />
+					<DashboardCard
+						Icon={ImageSquare}
+						text="NFTs remaining"
+						data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
+					/>
+					<DashboardCard Icon={CurrencyEth} text="Funds Collected" data="400 ETH" />
+				</Box>
+				<Text as="h3" color="simply-blue" mt="wxl">
+					URI:
+				</Text>
+				<Box row between mt="mxxxl">
+					<Box flex={1}>
+						<Box row between mb="mxs">
+							<Text as="h6">Collection URI</Text>
+							<Text
+								as="h6"
+								color="simply-blue"
+								textDecoration="underline"
+								onClick={() => setIsEditableCollectionUri(true)}
+							>
+								Edit
+							</Text>
+						</Box>
+						<TextInput
+							placeholder="https://gdrive.com/***"
+							value={collectionUri}
+							setValue={setCollectionURI}
+							disableValidation
+							disabled={!isEditableCollectionUri}
+							width="100%"
 						/>
-					}
-				/>
-				<If
-					condition={collection.presalePrice !== '-1'}
-					then={
-						<DashboardCard Icon={CurrencyEth} text="Price per NFT (Pre-sale)" data={`${collection.presalePrice} ETH`} />
-					}
-				/>
-				<DashboardCard Icon={Timer} text="NFTs reveal in" data="17:00:00" editable="time" />
-				<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
-			</Box>
-			<Text as="h3" color="simply-blue" mt="wxl">
-				Sales:
-			</Text>
-			<Box row flexWrap="wrap" between mt="mxxxl">
-				<If
-					condition={collection.presalePrice !== '-1'}
-					then={<DashboardCard Icon={Timer} text="Pre-sale" status="Paused" editable="status" />}
-				/>
-				<DashboardCard Icon={Timer} text="Public-sale goes live in" data="12:00:59" editable="time" />
-				<DashboardCard Icon={ImageSquare} text="NFTs sold" data="6100" />
-				<DashboardCard
-					Icon={ImageSquare}
-					text="NFTs remaining"
-					data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
-				/>
-				<DashboardCard Icon={CurrencyEth} text="Funds Collected" data="400 ETH" />
-			</Box>
-			<Text as="h3" color="simply-blue" mt="wxl">
-				URI:
-			</Text>
-			<Box row between mt="mxxxl">
-				<Box flex={1}>
-					<Box row between mb="mxs">
-						<Text as="h6">Collection URI</Text>
-						<Text as="h6" color="simply-blue" textDecoration="underline">
-							Edit
+						<Text as="b1" mt="mxs" color="gray-00">
+							Collection URI is the URL where your NFT media and metadata are stored.{' '}
+						</Text>
+					</Box>
+					<Box ml="wm" />
+					<Box flex={1}>
+						<Text as="h6" mb="mxs">
+							Loading Image URI
+						</Text>
+						<TextInput
+							placeholder="https://gdrive.com/somethingurl"
+							value="https://gdrive.com/somethingurl"
+							disableValidation
+							disabled
+							width="100%"
+						/>
+						<Text as="b1" mt="mxs" color="gray-00">
+							Placeholder image that will be displayed until the set reveal time.
 						</Text>
 					</Box>
 				</Box>

@@ -47,8 +47,8 @@ const DashboardCard = ({
 
 	// const [edit, setEdit] = useState('');
 
-	const handleAction = (value, lab) => {
-		if (editable === 'address' || editable === 'number') {
+	const handleAction = () => {
+		if (editable === 'address' || editable === 'number' || editable === 'time') {
 			setDrawerOpen(false);
 			setShowModal(true);
 			const editData = {
@@ -56,6 +56,7 @@ const DashboardCard = ({
 				label: text,
 				placeholder: placeholder,
 				data: data,
+				editable: editable,
 			};
 			dispatch(setEditDetails(editData));
 		}
@@ -156,7 +157,7 @@ const DashboardCard = ({
 									position="absolute"
 									left="25px"
 									cursor="pointer"
-									onClick={() => handleAction(editable, label)}
+									onClick={handleAction}
 								>
 									<Text as="c3">{status === 'Live' ? 'Pause' : status === 'Paused' ? 'Resume' : 'Edit'}</Text>
 								</Box>
