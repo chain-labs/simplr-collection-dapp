@@ -7,11 +7,13 @@ import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
+import useEthers from 'src/ethereum/useEthers';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
 
 const CollectionPage = ({ contract }) => {
 	const dispatch = useAppDispatch();
+	const [provider] = useEthers();
 	const [collectionUri, setCollectionURI] = useState('');
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
@@ -24,6 +26,7 @@ const CollectionPage = ({ contract }) => {
 		price: '',
 		presalePrice: '',
 		totalSupply: 0,
+		totalFunds: '',
 	});
 
 	useEffect(() => {
@@ -33,13 +36,17 @@ const CollectionPage = ({ contract }) => {
 			const reservedTokens = await contract.callStatic.reservedTokens();
 			const price = await contract.callStatic.price();
 			const totalSupply = await contract.callStatic.totalSupply();
+			const balance = await provider?.getBalance(contract.address);
+			const totalReleased = await contract.callStatic['totalReleased()']();
+			const totalFunds = balance.add(totalReleased);
 			const details = {
 				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
 				adminAddress,
 				reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
 				price: ethers.utils.formatUnits(price, 18),
 				presalePrice: '-1',
-				totalSupply: totalSupply,
+				totalSupply,
+				totalFunds: ethers.utils.formatUnits(totalFunds),
 			};
 
 			const isPresaleable = await contract.callStatic.isPresaleAllowed();
@@ -50,11 +57,20 @@ const CollectionPage = ({ contract }) => {
 			setCollection(details);
 		};
 
-		if (contract) {
+		if (contract && provider) {
 			getDetails();
-		}
-	}, [contract]);
 
+			setInterval(getDetails, 150000);
+		}
+	}, [contract, provider]);
+
+	if (!collection.price) {
+		return (
+			<Box center mt="mxxxl">
+				<Text as="h1">Loading...</Text>
+			</Box>
+		);
+	}
 	return (
 		<Box mt="mxxxl" width="116.8rem" mx="auto">
 			<Text as="h3" color="simply-blue">
@@ -104,7 +120,7 @@ const CollectionPage = ({ contract }) => {
 					text="NFTs remaining"
 					data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
 				/>
-				<DashboardCard Icon={CurrencyEth} text="Funds Collected" data="400 ETH" />
+				<DashboardCard Icon={CurrencyEth} text="Funds Collected" data={`${collection.totalFunds} ETH`} />
 			</Box>
 			<Text as="h3" color="simply-blue" mt="wxl">
 				URI:
