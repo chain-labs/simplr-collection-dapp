@@ -16,7 +16,6 @@ const AdminDashboardPage = () => {
 	const getMetadata = async () => {
 		const abi = getContractDetails('AffiliateCollection');
 		const contract = new ethers.Contract(`${id}`, abi, provider);
-		console.log({ provider });
 		const qid = await contract.callStatic.metadata();
 		const res = await axios.get(`https://simplr.mypinata.cloud/ipfs/${qid}`);
 		setMetadata(res.data);
