@@ -21,12 +21,9 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 			const abi = getContractDetails('AffiliateCollection');
 			const contract = new ethers.Contract(id, abi, provider);
 			setContract(contract);
+			console.log({ contract });
 		}
 	}, [id]);
-
-	useEffect(() => {
-		console.log({ metadata });
-	}, [metadata]);
 
 	const getPage = (step) => {
 		if (step === 0) {
