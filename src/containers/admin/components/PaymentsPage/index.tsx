@@ -17,12 +17,11 @@ const PaymentsPage = ({ contract, metadata }) => {
 	const [shares, setShares] = useState<number[]>([]);
 	const [simplrShares, setSimplrShares] = useState<number>(0);
 	const [editRoyalties, setEditRoyalties] = useState(false);
-	const [royaltyAddress, setRoyaltyAddress] = useState('0x363b616d72F433B41E48cF863f7CcB8c930b8682');
+	const [royaltyAddress, setRoyaltyAddress] = useState();
 	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(10);
 	const [userShare, setUserShare] = useState('');
 	const [pendingPayment, setPendingPayment] = useState('');
 	const [totalFunds, setTotalFunds] = useState('');
-	const [royalties, setRoyalties] = useState<any>();
 
 	const [provider] = useEthers();
 
@@ -32,8 +31,6 @@ const PaymentsPage = ({ contract, metadata }) => {
 		const getDetails = async () => {
 			const simplrShares = await contract.callStatic.SIMPLR_SHARES();
 			setSimplrShares(simplrShares);
-			const royalties = await contract.callStatic.royaltyInfo();
-			setRoyalties(royalties);
 		};
 		if (contract) {
 			getDetails();
@@ -42,6 +39,19 @@ const PaymentsPage = ({ contract, metadata }) => {
 
 	useEffect(() => {
 		if (metadata) {
+			const getPayment = async (share) => {
+				if (provider) {
+					const balance = await provider?.getBalance(contract.address);
+					const totalReleased = await contract.callStatic['totalReleased()']();
+					const totalFunds = balance.add(totalReleased);
+					const totalShares = await contract.callStatic.totalShares();
+					const released = await contract.callStatic['released(address)'](user.address);
+					const userShare = ethers.utils.parseUnits(share.toString(), 16);
+					const pendingPayment = totalFunds.mul(userShare).div(totalShares).sub(released);
+					setTotalFunds(ethers.utils.formatUnits(totalFunds));
+					setPendingPayment(ethers.utils.formatUnits(pendingPayment));
+				}
+			};
 			const { tokenDetails } = metadata;
 			const payees: string[] = tokenDetails.paymentSplitter.payees;
 			const shares = tokenDetails.paymentSplitter.shares;
@@ -52,23 +62,9 @@ const PaymentsPage = ({ contract, metadata }) => {
 				const share = shares[index];
 
 				setUserShare(share.toString());
-			}
-
-			const getPayment = async () => {
-				const pendingPayment = await contract?.callStatic?.pendingPayment(user.address);
-				console.log({ pendingPayment, user: user.address });
-
-				setPendingPayment(ethers.utils.formatUnits(pendingPayment, 18));
-				if (provider) {
-					const balance = await provider?.getBalance(contract.address);
-					const totalReleased = await contract?.callStatic?.totalReleased();
-					const totalFunds = balance.add(totalReleased);
-					setTotalFunds(ethers.utils.formatUnits(totalFunds));
+				if (contract) {
+					getPayment(share);
 				}
-			};
-
-			if (contract) {
-				getPayment();
 			}
 		}
 	}, [metadata, user, provider]);
@@ -92,7 +88,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 							fontSize="1.4rem"
 						/>
 					</Box>
-					{payees.map((payee, index) => (
+					{payees.slice(0, payees.length - 1).map((payee, index) => (
 						<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
 							<TextInput
 								value={null}
@@ -174,7 +170,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 				</Box>
 				<Box row overflow="visible" mb="ms">
 					<TextInput
-						value={royalties?.receiver}
+						value={royaltyAddress}
 						setValue={setRoyaltyAddress}
 						type="text"
 						width="45.2rem"
@@ -184,7 +180,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 					/>
 					<Box ml="mxs" />
 					<TextInput
-						value={royalties?.royaltyAmount}
+						value={royaltyPercentage}
 						setValue={setRoyaltyPercentage}
 						type="text"
 						width="9.2rem"
