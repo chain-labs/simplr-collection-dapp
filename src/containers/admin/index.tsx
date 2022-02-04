@@ -37,9 +37,11 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 			<Toaster position="top-center" />
 			<Box
 				backgroundImage={`url(${metadata?.collectionDetails.bannerImageUrl})`}
-				backgroundPosition="top"
+				// @ts-expect-error bgPosition data error
+				backgroundPosition="50% 25%"
 				backgroundColor="black"
 				backgroundRepeat="no-repeat"
+				backgroundSize="cover"
 				height="36rem"
 				width="100%"
 			/>
@@ -47,14 +49,14 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 				<Box
 					backgroundImage={`url(${metadata?.collectionDetails.logoUrl})`}
 					backgroundPosition="center"
-					backgroundSize="contain"
+					backgroundSize="cover"
 					height="10rem"
 					width="10rem"
 					borderRadius="50%"
 					mb="wxxs"
 				/>
 				<Text as="h3">{metadata?.collectionDetails.name}</Text>
-				<Text as="h3">({metadata?.collectionDetails.symbol})</Text>
+				<Text as="h3">({metadata?.collectionDetails.symbol ?? '...'})</Text>
 			</Box>
 			<Box row between mx="auto" width="21.6rem">
 				<Text
