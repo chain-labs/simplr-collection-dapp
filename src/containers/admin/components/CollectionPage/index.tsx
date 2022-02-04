@@ -17,7 +17,7 @@ import DashboardCard from './DashboardCard';
 import EditModal from './EditModal';
 // import EditModal from './EditModal';
 
-const CollectionPage = ({ contract }) => {
+const CollectionPage = ({ contract, metadata }) => {
 	const dispatch = useAppDispatch();
 	const [provider] = useEthers();
 	const [collectionUri, setCollectionURI] = useState('');
@@ -36,6 +36,8 @@ const CollectionPage = ({ contract }) => {
 		totalSupply: 0,
 		tokensCount: '',
 		totalFunds: '',
+		saleStartTime: 0,
+		presaleStartTime: 0,
 	});
 
 	useEffect(() => {
@@ -49,6 +51,7 @@ const CollectionPage = ({ contract }) => {
 			const totalReleased = await contract.callStatic['totalReleased()']();
 			const totalFunds = balance.add(totalReleased);
 			const tokensCount = await contract.callStatic.tokensCount();
+			const saleStartTime = await contract.callStatic.publicSaleStartTime();
 			const details = {
 				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
 				adminAddress,
@@ -58,12 +61,16 @@ const CollectionPage = ({ contract }) => {
 				totalSupply,
 				totalFunds: ethers.utils.formatUnits(totalFunds),
 				tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
+				saleStartTime,
+				presaleStartTime: 0,
 			};
 
 			const isPresaleable = await contract.callStatic.isPresaleAllowed();
 			if (isPresaleable) {
 				const presalePrice = await contract.callStatic.presalePrice();
+				const presaleStartTime = await contract.callStatic.presaleStartTime();
 				details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
+				details.presaleStartTime = presaleStartTime;
 			}
 			setCollection(details);
 		};
@@ -73,7 +80,7 @@ const CollectionPage = ({ contract }) => {
 
 			setInterval(getDetails, 150000);
 		}
-	}, [contract, provider]);
+	}, [contract, provider, metadata]);
 
 	if (!collection.price) {
 		return (
@@ -204,7 +211,7 @@ const CollectionPage = ({ contract }) => {
 						<DashboardCard Icon={CurrencyEth} text="Price per NFT (Pre-sale)" data={`${collection.presalePrice} ETH`} />
 					}
 				/>
-				<DashboardCard Icon={Timer} text="NFTs reveal in" data="17:00:00" editable="time" />
+				{/* <DashboardCard Icon={Timer} text="NFTs reveal in" data="17:00:00" editable="time" /> */}
 				<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
 			</Box>
 			<Text as="h3" color="simply-blue" mt="wxl">
@@ -213,9 +220,40 @@ const CollectionPage = ({ contract }) => {
 			<Box row flexWrap="wrap" between mt="mxxxl">
 				<If
 					condition={collection.presalePrice !== '-1'}
-					then={<DashboardCard Icon={Timer} text="Pre-sale" status="Paused" editable="status" />}
+					then={
+						<If
+							condition={collection.presaleStartTime > Date.now() / 1000}
+							then={
+								<DashboardCard
+									Icon={Timer}
+									text="Pre-sale goes live in"
+									data={`${collection.presaleStartTime}`}
+									editable="time"
+								/>
+							}
+							else={
+								<DashboardCard
+									Icon={Timer}
+									text="Pre-Sale"
+									status={collection.saleStartTime > Date.now() ? 'Ended' : 'Live'}
+									editable="status"
+								/>
+							}
+						/>
+					}
 				/>
-				<DashboardCard Icon={Timer} text="Public-sale goes live in" data="12:00:59" editable="time" />
+				<If
+					condition={collection.saleStartTime > Date.now() / 1000}
+					then={
+						<DashboardCard
+							Icon={Timer}
+							text="Public-sale goes live in"
+							data={`${collection.saleStartTime}`}
+							editable="time"
+						/>
+					}
+					else={<DashboardCard Icon={Timer} text="Sale" status={'Live'} editable="status" />}
+				/>
 				<DashboardCard Icon={ImageSquare} text="NFTs sold" data={collection.tokensCount} />
 				<DashboardCard
 					Icon={ImageSquare}
