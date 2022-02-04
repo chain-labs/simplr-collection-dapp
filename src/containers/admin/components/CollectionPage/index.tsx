@@ -235,7 +235,7 @@ const CollectionPage = ({ contract, metadata }) => {
 								<DashboardCard
 									Icon={Timer}
 									text="Pre-Sale"
-									status={collection.saleStartTime > Date.now() ? 'Ended' : 'Live'}
+									status={collection.saleStartTime > Date.now() / 1000 ? 'Live' : 'Ended'}
 									editable="status"
 								/>
 							}
