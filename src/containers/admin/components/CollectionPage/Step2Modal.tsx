@@ -2,7 +2,7 @@ import React from 'react';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
 
-const Step2Modal = () => {
+const Step2Modal = ({ value, setValue }) => {
 	return (
 		<Box>
 			<Text as="h4" mb="ms" fontFamily="Switzer">

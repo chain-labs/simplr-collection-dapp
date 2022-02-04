@@ -7,9 +7,8 @@ import TextInput from 'src/components/TextInput';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
 
-const Step1Modal = () => {
+const Step1Modal = ({ value, setValue }) => {
 	const modalData = useAppSelector(editSelector);
-	const [value, setValue] = useState('');
 
 	return (
 		<Box>
@@ -23,10 +22,10 @@ const Step1Modal = () => {
 						<TextInput
 							type={modalData.type}
 							placeholder={modalData.placeholder}
-							value={value}
+							value={modalData.placeholder}
 							width="100%"
-							setValue={setValue}
 							disableValidation
+							disabled
 						/>
 						<Box ml="mxs" />
 						<TextInput

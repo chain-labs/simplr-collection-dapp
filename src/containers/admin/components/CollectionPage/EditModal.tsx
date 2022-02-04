@@ -41,13 +41,13 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 
 	const getModalStep = () => {
 		if (step === 0) {
-			return <Step1Modal />;
+			return <Step1Modal value={value} setValue={setValue} />;
 		}
 		if (step === 1) {
-			return <Step2Modal />;
+			return <Step2Modal value={value} setValue={setValue} />;
 		}
 		if (step === 2) {
-			return <Step3Modal />;
+			return <Step3Modal value={value} setValue={setValue} />;
 		}
 	};
 
@@ -66,134 +66,6 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 					transform="translate(-50%, -50%)"
 					column
 				>
-					{/* <If
-						condition={step === 0}
-						then={
-							<Box>
-								<Text as="b3" fontWeight="medium" mb="ms">
-									Enter new {modalData.label.toLocaleLowerCase()}
-								</Text>
-								<If
-									condition={modalData.type === 'time'}
-									then={<DateTime value={data} setValue={setValue} width="43rem" />}
-									else={
-										<If
-											condition={modalData.type === 'number'}
-											then={
-												<Box between>
-													<TextInput
-														type={modalData.type}
-														placeholder={modalData.placeholder}
-														value={value}
-														width="100%"
-														setValue={setValue}
-														disableValidation
-													/>
-													<Box ml="mxs" />
-													<TextInput
-														type={modalData.type}
-														placeholder={modalData.data}
-														value={value}
-														width="100%"
-														setValue={setValue}
-														disableValidation
-													/>
-												</Box>
-											}
-											else={
-												<TextInput
-													type={modalData.type}
-													placeholder={modalData.placeholder}
-													value={value}
-													width="100%"
-													setValue={setValue}
-													disableValidation
-												/>
-											}
-										/>
-									}
-								/>
-
-								<Box mt="mxxl" />
-								<Text as="c1" color="gray-00" fontFamily="Open Sauce One">
-									OLD DATA : {modalData.data}
-								</Text>
-								<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex">
-									ESTIMATED GAS COST :{' '}
-									<Text as="c1" color="simply-blue">
-										0.0001 ETH or 1 USD.
-									</Text>
-								</Text>
-							</Box>
-						}
-					/>
-					<If
-						condition={step === 1}
-						then={
-							<Box>
-								<Text as="h4" mb="ms" fontFamily="Switzer">
-									Confirm Change
-								</Text>
-								<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Switzer">
-									Every change in the smart contract costs gas. Do you want to commit these changes?
-								</Text>
-
-								<Box mt="ml" />
-								<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex">
-									GAS COST :{' '}
-									<Text as="c1" color="simply-blue">
-										0.0001 ETH or 1 USD.
-									</Text>
-								</Text>
-							</Box>
-						}
-					/>
-					<If
-						condition={step === 2}
-						then={
-							<Box>
-								<Text as="h4" mb="ms" fontFamily="Switzer">
-									{modalData.label}
-								</Text>
-								<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Switzer">
-									Successfully changed the {modalData.label}. Changes have been reflected on your dashboard.
-								</Text>
-
-								<Box mt="mm" />
-								<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex">
-									OLD {modalData.label.toUpperCase()} :{' '}
-									{modalData.editable === 'address' ? (
-										<Text as="c1" color="simply-blue">
-											{modalData.data.slice(0, 4)}...{modalData.data.slice(38, 42)}
-										</Text>
-									) : (
-										<Text as="c1" color="simply-blue">
-											{modalData.data}
-										</Text>
-									)}
-								</Text>
-								<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex" mt="mxxs">
-									NEW {modalData.label.toUpperCase()} :{' '}
-									{modalData.editable === 'address' ? (
-										<Text as="c1" color="simply-blue">
-											{modalData.data.slice(0, 4)}...{modalData.data.slice(38, 42)}
-										</Text>
-									) : (
-										<Text as="c1" color="simply-blue">
-											{modalData.data}
-										</Text>
-									)}
-								</Text>
-
-								<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex" mt="mm">
-									GAS COST :{' '}
-									<Text as="c1" color="simply-blue">
-										0.0001 ETH or 1 USD.
-									</Text>
-								</Text>
-							</Box>
-						}
-					/> */}
 					{getModalStep()}
 
 					<ButtonComp bg="primary" height="40px" onClick={handleAction} mt="mxl">
