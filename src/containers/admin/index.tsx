@@ -25,7 +25,7 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 	}, [id, provider]);
 	const getPage = (step) => {
 		if (step === 0) {
-			return <CollectionPage contract={contract} />;
+			return <CollectionPage contract={contract} metadata={metadata} />;
 		}
 		if (step === 1) {
 			return <PaymentsPage contract={contract} metadata={metadata} />;
