@@ -9,6 +9,9 @@ import TextInput from 'src/components/TextInput';
 import { editSelector } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, removeWhitelist } from 'src/redux/sales';
+import Step1Modal from './Step1Modal';
+import Step2Modal from './Step2Modal';
+import Step3Modal from './Step3Modal';
 
 interface props {
 	visible: boolean;
@@ -36,6 +39,18 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 		}
 	};
 
+	const getModalStep = () => {
+		if (step === 0) {
+			return <Step1Modal />;
+		}
+		if (step === 1) {
+			return <Step2Modal />;
+		}
+		if (step === 2) {
+			return <Step3Modal />;
+		}
+	};
+
 	if (visible) {
 		return (
 			<Modal visible={visible}>
@@ -51,7 +66,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 					transform="translate(-50%, -50%)"
 					column
 				>
-					<If
+					{/* <If
 						condition={step === 0}
 						then={
 							<Box>
@@ -178,7 +193,8 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 								</Text>
 							</Box>
 						}
-					/>
+					/> */}
+					{getModalStep()}
 
 					<ButtonComp bg="primary" height="40px" onClick={handleAction} mt="mxl">
 						<Text as="h6" fontFamily="Switzer">
