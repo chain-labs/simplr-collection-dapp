@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
-import { CurrencyEth, ImageSquare, Timer, User } from 'phosphor-react';
+import { userInfo } from 'os';
+import { CurrencyEth, DotsThreeOutlineVertical, ImageSquare, Timer, User } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -10,6 +11,7 @@ import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import WhitelistModal from 'src/containers/create/components/SalesPage/WhitelistModal';
 import useEthers from 'src/ethereum/useEthers';
+import useSigner from 'src/ethereum/useSigner';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
@@ -19,6 +21,7 @@ import DashboardCard from './DashboardCard';
 
 const CollectionPage = ({ contract, metadata }) => {
 	const [provider] = useEthers();
+	const [signer] = useSigner(provider);
 	const [collectionUri, setCollectionURI] = useState('');
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
@@ -89,6 +92,20 @@ const CollectionPage = ({ contract, metadata }) => {
 			setInterval(getDetails, 15000);
 		}
 	}, [contract, provider, metadata]);
+
+	const handleAirdrop = async () => {
+		if (collection.adminAddress === user.address) {
+			const airdrop = contract
+				.connect(signer)
+				.transferReservedTokens([airdropAddress])
+				.then(() => {
+					toast.success(`Transferred Token to ${`${airdropAddress.substring(0, 9)}...${airdropAddress.substr(-5)}`}`);
+					setAirdropAddress('');
+				});
+		} else {
+			toast.error('Only admin can Airdrop Tokens');
+		}
+	};
 
 	if (!collection.price) {
 		return (
