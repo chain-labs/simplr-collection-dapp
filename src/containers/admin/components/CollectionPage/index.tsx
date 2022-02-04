@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
+import { userInfo } from 'os';
 import { CurrencyEth, DotsThreeOutlineVertical, ImageSquare, Timer, User } from 'phosphor-react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
@@ -8,12 +10,15 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import useEthers from 'src/ethereum/useEthers';
+import useSigner from 'src/ethereum/useSigner';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 
 const CollectionPage = ({ contract, metadata }) => {
-	const dispatch = useAppDispatch();
 	const [provider] = useEthers();
+	const [signer] = useSigner(provider);
+	const user = useAppSelector(userSelector);
 	const [collectionUri, setCollectionURI] = useState('');
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
@@ -72,6 +77,20 @@ const CollectionPage = ({ contract, metadata }) => {
 			setInterval(getDetails, 150000);
 		}
 	}, [contract, provider, metadata]);
+
+	const handleAirdrop = async () => {
+		if (collection.adminAddress === user.address) {
+			const airdrop = contract
+				.connect(signer)
+				.transferReservedTokens([airdropAddress])
+				.then(() => {
+					toast.success(`Transferred Token to ${`${airdropAddress.substring(0, 9)}...${airdropAddress.substr(-5)}`}`);
+					setAirdropAddress('');
+				});
+		} else {
+			toast.error('Only admin can Airdrop Tokens');
+		}
+	};
 
 	if (!collection.price) {
 		return (
@@ -216,7 +235,13 @@ const CollectionPage = ({ contract, metadata }) => {
 					width="100%"
 				/>
 				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
-					<ButtonComp bg="tertiary" height="40px" width="9.2rem" disable={!airdropAddress}>
+					<ButtonComp
+						bg="tertiary"
+						height="40px"
+						width="9.2rem"
+						disable={!airdropAddress}
+						onClick={() => handleAirdrop()}
+					>
 						<Text as="h6">Airdrop</Text>
 					</ButtonComp>
 				</Box>
