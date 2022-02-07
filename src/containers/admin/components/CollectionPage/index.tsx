@@ -11,6 +11,9 @@ import useEthers from 'src/ethereum/useEthers';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
 
+import { format } from 'date-fns';
+import { formatDate } from 'src/utils/time';
+
 const CollectionPage = ({ contract, metadata }) => {
 	const dispatch = useAppDispatch();
 	const [provider] = useEthers();
@@ -244,6 +247,7 @@ const DashboardCard = ({ text, data, setData, editable, status, Icon }: Dashboar
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [editing, setEditing] = useState(false);
 	const [value, setValue] = useState(data);
+	const [tooltipView, setTooltipView] = useState(false);
 
 	const handleAction = () => {
 		if (editable === 'address' || editable === 'number') {
@@ -260,16 +264,25 @@ const DashboardCard = ({ text, data, setData, editable, status, Icon }: Dashboar
 			setInterval(() => {
 				const now = Date.now() / 1000;
 				const remaining = time - now;
-				const hours = Math.floor(remaining / HOUR_SECONDS);
-				const minutes = Math.floor((remaining - hours * HOUR_SECONDS) / MINUTE_SECONDS);
-				const seconds = Math.floor(remaining - hours * HOUR_SECONDS - minutes * MINUTE_SECONDS);
-				const countdown = `${hours < 10 ? 0 : ''}${hours}:${minutes < 10 ? 0 : ''}${minutes}:${
-					seconds < 10 ? 0 : ''
-				}${seconds}`;
-				setValue(countdown);
+				if (remaining > DAY_SECONDS) {
+					const days = Math.floor(remaining / DAY_SECONDS);
+					const hours = Math.floor((remaining - DAY_SECONDS * days) / HOUR_SECONDS);
+					const minutes = Math.floor((remaining - DAY_SECONDS * days - hours * HOUR_SECONDS) / MINUTE_SECONDS);
+					const seconds = Math.floor(remaining - DAY_SECONDS * days - hours * HOUR_SECONDS - minutes * MINUTE_SECONDS);
+					const countdown = `${days < 10 ? 0 : ''}${days}:${hours < 10 ? 0 : ''}${hours}:${
+						minutes < 10 ? 0 : ''
+					}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
+					setValue(countdown);
+				} else {
+					const hours = Math.floor(remaining / HOUR_SECONDS);
+					const minutes = Math.floor((remaining - hours * HOUR_SECONDS) / MINUTE_SECONDS);
+					const seconds = Math.floor(remaining - hours * HOUR_SECONDS - minutes * MINUTE_SECONDS);
+					const countdown = `${minutes < 10 ? 0 : ''}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
+					setValue(countdown);
+				}
 			}, 1000);
 		}
-	}, [data]);
+	}, [data, setValue]);
 
 	const getData = (data) => {
 		if (editable === 'address') {
@@ -296,7 +309,7 @@ const DashboardCard = ({ text, data, setData, editable, status, Icon }: Dashboar
 				{/* @ts-expect-error Icon as props */}
 				<Icon color={theme.colors['simply-blue']} size="20" weight="bold" />
 			</Box>
-			<Box row between ml="mm" width="40rem">
+			<Box row between ml="mm" width="40rem" position="relative">
 				<Text as="h5">{text}</Text>
 				<If
 					condition={!!status}
@@ -306,26 +319,50 @@ const DashboardCard = ({ text, data, setData, editable, status, Icon }: Dashboar
 						</Text>
 					}
 					else={
-						<Box
-							bg={editable === 'address' ? (editing ? 'simply-white' : 'blue-00') : 'transparent'}
-							borderRadius="8px"
-							border={editing ? '1px solid' : 'none'}
-							borderColor={editing ? '#dcdce8' : 'transparent'}
-							outline="none"
-							px={editable === 'address' || editable === 'number' ? (editing ? 'mxs' : 'mxl') : '0'}
-							py={editable === 'address' || editable === 'number' ? 'mxs' : '0'}
-							as={editing ? 'input' : null}
-							type={editing && editable === 'number' ? 'number' : 'text'}
-							value={value}
-							onChange={(e) => setValue(e.target.value)}
-							fontFamily="inherit"
-							fontSize="1.4rem"
-						>
-							{!editing ? (
-								<Text as="h4" color="simply-blue">
-									{editable === 'address' ? getData(value) : editable === 'time' ? value : data}
-								</Text>
-							) : null}
+						<Box>
+							<If
+								condition={editable === 'time'}
+								then={
+									<Box
+										position="absolute"
+										width="auto"
+										top="0"
+										right="0"
+										display={tooltipView ? 'block' : 'none'}
+										bg="white-00"
+										border={`1px solid ${theme.colors['white-20']}`}
+										borderRadius="4px"
+										boxShadow="shadow-100"
+										px="ms"
+										py="mxs"
+									>
+										<Text as="c3">{`Goes Live on ${formatDate(data)}`}</Text>
+									</Box>
+								}
+							/>
+							<Box
+								bg={editable === 'address' ? (editing ? 'simply-white' : 'blue-00') : 'transparent'}
+								borderRadius="8px"
+								border={editing ? '1px solid' : 'none'}
+								borderColor={editing ? '#dcdce8' : 'transparent'}
+								outline="none"
+								px={editable === 'address' || editable === 'number' ? (editing ? 'mxs' : 'mxl') : '0'}
+								py={editable === 'address' || editable === 'number' ? 'mxs' : '0'}
+								as={editing ? 'input' : null}
+								type={editing && editable === 'number' ? 'number' : 'text'}
+								value={value}
+								onChange={(e) => setValue(e.target.value)}
+								fontFamily="inherit"
+								fontSize="1.4rem"
+								onMouseOver={() => setTooltipView(true)}
+								onMouseOut={() => setTimeout(() => setTooltipView(false), 3000)}
+							>
+								{!editing ? (
+									<Text as="h4" color="simply-blue">
+										{editable === 'address' ? getData(value) : editable === 'time' ? value : data}
+									</Text>
+								) : null}
+							</Box>
 						</Box>
 					}
 				/>
