@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { ethers, utils } from 'ethers';
 import { XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -18,13 +18,11 @@ const PaymentsPage = ({ contract, metadata }) => {
 	const [payees, setPayees] = useState<string[]>([]);
 	const [shares, setShares] = useState<number[]>([]);
 	const [simplrShares, setSimplrShares] = useState<number>(0);
-	const [editRoyalties, setEditRoyalties] = useState(false);
-	const [royaltyAddress, setRoyaltyAddress] = useState();
-	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(10);
 	const [userShare, setUserShare] = useState('');
 	const [pendingPayment, setPendingPayment] = useState('');
 	const [totalFunds, setTotalFunds] = useState('');
 	const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(0);
+	const [admin, setAdmin] = useState('');
 
 	const [provider, setProvider] = useEthers();
 	const [signer] = useSigner(provider);
@@ -55,6 +53,8 @@ const PaymentsPage = ({ contract, metadata }) => {
 						const pendingPayment = totalFunds.mul(userShare).div(totalShares).sub(released);
 						setTotalFunds(ethers.utils.formatUnits(totalFunds));
 						setPendingPayment(ethers.utils.formatUnits(pendingPayment));
+						const admin = await contract.callStatic.owner();
+						setAdmin(admin);
 					}
 				};
 				const { tokenDetails } = metadata;
@@ -190,43 +190,133 @@ const PaymentsPage = ({ contract, metadata }) => {
 					</Box>
 				</Box>
 			</Box>
-			<Box width="55.2rem" mt="wxl">
-				<Text as="h3" color="simply-blue" mb="mxxxl">
-					Royalties
-				</Text>
-				<Box between mb="mm">
-					<Text as="h6">Royalties</Text>
-					<Text as="h6" color="simply-blue" textDecoration="underline" onClick={() => setEditRoyalties(true)}>
-						Edit
-					</Text>
-				</Box>
-				<Box row overflow="visible" mb="ms">
-					<TextInput
-						value={''}
-						setValue={setRoyaltyAddress}
-						type="text"
-						width="45.2rem"
-						disableValidation
-						disabled={!editRoyalties}
-						fontSize="1.4rem"
-					/>
-					<Box ml="mxs" />
-					<TextInput
-						value={''}
-						setValue={setRoyaltyPercentage}
-						type="text"
-						width="9.2rem"
-						disabled={!editRoyalties}
-						disableValidation
-						fontSize="1.4rem"
-					/>
-				</Box>
-				<Text as="b1" color="simply-gray" mt="mxs" mb="16rem">
-					Maximum 10%
-				</Text>
-			</Box>
+			<Royalties {...{ contract, admin, signer }} />
 		</Box>
 	);
 };
 
 export default PaymentsPage;
+
+const Royalties = ({ admin, contract, signer }) => {
+	const [edit, setEdit] = useState(false);
+	const user = useAppSelector(userSelector);
+	const [address, setAddress] = useState('');
+	const [percentage, setPercentage] = useState(0);
+	const [royalty, setRoyalty] = useState({
+		account: '',
+		value: 0,
+	});
+
+	const editRoyalties = async () => {
+		if (!ethers.utils.isAddress(address)) {
+			toast.error('Invalid Address');
+		} else if (percentage > 10) {
+			toast.error('Value must be max upto 10%');
+		} else if (royalty.account !== address || royalty.value !== percentage) {
+			contract
+				.connect(signer)
+				.setRoyalties({ account: address, value: percentage * 100 })
+				.catch((err) => {
+					console.error(err);
+					toast.error('Something Went Wrong');
+				})
+				.then(() => {
+					toast.success('Updated');
+					setEdit(false);
+					setRoyalty({
+						account: address,
+						value: percentage,
+					});
+				});
+		}
+	};
+
+	useEffect(() => {
+		const getRoyalty = async () => {
+			const royalty = await contract.callStatic.royalties();
+			setRoyalty({ ...royalty, value: royalty.value / 100 });
+			setAddress(royalty.account);
+			setPercentage(royalty.value / 100);
+		};
+		if (contract) {
+			getRoyalty();
+		}
+	}, [contract]);
+	return (
+		<Box width="55.2rem" mt="wxl" mb="wxl">
+			<Text as="h3" color="simply-blue" mb="mxxxl">
+				Royalties
+			</Text>
+			<Box between mb="mm">
+				<Text as="h6">Royalties</Text>
+				<Text
+					display={admin !== user.address || edit ? 'none' : 'block'}
+					as="h6"
+					color="simply-blue"
+					textDecoration="underline"
+					onClick={() => setEdit(true)}
+					cursor="pointer"
+				>
+					Edit
+				</Text>
+			</Box>
+			<If
+				condition={!edit}
+				then={
+					<Box row overflow="visible" mb="ms">
+						<TextInput
+							value={royalty.account}
+							type="text"
+							width="45.2rem"
+							disableValidation
+							disabled
+							fontSize="1.4rem"
+						/>
+						<Box ml="mxs" />
+						<TextInput
+							value={`${royalty.value}%`}
+							type="text"
+							width="9.2rem"
+							disabled
+							disableValidation
+							fontSize="1.4rem"
+						/>
+					</Box>
+				}
+				else={
+					<Box>
+						<Box row overflow="visible" mb="ms">
+							<TextInput
+								value={address}
+								setValue={setAddress}
+								type="text"
+								width="45.2rem"
+								disableValidation
+								fontSize="1.4rem"
+							/>
+							<Box ml="mxs" />
+							<TextInput
+								value={percentage}
+								setValue={setPercentage}
+								max="10"
+								min="0"
+								type="number"
+								width="9.2rem"
+								disableValidation
+								fontSize="1.4rem"
+							/>
+						</Box>
+						<Box row justifyContent="space-between">
+							<Text as="b1" color="simply-gray" mt="mxs" mb="16rem">
+								Maximum 10%
+							</Text>
+							<ButtonComp bg="primary" height="40px" px="mxl" onClick={() => editRoyalties()}>
+								Update
+							</ButtonComp>
+						</Box>
+					</Box>
+				}
+			/>
+		</Box>
+	);
+};
