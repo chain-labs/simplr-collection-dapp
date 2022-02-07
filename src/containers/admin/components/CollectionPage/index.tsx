@@ -17,6 +17,9 @@ import DashboardCard from './DashboardCard';
 import EditModal from './EditModal';
 // import EditModal from './EditModal';
 
+import { format } from 'date-fns';
+import { formatDate } from 'src/utils/time';
+
 const CollectionPage = ({ contract, metadata }) => {
 	const dispatch = useAppDispatch();
 	const [provider] = useEthers();
