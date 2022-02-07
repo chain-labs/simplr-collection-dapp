@@ -147,7 +147,7 @@ const Presale = ({
 						</Box>
 						<Box mt="mxxxl" />
 						<LabelledTextInput label="Pre-Sale Launch" required>
-							<DateTime value={presaleStartTime} setValue={setPresaleStartTime} />
+							<DateTime value={presaleStartTime} setValue={setPresaleStartTime} width="64rem" />
 						</LabelledTextInput>
 					</Box>
 				}
