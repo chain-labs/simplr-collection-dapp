@@ -22,6 +22,7 @@ interface DashboardCardProps {
 	setEdit?: (any) => void;
 	label?: any;
 	placeholder?: any;
+	editfield?: string;
 }
 
 const DashboardCard = ({
@@ -38,6 +39,7 @@ const DashboardCard = ({
 	edit,
 	label,
 	placeholder,
+	editfield,
 }: DashboardCardProps) => {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [editing, setEditing] = useState(false);
@@ -57,6 +59,7 @@ const DashboardCard = ({
 				placeholder: placeholder,
 				data: data,
 				editable: editable,
+				editfield: editfield,
 			};
 			dispatch(setEditDetails(editData));
 		}

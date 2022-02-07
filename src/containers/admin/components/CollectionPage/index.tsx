@@ -82,6 +82,7 @@ const CollectionPage = ({ contract }) => {
 						edit={edit}
 						setEdit={setEdit}
 						placeholder="new_admin_address"
+						editfield="wallet address"
 					/>
 					<If
 						condition={collection.presalePrice !== '-1'}
@@ -97,6 +98,7 @@ const CollectionPage = ({ contract }) => {
 								edit={edit}
 								setEdit={setEdit}
 								placeholder="Reserved Tokens"
+								editfield="reserve tokens"
 							/>
 						}
 					/>
@@ -121,6 +123,7 @@ const CollectionPage = ({ contract }) => {
 						showModal={showModal}
 						edit={edit}
 						setEdit={setEdit}
+						editfield="reveal time"
 					/>
 
 					<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
@@ -143,6 +146,7 @@ const CollectionPage = ({ contract }) => {
 						showModal={showModal}
 						edit={edit}
 						setEdit={setEdit}
+						editfield="public sale time"
 					/>
 					<DashboardCard Icon={ImageSquare} text="NFTs sold" data="6100" />
 					<DashboardCard

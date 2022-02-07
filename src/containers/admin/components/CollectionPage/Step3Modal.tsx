@@ -10,36 +10,10 @@ const Step3Modal = ({ value, setValue }) => {
 	return (
 		<Box>
 			<Text as="h4" mb="ms" fontFamily="Switzer">
-				{modalData.label}
+				Change Underway
 			</Text>
 			<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Switzer">
-				Successfully changed the {modalData.label}. Changes have been reflected on your dashboard.
-			</Text>
-
-			<Box mt="mm" />
-			<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex">
-				OLD {modalData.label.toUpperCase()} :{' '}
-				{modalData.editable === 'address' ? (
-					<Text as="c1" color="simply-blue">
-						{modalData.data.slice(0, 4)}...{modalData.data.slice(38, 42)}
-					</Text>
-				) : (
-					<Text as="c1" color="simply-blue">
-						{modalData.data}
-					</Text>
-				)}
-			</Text>
-			<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex" mt="mxxs">
-				NEW {modalData.label.toUpperCase()} :{' '}
-				{modalData.editable === 'address' ? (
-					<Text as="c1" color="simply-blue">
-						{modalData.data.slice(0, 4)}...{modalData.data.slice(38, 42)}
-					</Text>
-				) : (
-					<Text as="c1" color="simply-blue">
-						{modalData.data}
-					</Text>
-				)}
+				Your changes are making their way through your connected wallet address on METAMASK{' '}
 			</Text>
 
 			<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex" mt="mm">

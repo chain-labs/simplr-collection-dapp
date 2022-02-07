@@ -42,6 +42,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 	}, [contract]);
 
 	useEffect(() => {
+		console.log(contract);
 		const hydrate = () => {
 			if (metadata) {
 				const getPayment = async (share) => {
