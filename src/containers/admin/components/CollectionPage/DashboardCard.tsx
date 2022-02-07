@@ -49,6 +49,7 @@ const DashboardCard = ({
 	const [value, setValue] = useState(data);
 	const [textV, setTextV] = useState('');
 	const [tooltipView, setTooltipView] = useState(false);
+	const [tooltipTime, setTooltipTime] = useState('');
 	const dispatch = useAppDispatch();
 
 	const handleAction = () => {
@@ -68,12 +69,14 @@ const DashboardCard = ({
 
 	useEffect(() => {
 		setValue(data);
+		if (editable === 'time') setTooltipTime(formatDate(data));
 		if (editable === 'time') {
 			const time = parseInt(data);
 
 			setInterval(() => {
-				const now = Date.now() / 1000;
+				const now = Math.floor(Date.now() / 1000);
 				const remaining = time - now;
+
 				if (remaining > DAY_SECONDS) {
 					const days = Math.floor(remaining / DAY_SECONDS);
 					const hours = Math.floor((remaining - DAY_SECONDS * days) / HOUR_SECONDS);
@@ -82,6 +85,7 @@ const DashboardCard = ({
 					const countdown = `${days < 10 ? 0 : ''}${days}:${hours < 10 ? 0 : ''}${hours}:${
 						minutes < 10 ? 0 : ''
 					}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
+					console.log({ days, hours, minutes, seconds, countdown });
 					setValue(countdown);
 				} else {
 					const hours = Math.floor(remaining / HOUR_SECONDS);
@@ -150,7 +154,7 @@ const DashboardCard = ({
 										px="ms"
 										py="mxs"
 									>
-										<Text as="c3">{`Goes Live on ${formatDate(data)}`}</Text>
+										<Text as="c3">{`Goes Live on ${tooltipTime}`}</Text>
 									</Box>
 								}
 							/>

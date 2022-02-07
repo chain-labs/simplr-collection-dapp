@@ -10,9 +10,6 @@ import TextInput from 'src/components/TextInput';
 import useEthers from 'src/ethereum/useEthers';
 import DashboardCard from './DashboardCard';
 
-import { format } from 'date-fns';
-import { formatDate } from 'src/utils/time';
-
 const CollectionPage = ({ contract, metadata }) => {
 	const [provider] = useEthers();
 	const [collectionUri, setCollectionURI] = useState('');
@@ -132,18 +129,6 @@ const CollectionPage = ({ contract, metadata }) => {
 						}
 					/>
 
-					<DashboardCard
-						Icon={Timer}
-						text="NFTs reveal in"
-						data="17:00:00"
-						editable="time"
-						type="time"
-						setShowModal={setShowModal}
-						showModal={showModal}
-						edit={edit}
-						setEdit={setEdit}
-					/>
-
 					<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
 				</Box>
 				<Text as="h3" color="simply-blue" mt="wxl">
@@ -152,26 +137,47 @@ const CollectionPage = ({ contract, metadata }) => {
 				<Box row flexWrap="wrap" between mt="mxxxl">
 					<If
 						condition={collection.presalePrice !== '-1'}
-						then={<DashboardCard Icon={Timer} text="Pre-sale" status="Live" editable="status" />}
+						then={
+							<If
+								condition={collection.presaleStartTime > Date.now() / 1000}
+								then={
+									<DashboardCard
+										Icon={Timer}
+										text="Pre-sale goes live in"
+										data={`${collection.presaleStartTime}`}
+										editable="time"
+									/>
+								}
+								else={
+									<DashboardCard
+										Icon={Timer}
+										text="Pre-Sale"
+										status={collection.saleStartTime > Date.now() / 1000 ? 'Live' : 'Ended'}
+										editable="status"
+									/>
+								}
+							/>
+						}
 					/>
-					<DashboardCard
-						Icon={Timer}
-						text="Public-sale goes live in"
-						data="12:00:59"
-						editable="time"
-						type="time"
-						setShowModal={setShowModal}
-						showModal={showModal}
-						edit={edit}
-						setEdit={setEdit}
+					<If
+						condition={collection.saleStartTime > Date.now() / 1000}
+						then={
+							<DashboardCard
+								Icon={Timer}
+								text="Public-sale goes live in"
+								data={`${collection.saleStartTime}`}
+								editable="time"
+							/>
+						}
+						else={<DashboardCard Icon={Timer} text="Sale" status={'Live'} editable="status" />}
 					/>
-					<DashboardCard Icon={ImageSquare} text="NFTs sold" data="6100" />
+					<DashboardCard Icon={ImageSquare} text="NFTs sold" data={collection.tokensCount} />
 					<DashboardCard
 						Icon={ImageSquare}
 						text="NFTs remaining"
 						data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
 					/>
-					<DashboardCard Icon={CurrencyEth} text="Funds Collected" data="400 ETH" />
+					<DashboardCard Icon={CurrencyEth} text="Funds Collected" data={`${collection.totalFunds} ETH`} />
 				</Box>
 				<Text as="h3" color="simply-blue" mt="wxl">
 					URI:
@@ -180,12 +186,7 @@ const CollectionPage = ({ contract, metadata }) => {
 					<Box flex={1}>
 						<Box row between mb="mxs">
 							<Text as="h6">Collection URI</Text>
-							<Text
-								as="h6"
-								color="simply-blue"
-								textDecoration="underline"
-								onClick={() => setIsEditableCollectionUri(true)}
-							>
+							<Text as="h6" color="simply-blue" textDecoration="underline">
 								Edit
 							</Text>
 						</Box>
@@ -197,74 +198,24 @@ const CollectionPage = ({ contract, metadata }) => {
 							disabled={!isEditableCollectionUri}
 							width="100%"
 						/>
+						<Text as="b1" mt="mxs" color="gray-00">
+							Collection URI is the URL where your NFT media and metadata are stored.{' '}
+						</Text>
 					</Box>
-				</Box>
-				<If
-					condition={collection.presalePrice !== '-1'}
-					then={
-						<DashboardCard Icon={CurrencyEth} text="Price per NFT (Pre-sale)" data={`${collection.presalePrice} ETH`} />
-					}
-				/>
-				{/* <DashboardCard Icon={Timer} text="NFTs reveal in" data="17:00:00" editable="time" /> */}
-				<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
-			</Box>
-			<Text as="h3" color="simply-blue" mt="wxl">
-				Sales:
-			</Text>
-			<Box row flexWrap="wrap" between mt="mxxxl">
-				<If
-					condition={collection.presalePrice !== '-1'}
-					then={
-						<If
-							condition={collection.presaleStartTime > Date.now() / 1000}
-							then={
-								<DashboardCard
-									Icon={Timer}
-									text="Pre-sale goes live in"
-									data={`${collection.presaleStartTime}`}
-									editable="time"
-								/>
-							}
-							else={
-								<DashboardCard
-									Icon={Timer}
-									text="Pre-Sale"
-									status={collection.saleStartTime > Date.now() / 1000 ? 'Live' : 'Ended'}
-									editable="status"
-								/>
-							}
+					<Box ml="wm" />
+					<Box flex={1}>
+						<Text as="h6" mb="mxs">
+							Loading Image URI
+						</Text>
+						<TextInput
+							placeholder="https://gdrive.com/somethingurl"
+							value="https://gdrive.com/somethingurl"
+							disableValidation
+							disabled
+							width="100%"
 						/>
-					}
-				/>
-				<If
-					condition={collection.saleStartTime > Date.now() / 1000}
-					then={
-						<DashboardCard
-							Icon={Timer}
-							text="Public-sale goes live in"
-							data={`${collection.saleStartTime}`}
-							editable="time"
-						/>
-					}
-					else={<DashboardCard Icon={Timer} text="Sale" status={'Live'} editable="status" />}
-				/>
-				<DashboardCard Icon={ImageSquare} text="NFTs sold" data={collection.tokensCount} />
-				<DashboardCard
-					Icon={ImageSquare}
-					text="NFTs remaining"
-					data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
-				/>
-				<DashboardCard Icon={CurrencyEth} text="Funds Collected" data={`${collection.totalFunds} ETH`} />
-			</Box>
-			<Text as="h3" color="simply-blue" mt="wxl">
-				URI:
-			</Text>
-			<Box row between mt="mxxxl">
-				<Box flex={1}>
-					<Box row between mb="mxs">
-						<Text as="h6">Collection URI</Text>
-						<Text as="h6" color="simply-blue" textDecoration="underline">
-							Edit
+						<Text as="b1" mt="mxs" color="gray-00">
+							Placeholder image that will be displayed until the set reveal time.
 						</Text>
 					</Box>
 				</Box>
