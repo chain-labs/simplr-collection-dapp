@@ -14,6 +14,7 @@ import useSigner from 'src/ethereum/useSigner';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
+import AirdropModal from './AirdropModal';
 
 const CollectionPage = ({ contract, metadata }) => {
 	const [provider] = useEthers();
@@ -23,6 +24,7 @@ const CollectionPage = ({ contract, metadata }) => {
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [adminAddress, setAdminAddress] = useState('');
+	const [isAirdropModalOpen, setIsAirdropModalOpen] = useState(false);
 	const [collection, setCollection] = useState({
 		maxTokens: '',
 		adminAddress: '',
@@ -74,22 +76,23 @@ const CollectionPage = ({ contract, metadata }) => {
 		if (contract && provider) {
 			getDetails();
 
-			setInterval(getDetails, 150000);
+			setInterval(getDetails, 15000);
 		}
 	}, [contract, provider, metadata]);
 
 	const handleAirdrop = async () => {
-		if (collection.adminAddress === user.address) {
-			const airdrop = contract
-				.connect(signer)
-				.transferReservedTokens([airdropAddress])
-				.then(() => {
-					toast.success(`Transferred Token to ${`${airdropAddress.substring(0, 9)}...${airdropAddress.substr(-5)}`}`);
-					setAirdropAddress('');
-				});
-		} else {
-			toast.error('Only admin can Airdrop Tokens');
-		}
+		const addressList = airdropAddress.replace(/\s+/g, '');
+		setAirdropAddress(addressList);
+		const addresses = addressList.split(',');
+		addresses.forEach((address, index) => {
+			if (!ethers.utils.isAddress(address)) {
+				toast.error('One of the Addresses is invalid');
+			} else if (addresses.lastIndexOf(address) !== index) {
+				toast.error('Duplicate addresses in the list');
+			} else {
+				setIsAirdropModalOpen(true);
+			}
+		});
 	};
 
 	if (!collection.price) {
@@ -101,6 +104,15 @@ const CollectionPage = ({ contract, metadata }) => {
 	}
 	return (
 		<Box mt="mxxxl" width="116.8rem" mx="auto">
+			<AirdropModal
+				addresses={airdropAddress}
+				isOpen={isAirdropModalOpen}
+				setIsOpen={setIsAirdropModalOpen}
+				adminAddress={adminAddress}
+				contract={contract}
+				signer={signer}
+				setAirdropAddress={setAirdropAddress}
+			/>
 			<Text as="h3" color="simply-blue">
 				Overview:
 			</Text>
@@ -228,7 +240,7 @@ const CollectionPage = ({ contract, metadata }) => {
 				<LabelledTextInput
 					value={airdropAddress}
 					setValue={setAirdropAddress}
-					placeholder="Enter a valid wallet address"
+					placeholder="Enter valid wallet address"
 					label="Airdrop NFTs:"
 					helperText="Airdrop an NFT from your reserve to any wallet address."
 					disableValidation
