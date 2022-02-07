@@ -4,4 +4,7 @@ export interface EditState {
 	placeholder?: string;
 	data?: string;
 	editable?: string;
+	editfield?: string;
+	metadata?: any;
+	contract?: any;
 }

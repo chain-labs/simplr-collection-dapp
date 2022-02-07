@@ -100,6 +100,7 @@ const CollectionPage = ({ contract, metadata }) => {
 						edit={edit}
 						setEdit={setEdit}
 						placeholder="new_admin_address"
+						editfield="wallet address"
 					/>
 					<If
 						condition={collection.presalePrice !== '-1'}
@@ -115,6 +116,7 @@ const CollectionPage = ({ contract, metadata }) => {
 								edit={edit}
 								setEdit={setEdit}
 								placeholder="Reserved Tokens"
+								editfield="reserve tokens"
 							/>
 						}
 					/>
@@ -128,7 +130,6 @@ const CollectionPage = ({ contract, metadata }) => {
 							/>
 						}
 					/>
-
 					<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
 				</Box>
 				<Text as="h3" color="simply-blue" mt="wxl">

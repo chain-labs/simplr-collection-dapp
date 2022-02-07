@@ -2,11 +2,13 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
 import useContract from 'src/ethereum/useContract';
 import useCustomContract, { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
+import { setEditDetails } from 'src/redux/edit';
 import theme from 'src/styleguide/theme';
 import CollectionPage from './components/CollectionPage';
 import PaymentsPage from './components/PaymentsPage';
@@ -15,11 +17,13 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 	const [step, setStep] = useState(0);
 	const [provider] = useEthers();
 	const [contract, setContract] = useState<ethers.Contract>();
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		if (id && provider) {
 			const abi = getContractDetails('AffiliateCollection');
 			const contract = new ethers.Contract(id, abi, provider);
+			dispatch(setEditDetails({ contract: contract }));
 			setContract(contract);
 		}
 	}, [id, provider]);
