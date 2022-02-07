@@ -14,7 +14,6 @@ import { format } from 'date-fns';
 import { formatDate } from 'src/utils/time';
 
 const CollectionPage = ({ contract, metadata }) => {
-	const dispatch = useAppDispatch();
 	const [provider] = useEthers();
 	const [collectionUri, setCollectionURI] = useState('');
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
