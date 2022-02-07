@@ -1,39 +1,20 @@
 import { ethers } from 'ethers';
-<<<<<<< HEAD
-import { CurrencyEth, DotsThreeOutlineVertical, ImageSquare, Timer, User, X } from 'phosphor-react';
-=======
 import { CurrencyEth, ImageSquare, Timer, User } from 'phosphor-react';
->>>>>>> 71799f0 (prep for rebase)
 import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
-import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
-import WhitelistModal from 'src/containers/create/components/SalesPage/WhitelistModal';
 import useEthers from 'src/ethereum/useEthers';
-<<<<<<< HEAD
-
-import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import theme from 'src/styleguide/theme';
 import DashboardCard from './DashboardCard';
-import EditModal from './EditModal';
-// import EditModal from './EditModal';
-
-import { format } from 'date-fns';
-import { formatDate } from 'src/utils/time';
-=======
-import DashboardCard from './DashboardCard';
->>>>>>> 71799f0 (prep for rebase)
 
 const CollectionPage = ({ contract, metadata }) => {
 	const [provider] = useEthers();
 	const [collectionUri, setCollectionURI] = useState('');
-	const [isEditableCollectionUri] = useState(false);
+	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
-	const [edited, setEdited] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [adminAddress, setAdminAddress] = useState('');
 	const [edit, setEdit] = useState('');
