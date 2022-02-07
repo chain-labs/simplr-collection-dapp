@@ -25,7 +25,7 @@ const CollectionPage = ({ contract }) => {
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [edited, setEdited] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-  const [adminAddress, setAdminAddress] = useState('');
+	const [adminAddress, setAdminAddress] = useState('');
 	const [edit, setEdit] = useState('');
 	const [collection, setCollection] = useState({
 		maxTokens: '',
@@ -196,8 +196,8 @@ const CollectionPage = ({ contract }) => {
 							disabled={!isEditableCollectionUri}
 							width="100%"
 						/>
-					}
-				/>
+					</Box>
+				</Box>
 				<If
 					condition={collection.presalePrice !== '-1'}
 					then={
