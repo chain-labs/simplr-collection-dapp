@@ -17,6 +17,14 @@ module.exports = withPlugins([
 				});
 				return config;
 			},
+			async rewrites() {
+				return [
+					{
+						source: '/api/:path*',
+						destination: 'https://simplr.mypinata.cloud/ipfs/:path*',
+					},
+				];
+			},
 		}),
 	],
 	nextConfig,

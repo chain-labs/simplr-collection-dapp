@@ -10,14 +10,13 @@ interface props {
 	disabled?: boolean;
 	disableValidation?: boolean;
 	setValue?: (DateType) => void;
+	width?: string;
 }
 
-const DateTime = ({ value, setValue, disabled, disableValidation }: props) => {
+const DateTime = ({ value, setValue, disabled, disableValidation, width }: props) => {
 	const [date, setDate] = useState(value?.date ?? '');
 	const [time, setTime] = useState(value?.time ?? '');
-	const [timezone, setTimezone] = useState(
-		value?.timezone ?? '(GMT) Greenwich Mean Time: Dublin, Edinburgh, Lisbon, London'
-	);
+	const [timezone, setTimezone] = useState(value?.timezone ?? '(GMT)');
 
 	useEffect(() => {
 		setTimezone(timezone);
@@ -30,13 +29,13 @@ const DateTime = ({ value, setValue, disabled, disableValidation }: props) => {
 
 	return (
 		<Box overflowX="visible" overflowY="visible">
-			<Box overflow="visible" between width="64rem" mb="mxxs">
+			<Box overflow="visible" between width={width} mb="mxxs">
 				<TextInput
 					placeholder="DD/MM/YYYY"
 					type="date"
 					value={date}
 					setValue={setDate}
-					width="30rem"
+					width="28rem"
 					required
 					{...{ disabled, disableValidation }}
 				/>
@@ -46,7 +45,7 @@ const DateTime = ({ value, setValue, disabled, disableValidation }: props) => {
 					step="1"
 					value={time}
 					setValue={setTime}
-					width="30rem"
+					width="100%"
 					required
 					{...{ disabled, disableValidation }}
 				/>
@@ -55,7 +54,7 @@ const DateTime = ({ value, setValue, disabled, disableValidation }: props) => {
 				data={disabled ? [] : timezones}
 				value={timezone}
 				setValue={setTimezone}
-				width="64rem"
+				width={width}
 				{...{ disabled }}
 			/>
 		</Box>
