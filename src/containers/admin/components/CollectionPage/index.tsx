@@ -1,13 +1,17 @@
 import { ethers } from 'ethers';
 import { CurrencyEth, ImageSquare, Timer, User } from 'phosphor-react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
+import WhitelistModal from 'src/containers/create/components/SalesPage/WhitelistModal';
 import useEthers from 'src/ethereum/useEthers';
+import { useAppDispatch } from 'src/redux/hooks';
+import { addWhitelist, setSaleDetails } from 'src/redux/sales';
 import DashboardCard from './DashboardCard';
 
 const CollectionPage = ({ contract, metadata }) => {
@@ -17,6 +21,7 @@ const CollectionPage = ({ contract, metadata }) => {
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [showModal, setShowModal] = useState(false);
 	const [adminAddress, setAdminAddress] = useState('');
+	const dispatch = useAppDispatch();
 	const [edit, setEdit] = useState('');
 	const [collection, setCollection] = useState({
 		maxTokens: '',
@@ -33,37 +38,44 @@ const CollectionPage = ({ contract, metadata }) => {
 
 	useEffect(() => {
 		const getDetails = async () => {
-			const maxTokens = await contract.callStatic.maximumTokens();
-			const adminAddress = await contract.callStatic.owner();
-			const reservedTokens = await contract.callStatic.reservedTokens();
-			const price = await contract.callStatic.price();
-			const totalSupply = await contract.callStatic.totalSupply();
-			const balance = await provider?.getBalance(contract.address);
-			const totalReleased = await contract.callStatic['totalReleased()']();
-			const totalFunds = balance.add(totalReleased);
-			const tokensCount = await contract.callStatic.tokensCount();
-			const saleStartTime = await contract.callStatic.publicSaleStartTime();
-			const details = {
-				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
-				adminAddress,
-				reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
-				price: ethers.utils.formatUnits(price, 18),
-				presalePrice: '-1',
-				totalSupply,
-				totalFunds: ethers.utils.formatUnits(totalFunds),
-				tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
-				saleStartTime,
-				presaleStartTime: 0,
-			};
+			try {
+				const maxTokens = await contract.callStatic.maximumTokens();
+				const adminAddress = await contract.callStatic.owner();
+				const reservedTokens = await contract.callStatic.reservedTokens();
+				const price = await contract.callStatic.price();
+				const totalSupply = await contract.callStatic.totalSupply();
+				const balance = await provider?.getBalance(contract.address);
+				const totalReleased = await contract.callStatic['totalReleased()']();
+				const totalFunds = balance.add(totalReleased);
+				const tokensCount = await contract.callStatic.tokensCount();
+				const saleStartTime = await contract.callStatic.publicSaleStartTime();
 
-			const isPresaleable = await contract.callStatic.isPresaleAllowed();
-			if (isPresaleable) {
-				const presalePrice = await contract.callStatic.presalePrice();
-				const presaleStartTime = await contract.callStatic.presaleStartTime();
-				details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
-				details.presaleStartTime = presaleStartTime;
+				const whitelist = await contract.callStatic.getPresaleWhitelists();
+				const details = {
+					maxTokens: ethers.utils.formatUnits(maxTokens, 0),
+					adminAddress,
+					reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
+					price: ethers.utils.formatUnits(price, 18),
+					presalePrice: '-1',
+					totalSupply,
+					totalFunds: ethers.utils.formatUnits(totalFunds),
+					tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
+					saleStartTime,
+					presaleStartTime: 0,
+				};
+
+				const isPresaleable = await contract.callStatic.isPresaleAllowed();
+				if (isPresaleable) {
+					const presalePrice = await contract.callStatic.presalePrice();
+					const presaleStartTime = await contract.callStatic.presaleStartTime();
+					details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
+					details.presaleStartTime = presaleStartTime;
+					dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist } }));
+				}
+				setCollection(details);
+			} catch (err) {
+				console.log(err);
 			}
-			setCollection(details);
 		};
 
 		if (contract && provider) {
@@ -239,9 +251,63 @@ const CollectionPage = ({ contract, metadata }) => {
 						</ButtonComp>
 					</Box>
 				</Box>
+				<If
+					condition={!!collection.presalePrice && collection.saleStartTime > Date.now() / 1000}
+					then={<Whitelists />}
+				/>
 			</Box>
 		</Box>
 	);
 };
 
 export default CollectionPage;
+
+const Whitelists = () => {
+	const [whitelist, setWhitelist] = useState('');
+	const [whitelistModalOpen, setWhitelistModalOpen] = useState(false);
+	const [whitelistArray, setWhitelistArray] = useState([]);
+
+	const handleAdd = () => {
+		const whitelistString = whitelist.replace(/\s+/g, '');
+		const whitelistArray = whitelistString.split(',');
+
+		whitelistArray.forEach((address, index) => {
+			if (!ethers.utils.isAddress(whitelist)) {
+				toast.error('Please check if all addresses are valid.');
+				return;
+			} else if (whitelistArray.lastIndexOf(address) !== index) {
+				toast.error('Please remove duplicate addresses found in the list.');
+				return;
+			}
+		});
+		setWhitelistArray(whitelistArray);
+	};
+
+	return (
+		<Box>
+			<Text as="h3" color="simply-blue" mt="wxl">
+				Whitelists:
+			</Text>
+			<Box mt="mxl" width="55.2rem">
+				<LabelledTextInput
+					value={whitelist}
+					setValue={setWhitelist}
+					placeholder="Enter a valid wallet address"
+					label="Airdrop NFTs:"
+					helperText="You can add multiple addresses seperated by a comma ( , )."
+					disableValidation
+					width="100%"
+				/>
+				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
+					<ButtonComp bg="tertiary" height="40px" px="mxl" onClick={() => setWhitelistModalOpen(true)} mr="mxs">
+						<Text as="h6">View Whitelist</Text>
+					</ButtonComp>
+					<ButtonComp bg="primary" height="40px" px="mxl" disable={!whitelist} onClick={() => handleAdd()}>
+						<Text as="h6">Add</Text>
+					</ButtonComp>
+					<WhitelistModal visible={whitelistModalOpen} setVisible={setWhitelistModalOpen} />
+				</Box>
+			</Box>
+		</Box>
+	);
+};
