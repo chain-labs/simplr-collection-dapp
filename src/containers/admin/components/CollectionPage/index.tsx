@@ -1,28 +1,22 @@
 import { ethers } from 'ethers';
-import { CurrencyEth, DotsThreeOutlineVertical, ImageSquare, Timer, User, X } from 'phosphor-react';
+import { CurrencyEth, ImageSquare, Timer, User } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
-import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
-import WhitelistModal from 'src/containers/create/components/SalesPage/WhitelistModal';
-import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import theme from 'src/styleguide/theme';
+import useEthers from 'src/ethereum/useEthers';
 import DashboardCard from './DashboardCard';
-import EditModal from './EditModal';
-// import EditModal from './EditModal';
 
-const CollectionPage = ({ contract }) => {
-	const dispatch = useAppDispatch();
+const CollectionPage = ({ contract, metadata }) => {
+	const [provider] = useEthers();
 	const [collectionUri, setCollectionURI] = useState('');
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
-	const [edited, setEdited] = useState(false);
 	const [showModal, setShowModal] = useState(false);
-	const [adminAddress, setAdminAddress] = useState('0xd18Cd50a6bDa288d331e3956BAC496AAbCa4960d');
+	const [adminAddress, setAdminAddress] = useState('');
 	const [edit, setEdit] = useState('');
 	const [collection, setCollection] = useState({
 		maxTokens: '',
@@ -31,6 +25,10 @@ const CollectionPage = ({ contract }) => {
 		price: '',
 		presalePrice: '',
 		totalSupply: 0,
+		tokensCount: '',
+		totalFunds: '',
+		saleStartTime: 0,
+		presaleStartTime: 0,
 	});
 
 	useEffect(() => {
@@ -40,28 +38,48 @@ const CollectionPage = ({ contract }) => {
 			const reservedTokens = await contract.callStatic.reservedTokens();
 			const price = await contract.callStatic.price();
 			const totalSupply = await contract.callStatic.totalSupply();
+			const balance = await provider?.getBalance(contract.address);
+			const totalReleased = await contract.callStatic['totalReleased()']();
+			const totalFunds = balance.add(totalReleased);
+			const tokensCount = await contract.callStatic.tokensCount();
+			const saleStartTime = await contract.callStatic.publicSaleStartTime();
 			const details = {
 				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
 				adminAddress,
 				reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
 				price: ethers.utils.formatUnits(price, 18),
 				presalePrice: '-1',
-				totalSupply: totalSupply,
+				totalSupply,
+				totalFunds: ethers.utils.formatUnits(totalFunds),
+				tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
+				saleStartTime,
+				presaleStartTime: 0,
 			};
 
 			const isPresaleable = await contract.callStatic.isPresaleAllowed();
 			if (isPresaleable) {
 				const presalePrice = await contract.callStatic.presalePrice();
+				const presaleStartTime = await contract.callStatic.presaleStartTime();
 				details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
+				details.presaleStartTime = presaleStartTime;
 			}
 			setCollection(details);
 		};
 
-		if (contract) {
+		if (contract && provider) {
 			getDetails();
-		}
-	}, [contract]);
 
+			setInterval(getDetails, 150000);
+		}
+	}, [contract, provider, metadata]);
+
+	if (!collection.price) {
+		return (
+			<Box center mt="mxxxl">
+				<Text as="h1">Loading...</Text>
+			</Box>
+		);
+	}
 	return (
 		<Box overflow="visible">
 			<Box mt="mxxxl" width="116.8rem" mx="auto">
@@ -112,20 +130,6 @@ const CollectionPage = ({ contract }) => {
 							/>
 						}
 					/>
-
-					<DashboardCard
-						Icon={Timer}
-						text="NFTs reveal in"
-						data="17:00:00"
-						editable="time"
-						type="time"
-						setShowModal={setShowModal}
-						showModal={showModal}
-						edit={edit}
-						setEdit={setEdit}
-						editfield="reveal time"
-					/>
-
 					<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
 				</Box>
 				<Text as="h3" color="simply-blue" mt="wxl">
@@ -134,27 +138,47 @@ const CollectionPage = ({ contract }) => {
 				<Box row flexWrap="wrap" between mt="mxxxl">
 					<If
 						condition={collection.presalePrice !== '-1'}
-						then={<DashboardCard Icon={Timer} text="Pre-sale" status="Live" editable="status" />}
+						then={
+							<If
+								condition={collection.presaleStartTime > Date.now() / 1000}
+								then={
+									<DashboardCard
+										Icon={Timer}
+										text="Pre-sale goes live in"
+										data={`${collection.presaleStartTime}`}
+										editable="time"
+									/>
+								}
+								else={
+									<DashboardCard
+										Icon={Timer}
+										text="Pre-Sale"
+										status={collection.saleStartTime > Date.now() / 1000 ? 'Live' : 'Ended'}
+										editable="status"
+									/>
+								}
+							/>
+						}
 					/>
-					<DashboardCard
-						Icon={Timer}
-						text="Public-sale goes live in"
-						data="12:00:59"
-						editable="time"
-						type="time"
-						setShowModal={setShowModal}
-						showModal={showModal}
-						edit={edit}
-						setEdit={setEdit}
-						editfield="public sale time"
+					<If
+						condition={collection.saleStartTime > Date.now() / 1000}
+						then={
+							<DashboardCard
+								Icon={Timer}
+								text="Public-sale goes live in"
+								data={`${collection.saleStartTime}`}
+								editable="time"
+							/>
+						}
+						else={<DashboardCard Icon={Timer} text="Sale" status={'Live'} editable="status" />}
 					/>
-					<DashboardCard Icon={ImageSquare} text="NFTs sold" data="6100" />
+					<DashboardCard Icon={ImageSquare} text="NFTs sold" data={collection.tokensCount} />
 					<DashboardCard
 						Icon={ImageSquare}
 						text="NFTs remaining"
 						data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
 					/>
-					<DashboardCard Icon={CurrencyEth} text="Funds Collected" data="400 ETH" />
+					<DashboardCard Icon={CurrencyEth} text="Funds Collected" data={`${collection.totalFunds} ETH`} />
 				</Box>
 				<Text as="h3" color="simply-blue" mt="wxl">
 					URI:
@@ -163,12 +187,7 @@ const CollectionPage = ({ contract }) => {
 					<Box flex={1}>
 						<Box row between mb="mxs">
 							<Text as="h6">Collection URI</Text>
-							<Text
-								as="h6"
-								color="simply-blue"
-								textDecoration="underline"
-								onClick={() => setIsEditableCollectionUri(true)}
-							>
+							<Text as="h6" color="simply-blue" textDecoration="underline">
 								Edit
 							</Text>
 						</Box>

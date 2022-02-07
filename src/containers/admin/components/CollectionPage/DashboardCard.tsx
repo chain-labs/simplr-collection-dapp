@@ -7,6 +7,7 @@ import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
 import EditModal from './EditModal';
+import { formatDate } from 'src/utils/time';
 
 interface DashboardCardProps {
 	Icon: React.ReactNode;
@@ -24,6 +25,10 @@ interface DashboardCardProps {
 	placeholder?: any;
 	editfield?: string;
 }
+
+const DAY_SECONDS = 86400;
+const HOUR_SECONDS = 3600;
+const MINUTE_SECONDS = 60;
 
 const DashboardCard = ({
 	text,
@@ -45,9 +50,9 @@ const DashboardCard = ({
 	const [editing, setEditing] = useState(false);
 	const [value, setValue] = useState(data);
 	const [textV, setTextV] = useState('');
+	const [tooltipView, setTooltipView] = useState(false);
+	const [tooltipTime, setTooltipTime] = useState('');
 	const dispatch = useAppDispatch();
-
-	// const [edit, setEdit] = useState('');
 
 	const handleAction = () => {
 		if (editable === 'address' || editable === 'number' || editable === 'time') {
@@ -63,21 +68,44 @@ const DashboardCard = ({
 			};
 			dispatch(setEditDetails(editData));
 		}
-		// if (status === 'Edit') {
-		// 	setShowModal(true);
-		// }
 	};
 
 	useEffect(() => {
 		setValue(data);
-	}, [data]);
+		if (editable === 'time') setTooltipTime(formatDate(data));
+		if (editable === 'time') {
+			const time = parseInt(data);
+
+			setInterval(() => {
+				const now = Math.floor(Date.now() / 1000);
+				const remaining = time - now;
+
+				if (remaining > DAY_SECONDS) {
+					const days = Math.floor(remaining / DAY_SECONDS);
+					const hours = Math.floor((remaining - DAY_SECONDS * days) / HOUR_SECONDS);
+					const minutes = Math.floor((remaining - DAY_SECONDS * days - hours * HOUR_SECONDS) / MINUTE_SECONDS);
+					const seconds = Math.floor(remaining - DAY_SECONDS * days - hours * HOUR_SECONDS - minutes * MINUTE_SECONDS);
+					const countdown = `${days < 10 ? 0 : ''}${days}:${hours < 10 ? 0 : ''}${hours}:${
+						minutes < 10 ? 0 : ''
+					}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
+					console.log({ days, hours, minutes, seconds, countdown });
+					setValue(countdown);
+				} else {
+					const hours = Math.floor(remaining / HOUR_SECONDS);
+					const minutes = Math.floor((remaining - hours * HOUR_SECONDS) / MINUTE_SECONDS);
+					const seconds = Math.floor(remaining - hours * HOUR_SECONDS - minutes * MINUTE_SECONDS);
+					const countdown = `${minutes < 10 ? 0 : ''}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
+					setValue(countdown);
+				}
+			}, 1000);
+		}
+	}, [data, setValue]);
 
 	const getData = (data) => {
 		if (editable === 'address') {
 			if (data.length > 10) {
 				return `${value.substr(0, 4)}...${value.substr(-4)}`;
 			}
-
 			return data;
 		}
 	};
@@ -102,7 +130,7 @@ const DashboardCard = ({
 					then={<EditModal visible={showModal} setVisible={setShowModal} edit={edit} data={data} label={textV} />}
 				/>
 			</Box>
-			<Box row between ml="mm" width="40rem">
+			<Box row between ml="mm" width="40rem" position="relative">
 				<Text as="h5">{text}</Text>
 				<If
 					condition={!!status}
@@ -112,29 +140,50 @@ const DashboardCard = ({
 						</Text>
 					}
 					else={
-						<Box
-							bg={editable === 'address' ? (editing ? 'simply-white' : 'blue-00') : 'transparent'}
-							borderRadius="8px"
-							border={editing ? '1px solid' : 'none'}
-							borderColor={editing ? '#dcdce8' : 'transparent'}
-							outline="none"
-							px={editable === 'address' || editable === 'number' ? (editing ? 'mxs' : 'mxl') : '0'}
-							py={editable === 'address' || editable === 'number' ? 'mxs' : '0'}
-							as={editing ? 'input' : null}
-							type={editing && editable === 'number' ? 'number' : 'text'}
-							value={value}
-							onChange={(e) => setValue(e.target.value)}
-							fontFamily="inherit"
-							fontSize="1.4rem"
-						>
-							{/* {!editing ? (
-								<Text as="h4" color="simply-blue">
-									{editable === 'address' ? getData(value) : data}
-								</Text>
-							) : null} */}
-							<Text as="h4" color="simply-blue">
-								{editable === 'address' ? getData(value) : data}
-							</Text>
+						<Box>
+							<If
+								condition={editable === 'time'}
+								then={
+									<Box
+										position="absolute"
+										width="auto"
+										top="0"
+										right="0"
+										display={tooltipView ? 'block' : 'none'}
+										bg="white-00"
+										border={`1px solid ${theme.colors['white-20']}`}
+										borderRadius="4px"
+										boxShadow="shadow-100"
+										px="ms"
+										py="mxs"
+									>
+										<Text as="c3">{`Goes Live on ${tooltipTime}`}</Text>
+									</Box>
+								}
+							/>
+							<Box
+								bg={editable === 'address' ? (editing ? 'simply-white' : 'blue-00') : 'transparent'}
+								borderRadius="8px"
+								border={editing ? '1px solid' : 'none'}
+								borderColor={editing ? '#dcdce8' : 'transparent'}
+								outline="none"
+								px={editable === 'address' || editable === 'number' ? (editing ? 'mxs' : 'mxl') : '0'}
+								py={editable === 'address' || editable === 'number' ? 'mxs' : '0'}
+								as={editing ? 'input' : null}
+								type={editing && editable === 'number' ? 'number' : 'text'}
+								value={value}
+								onChange={(e) => setValue(e.target.value)}
+								fontFamily="inherit"
+								fontSize="1.4rem"
+								onMouseOver={() => setTooltipView(true)}
+								onMouseLeave={() => setTimeout(() => setTooltipView(false), 3000)}
+							>
+								{!editing ? (
+									<Text as="h4" color="simply-blue">
+										{editable === 'address' ? getData(value) : editable === 'time' ? value : data}
+									</Text>
+								) : null}
+							</Box>
 						</Box>
 					}
 				/>
