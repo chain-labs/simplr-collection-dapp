@@ -23,7 +23,7 @@ const CollectionPage = ({ contract, metadata }) => {
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [showModal, setShowModal] = useState(false);
-	const [adminAddress, setAdminAddress] = useState('');
+	const dispatch = useAppDispatch();
 	const [edit, setEdit] = useState('');
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
