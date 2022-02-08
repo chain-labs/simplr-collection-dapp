@@ -16,6 +16,7 @@ import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, removeWhitelist } from 'src/redux/sales';
+import StatusModal from './StatusModal';
 import Step1Modal from './Step1Modal';
 import Step2Modal from './Step2Modal';
 import Step3Modal from './Step3Modal';
@@ -89,7 +90,8 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 
 	const getModalStep = () => {
 		if (step === 0) {
-			return <Step1Modal value={value} setValue={setValue} />;
+			if (modalData.editable === 'Live' || modalData.editable === 'Paused') return <StatusModal />;
+			else return <Step1Modal value={value} setValue={setValue} />;
 		}
 		if (step === 1) {
 			return <Step2Modal value={value} setValue={setValue} />;
@@ -124,26 +126,38 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 					column
 				>
 					{getModalStep()}
+					<If
+						condition={(step === 0 && modalData.editable === 'Live') || modalData.editable === 'Paused'}
+						then={
+							<ButtonComp bg="primary" height="40px" mt="ml" onClick={handleAction}>
+								<Text as="h6" fontFamily="Switzer">
+									{modalData.editable === 'Live' ? 'Pause' : 'Resume'}
+								</Text>
+							</ButtonComp>
+						}
+						else={
+							<ButtonComp
+								bg="primary"
+								height="40px"
+								onClick={handleAction}
+								mt="mxl"
+								disable={step === 2 ? true : false}
+								center
+							>
+								<Text as="h6" fontFamily="Switzer">
+									{step === 0
+										? 'Proceed'
+										: step === 1
+										? 'Commit Change'
+										: step === 2
+										? 'Opening Metamask'
+										: 'Return to Dashboard'}
+								</Text>
+								{step === 2 ? <CircleNotch size={20} /> : ''}
+							</ButtonComp>
+						}
+					/>
 
-					<ButtonComp
-						bg="primary"
-						height="40px"
-						onClick={handleAction}
-						mt="mxl"
-						disable={step === 2 ? true : false}
-						center
-					>
-						<Text as="h6" fontFamily="Switzer">
-							{step === 0
-								? 'Proceed'
-								: step === 1
-								? 'Commit Change'
-								: step === 2
-								? 'Opening Metamask'
-								: 'Return to Dashboard'}
-						</Text>
-						{step === 2 ? <CircleNotch size={20} /> : ''}
-					</ButtonComp>
 					<If
 						condition={step === 0 || step === 1}
 						then={

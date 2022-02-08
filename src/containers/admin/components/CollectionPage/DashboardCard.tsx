@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import If from 'src/components/If';
 import Text from 'src/components/Text';
-import { setEditDetails } from 'src/redux/edit';
-import { useAppDispatch } from 'src/redux/hooks';
+import { editSelector, setEditDetails } from 'src/redux/edit';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
 import EditModal from './EditModal';
 import { formatDate } from 'src/utils/time';
+import { userSelector } from 'src/redux/user';
 
 interface DashboardCardProps {
 	Icon: React.ReactNode;
@@ -52,6 +53,9 @@ const DashboardCard = ({
 	const [textV, setTextV] = useState('');
 	const [tooltipView, setTooltipView] = useState(false);
 	const [tooltipTime, setTooltipTime] = useState('');
+	const user = useAppSelector(userSelector);
+	const modalData = useAppSelector(editSelector);
+
 	const dispatch = useAppDispatch();
 
 	const handleAction = () => {
@@ -64,6 +68,18 @@ const DashboardCard = ({
 				placeholder: placeholder,
 				data: data,
 				editable: editable,
+				editfield: editfield,
+			};
+			dispatch(setEditDetails(editData));
+		}
+		if (status === 'Live' || status === 'Paused') {
+			setDrawerOpen(false);
+			setShowModal(true);
+			const editData = {
+				type: type,
+				label: text,
+				placeholder: placeholder,
+				editable: status,
 				editfield: editfield,
 			};
 			dispatch(setEditDetails(editData));
@@ -192,7 +208,12 @@ const DashboardCard = ({
 				condition={!!editable && (status === 'Sold Out' || status !== 'Ended')}
 				then={
 					<Box position="relative" onMouseLeave={() => setTimeout(() => setDrawerOpen(false), 1000)} cursor="pointer">
-						<Box ml="mxl" center onClick={() => setDrawerOpen(true)}>
+						<Box
+							ml="mxl"
+							center
+							onClick={modalData.adminAddress === user.address ? () => setDrawerOpen(true) : () => setDrawerOpen(false)}
+							cursor={modalData.adminAddress === user.address ? 'pointer' : 'not-allowed'}
+						>
 							<DotsThreeOutlineVertical color={theme.colors['gray-00']} size="20" weight="fill" />
 						</Box>
 						<If

@@ -7,4 +7,5 @@ export interface EditState {
 	editfield?: string;
 	metadata?: any;
 	contract?: any;
+	adminAddress?: string;
 }

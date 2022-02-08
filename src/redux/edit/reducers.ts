@@ -11,6 +11,7 @@ const intitalState: EditState = {
 	editfield: '',
 	metadata: {},
 	contract: {},
+	adminAddress: '',
 };
 
 export const EditReducer = createReducer(intitalState, (builder) => {
