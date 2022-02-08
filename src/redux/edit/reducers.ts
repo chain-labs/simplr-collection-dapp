@@ -10,8 +10,12 @@ const intitalState: EditState = {
 	editable: '',
 	editfield: '',
 	metadata: {},
+<<<<<<< HEAD
 	contract: {},
 	adminAddress: '',
+=======
+	contract: null,
+>>>>>>> 09b3d65 (added whitelist add and remove)
 };
 
 export const EditReducer = createReducer(intitalState, (builder) => {

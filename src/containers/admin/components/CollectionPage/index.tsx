@@ -12,9 +12,11 @@ import WhitelistModal from 'src/containers/create/components/SalesPage/Whitelist
 import useEthers from 'src/ethereum/useEthers';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { addWhitelist, presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
 import { userSelector } from 'src/redux/user';
-import { addWhitelist, setSaleDetails } from 'src/redux/sales';
+import EditModalv2 from '../EditModalv2';
 import DashboardCard from './DashboardCard';
+import EditModal from './EditModal';
 
 const CollectionPage = ({ contract, metadata }) => {
 	const [provider] = useEthers();
@@ -83,7 +85,8 @@ const CollectionPage = ({ contract, metadata }) => {
 
 		if (contract && provider) {
 			getDetails();
-			setInterval(getDetails, 150000);
+
+			setInterval(getDetails, 15000);
 		}
 	}, [contract, provider, metadata]);
 
@@ -283,7 +286,7 @@ const CollectionPage = ({ contract, metadata }) => {
 				</Box>
 				<If
 					condition={!!collection.presalePrice && collection.saleStartTime > Date.now() / 1000}
-					then={<Whitelists />}
+					then={<Whitelists admin={collection.adminAddress} />}
 				/>
 			</Box>
 		</Box>
@@ -292,25 +295,52 @@ const CollectionPage = ({ contract, metadata }) => {
 
 export default CollectionPage;
 
-const Whitelists = () => {
+const Whitelists = ({ admin }) => {
 	const [whitelist, setWhitelist] = useState('');
+	const [whitelistRemove, setWhitelistRemove] = useState('');
 	const [whitelistModalOpen, setWhitelistModalOpen] = useState(false);
 	const [whitelistArray, setWhitelistArray] = useState([]);
+	const [addModal, setAddModal] = useState(false);
+	const [removeModal, setRemoveModal] = useState(false);
+	const dispatch = useAppDispatch();
+	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
+	const user = useAppSelector(userSelector);
 
 	const handleAdd = () => {
 		const whitelistString = whitelist.replace(/\s+/g, '');
-		const whitelistArray = whitelistString.split(',');
+		const whitelistsArray = whitelistString.split(',');
+		const list = [...presaleWhitelist, ...whitelistsArray];
+		let err = false;
 
-		whitelistArray.forEach((address, index) => {
+		list.every((address, index) => {
 			if (!ethers.utils.isAddress(whitelist)) {
 				toast.error('Please check if all addresses are valid.');
-				return;
-			} else if (whitelistArray.lastIndexOf(address) !== index) {
+				err = true;
+				return false;
+			} else if (list.lastIndexOf(address) !== index) {
 				toast.error('Please remove duplicate addresses found in the list.');
-				return;
+				err = true;
+				return false;
 			}
+			return true;
 		});
-		setWhitelistArray(whitelistArray);
+
+		if (!err) {
+			setAddModal(true);
+			setWhitelistArray(whitelistsArray);
+			dispatch(setEditDetails({ data: whitelistsArray }));
+		}
+	};
+
+	const handleRemove = () => {
+		if (!presaleWhitelist.includes(whitelistRemove)) {
+			toast.error('Address not found in whitelist.');
+		} else if (!ethers.utils.isAddress(whitelistRemove)) {
+			toast.error('Please check if the address is valid.');
+		} else {
+			setRemoveModal(true);
+			dispatch(setEditDetails({ data: [...presaleWhitelist] }));
+		}
 	};
 
 	return (
@@ -323,19 +353,55 @@ const Whitelists = () => {
 					value={whitelist}
 					setValue={setWhitelist}
 					placeholder="Enter a valid wallet address"
-					label="Airdrop NFTs:"
+					label="Add new Whitelist:"
 					helperText="You can add multiple addresses seperated by a comma ( , )."
 					disableValidation
 					width="100%"
+					disabled={admin !== user.address}
 				/>
 				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
 					<ButtonComp bg="tertiary" height="40px" px="mxl" onClick={() => setWhitelistModalOpen(true)} mr="mxs">
 						<Text as="h6">View Whitelist</Text>
 					</ButtonComp>
-					<ButtonComp bg="primary" height="40px" px="mxl" disable={!whitelist} onClick={() => handleAdd()}>
+					<ButtonComp
+						bg="primary"
+						height="40px"
+						px="mxl"
+						disable={!whitelist}
+						onClick={() => handleAdd()}
+						display={admin === user.address ? 'block' : 'none'}
+					>
 						<Text as="h6">Add</Text>
 					</ButtonComp>
 					<WhitelistModal visible={whitelistModalOpen} setVisible={setWhitelistModalOpen} />
+					<EditModalv2
+						visible={addModal}
+						setVisible={setAddModal}
+						data={[...whitelistArray, ...presaleWhitelist]}
+						type="whitelist_add"
+					/>
+				</Box>
+			</Box>
+			<Box mt="mxl" width="55.2rem" display={admin === user.address ? 'block' : 'none'}>
+				<LabelledTextInput
+					value={whitelistRemove}
+					setValue={setWhitelistRemove}
+					placeholder="Enter a valid wallet address"
+					label="Remove from Whitelist:"
+					helperText="You can add multiple addresses seperated by a comma ( , )."
+					disableValidation
+					width="100%"
+				/>
+				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
+					<ButtonComp bg="secondary" height="40px" px="mxl" disable={!whitelistRemove} onClick={() => handleRemove()}>
+						<Text as="h6">Remove</Text>
+					</ButtonComp>
+					<EditModalv2
+						visible={removeModal}
+						setVisible={setRemoveModal}
+						data={[whitelistRemove]}
+						type="whitelist_remove"
+					/>
 				</Box>
 			</Box>
 		</Box>
