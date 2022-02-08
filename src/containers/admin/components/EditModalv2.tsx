@@ -117,8 +117,6 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 		try {
 			const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
 			const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
-			console.log({ arr, prev, data: data[0] });
-
 			const transaction = await contract.connect(signer).removeWhitelist(prev, data[0]);
 			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistRemoved')[0]?.args;
 			return event;
@@ -138,6 +136,8 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 					setStep(3);
 				});
 			} else if (type === 'whitelist_remove') {
+				console.log('count');
+
 				removeWhitelist().then(() => {
 					setStep(3);
 				});
@@ -214,7 +214,16 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 					<If
 						condition={step < 1}
 						then={
-							<ButtonComp bg="secondary" mt="mm" height="36px" width="100%" onClick={() => setVisible(false)}>
+							<ButtonComp
+								bg="secondary"
+								mt="mm"
+								height="36px"
+								width="100%"
+								onClick={() => {
+									setVisible(false);
+									setStep(0);
+								}}
+							>
 								{info?.no}
 							</ButtonComp>
 						}
