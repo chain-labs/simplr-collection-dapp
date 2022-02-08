@@ -43,6 +43,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 	const handleAction = async () => {
 		console.log(modalData.contract);
 		console.log(signer);
+		console.log(provider);
 		if (step === 0) {
 			setStep(1);
 		}
@@ -50,34 +51,38 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 			console.log(value);
 			setStep(2);
 			setLoading(true);
-			if (modalData.editfield === 'reserve tokens') {
-				modalData.contract
-					.connect(signer)
-					.reserveTokens(value)
-					.catch((err) => {
-						console.error(err);
-						toast.error('Something Went Wrong');
-					})
-					.then(() => {
-						console.log('successfull');
-						toast.success('Updated');
-						setLoading(false);
-						setStep(3);
-					});
-			}
-			if (modalData.editfield === 'wallet address') {
-				modalData.contract
-					.connect(signer)
-					.transferOwnership(value)
-					.catch((err) => {
-						console.error(err);
-						toast.error('Something Went Wrong');
-					})
-					.then(() => {
-						console.log('successfull');
-						toast.success('Updated');
-						setStep(3);
-					});
+			if (provider && signer) {
+				if (modalData.editfield === 'reserve tokens') {
+					modalData.contract
+						.connect(signer)
+						.reserveTokens(value)
+						.catch((err) => {
+							console.error(err);
+							toast.error('Something Went Wrong');
+							return;
+						})
+						.then(() => {
+							console.log('successfull');
+							toast.success('Updated');
+							setLoading(false);
+							setStep(3);
+						});
+				}
+				if (modalData.editfield === 'wallet address') {
+					modalData.contract
+						.connect(signer)
+						.transferOwnership(value)
+						.catch((err) => {
+							console.error(err);
+							toast.error('Something Went Wrong');
+						})
+						.then(() => {
+							console.log('successfull');
+							toast.success('Updated');
+							setStep(3);
+						});
+				}
+				setStep(3);
 			}
 		}
 		if (step === 2) {

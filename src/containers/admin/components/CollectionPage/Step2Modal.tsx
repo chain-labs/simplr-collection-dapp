@@ -13,7 +13,7 @@ const Step2Modal = ({ value, setValue }) => {
 			</Text>
 
 			<Box mt="ml" />
-			<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex">
+			<Text as="c1" color="gray-00" display="flex">
 				GAS COST :{' '}
 				<Text as="c1" color="simply-blue">
 					0.0001 ETH or 1 USD.

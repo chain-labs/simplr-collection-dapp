@@ -209,13 +209,14 @@ const CollectionPage = ({ contract, metadata }) => {
 					<Box flex={1}>
 						<Box row between mb="mxs">
 							<Text as="h6">Collection URI</Text>
+
 							<Text
 								as="h6"
 								color="simply-blue"
 								textDecoration="underline"
-								cursor={adminAddress === user.address ? 'pointer' : 'not-allowed'}
+								cursor={collection.adminAddress === user.address ? 'pointer' : 'not-allowed'}
 								onClick={
-									adminAddress === user.address
+									collection.adminAddress === user.address
 										? () => handleAction('Collection URI', 'url', 'https://', collectionUri)
 										: () => setAdminAddress(adminAddress)
 								}
