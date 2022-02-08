@@ -70,33 +70,17 @@ const CollectionPage = ({ contract, metadata }) => {
 				paused,
 				projectURI,
 			};
-      
-				const whitelist = await contract.callStatic.getPresaleWhitelists();
-				const details = {
-					maxTokens: ethers.utils.formatUnits(maxTokens, 0),
-					adminAddress,
-					reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
-					price: ethers.utils.formatUnits(price, 18),
-					presalePrice: '-1',
-					totalSupply,
-					totalFunds: ethers.utils.formatUnits(totalFunds),
-					tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
-					saleStartTime,
-					presaleStartTime: 0,
-				};
 
-				const isPresaleable = await contract.callStatic.isPresaleAllowed();
-				if (isPresaleable) {
-					const presalePrice = await contract.callStatic.presalePrice();
-					const presaleStartTime = await contract.callStatic.presaleStartTime();
-					details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
-					details.presaleStartTime = presaleStartTime;
-					dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist } }));
-				}
-				setCollection(details);
-			} catch (err) {
-				console.log(err);
+			const whitelist = await contract.callStatic.getPresaleWhitelists();
+			const isPresaleable = await contract.callStatic.isPresaleAllowed();
+			if (isPresaleable) {
+				const presalePrice = await contract.callStatic.presalePrice();
+				const presaleStartTime = await contract.callStatic.presaleStartTime();
+				details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
+				details.presaleStartTime = presaleStartTime;
+				dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist } }));
 			}
+			setCollection(details);
 		};
 
 		if (contract && provider) {
