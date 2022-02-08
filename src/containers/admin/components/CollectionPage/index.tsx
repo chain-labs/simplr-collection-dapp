@@ -134,6 +134,15 @@ const CollectionPage = ({ contract, metadata }) => {
 	};
 	return (
 		<Box overflow="visible">
+			<AirdropModal
+				addresses={airdropAddress}
+				isOpen={isAirdropModalOpen}
+				setIsOpen={setIsAirdropModalOpen}
+				adminAddress={adminAddress}
+				contract={contract}
+				signer={signer}
+				setAirdropAddress={setAirdropAddress}
+			/>
 			<Box mt="mxxxl" width="116.8rem" mx="auto">
 				<Text as="h3" color="simply-blue">
 					Overview:
