@@ -195,7 +195,7 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 							</Box>
 						</>
 					}
-					else={step === 1 ? <Step2Modal gas={gas} /> : <Step3Modal />}
+					else={step === 1 ? <Step2Modal gas={gas} /> : <Step3Modal gas={gas} />}
 				/>
 				<Box mt="mxl">
 					<ButtonComp
@@ -218,7 +218,7 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 						/>
 					</ButtonComp>
 					<If
-						condition={step < 1}
+						condition={step < 2}
 						then={
 							<ButtonComp
 								bg="secondary"
