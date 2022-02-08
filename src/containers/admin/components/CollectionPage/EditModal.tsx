@@ -53,34 +53,55 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 			setLoading(true);
 			if (provider && signer) {
 				if (modalData.editfield === 'reserve tokens') {
-					modalData.contract
-						.connect(signer)
-						.reserveTokens(value)
-						.catch((err) => {
-							console.error(err);
-							toast.error('Something Went Wrong');
-							return;
-						})
-						.then(() => {
-							console.log('successfull');
-							toast.success('Updated');
-							setLoading(false);
-							setStep(3);
-						});
+					try {
+						await modalData.contract.connect(signer).reserveTokens(value);
+						toast.success('Reserve token updated');
+						setStep(3);
+					} catch (err) {
+						toast.error('An unexpected error occured');
+						setVisible(false);
+					}
 				}
 				if (modalData.editfield === 'wallet address') {
-					modalData.contract
-						.connect(signer)
-						.transferOwnership(value)
-						.catch((err) => {
-							console.error(err);
-							toast.error('Something Went Wrong');
-						})
-						.then(() => {
-							console.log('successfull');
-							toast.success('Updated');
-							setStep(3);
-						});
+					try {
+						await modalData.contract.connect(signer).transferOwnership(value);
+						toast.success('Admin wallet address updated');
+						setStep(3);
+					} catch (err) {
+						toast.error('An unexpected error occured');
+						setVisible(false);
+					}
+				}
+				if (modalData.editfield === 'Collection URI') {
+					try {
+						await modalData.contract.connect(signer).setProjectURI(value);
+						toast.success('Collection URI updated');
+						setStep(3);
+					} catch (err) {
+						console.log(err);
+						toast.error('An unexpected error occured');
+						setVisible(false);
+					}
+				}
+				if (modalData.editable === 'Live') {
+					try {
+						await modalData.contract.connect(signer).pause();
+						toast.success('Sale Paused');
+						setStep(3);
+					} catch (err) {
+						toast.error('An unexpected error occured');
+						setVisible(false);
+					}
+				}
+				if (modalData.editable === 'Paused') {
+					try {
+						await modalData.contract.connect(signer).unpause();
+						toast.success('Sale Unpaused');
+						setStep(3);
+					} catch (err) {
+						toast.error('An unexpected error occured');
+						setVisible(false);
+					}
 				}
 			}
 		}
@@ -131,7 +152,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 				>
 					{getModalStep()}
 					<If
-						condition={(step === 0 && modalData.editable === 'Live') || modalData.editable === 'Paused'}
+						condition={step === 0 && (modalData.editable === 'Live' || modalData.editable === 'Paused')}
 						then={
 							<ButtonComp bg="primary" height="40px" mt="ml" onClick={handleAction}>
 								<Text as="h6" fontFamily="Switzer">

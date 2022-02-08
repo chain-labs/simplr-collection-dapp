@@ -34,6 +34,8 @@ const CollectionPage = ({ contract, metadata }) => {
 		totalFunds: '',
 		saleStartTime: 0,
 		presaleStartTime: 0,
+		paused: '',
+		projectURI: '',
 	});
 
 	useEffect(() => {
@@ -48,6 +50,8 @@ const CollectionPage = ({ contract, metadata }) => {
 			const totalFunds = balance.add(totalReleased);
 			const tokensCount = await contract.callStatic.tokensCount();
 			const saleStartTime = await contract.callStatic.publicSaleStartTime();
+			const paused = await contract.callStatic.paused();
+			const projectURI = await contract.callStatic.projectURI();
 			const details = {
 				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
 				adminAddress,
@@ -59,6 +63,8 @@ const CollectionPage = ({ contract, metadata }) => {
 				tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
 				saleStartTime,
 				presaleStartTime: 0,
+				paused,
+				projectURI,
 			};
 
 			const isPresaleable = await contract.callStatic.isPresaleAllowed();
@@ -173,7 +179,13 @@ const CollectionPage = ({ contract, metadata }) => {
 									<DashboardCard
 										Icon={Timer}
 										text="Pre-Sale"
-										status={collection.saleStartTime > Date.now() / 1000 ? 'Live' : 'Ended'}
+										status={
+											collection.saleStartTime > Date.now() / 1000 && !collection.paused
+												? 'Live'
+												: collection.paused
+												? 'Paused'
+												: 'Ended'
+										}
 										editable="status"
 										showModal={showModal}
 										setShowModal={setShowModal}
@@ -226,7 +238,7 @@ const CollectionPage = ({ contract, metadata }) => {
 						</Box>
 						<TextInput
 							placeholder="https://gdrive.com/***"
-							value={collectionUri}
+							value={collection.projectURI}
 							setValue={setCollectionURI}
 							disableValidation
 							disabled={!isEditableCollectionUri}
