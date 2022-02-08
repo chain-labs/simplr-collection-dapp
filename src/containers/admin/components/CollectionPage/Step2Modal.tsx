@@ -2,7 +2,7 @@ import React from 'react';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
 
-const Step2Modal = ({ value, setValue }) => {
+const Step2Modal = ({ gas }: { gas?: string }) => {
 	return (
 		<Box>
 			<Text as="h4" mb="ms" fontFamily="Switzer">
@@ -16,7 +16,7 @@ const Step2Modal = ({ value, setValue }) => {
 			<Text as="c1" color="gray-00" display="flex">
 				GAS COST :{' '}
 				<Text as="c1" color="simply-blue">
-					0.0001 ETH or 1 USD.
+					{gas ? `${gas} ETH` : 'Fetching...'}
 				</Text>
 			</Text>
 		</Box>

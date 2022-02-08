@@ -1,16 +1,20 @@
 import { ethers } from 'ethers';
 import { CurrencyEth, ImageSquare, Timer, User } from 'phosphor-react';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
+import WhitelistModal from 'src/containers/create/components/SalesPage/WhitelistModal';
 import useEthers from 'src/ethereum/useEthers';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
 import { userSelector } from 'src/redux/user';
+import EditModalv2 from '../EditModalv2';
 import DashboardCard from './DashboardCard';
 
 const CollectionPage = ({ contract, metadata }) => {
@@ -67,20 +71,22 @@ const CollectionPage = ({ contract, metadata }) => {
 				projectURI,
 			};
 
+			const whitelist = await contract.callStatic.getPresaleWhitelists();
 			const isPresaleable = await contract.callStatic.isPresaleAllowed();
 			if (isPresaleable) {
 				const presalePrice = await contract.callStatic.presalePrice();
 				const presaleStartTime = await contract.callStatic.presaleStartTime();
 				details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
 				details.presaleStartTime = presaleStartTime;
+				dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist } }));
 			}
 			setCollection(details);
-			await dispatch(setEditDetails({ adminAddress: adminAddress }));
 		};
 
 		if (contract && provider) {
 			getDetails();
-			setInterval(getDetails, 150000);
+
+			setInterval(getDetails, 15000);
 		}
 	}, [contract, provider, metadata]);
 
@@ -101,6 +107,7 @@ const CollectionPage = ({ contract, metadata }) => {
 			data: valueData,
 			editable: type,
 			editfield: editData,
+			adminAddress: collection.adminAddress,
 		};
 		dispatch(setEditDetails(editableData));
 	};
@@ -116,7 +123,6 @@ const CollectionPage = ({ contract, metadata }) => {
 						Icon={User}
 						text="Admin Wallet Address"
 						data={collection.adminAddress}
-						setData={setAdminAddress}
 						editable="address"
 						type="string"
 						setShowModal={setShowModal}
@@ -125,6 +131,7 @@ const CollectionPage = ({ contract, metadata }) => {
 						setEdit={setEdit}
 						placeholder="new_admin_address"
 						editfield="wallet address"
+						admin={collection.adminAddress}
 					/>
 					<If
 						condition={collection.presalePrice !== '-1'}
@@ -141,6 +148,7 @@ const CollectionPage = ({ contract, metadata }) => {
 								setEdit={setEdit}
 								placeholder="Reserved Tokens"
 								editfield="reserve tokens"
+								admin={collection.adminAddress}
 							/>
 						}
 					/>
@@ -173,6 +181,7 @@ const CollectionPage = ({ contract, metadata }) => {
 										editable="time"
 										showModal={showModal}
 										setShowModal={setShowModal}
+										admin={collection.adminAddress}
 									/>
 								}
 								else={
@@ -189,6 +198,7 @@ const CollectionPage = ({ contract, metadata }) => {
 										editable="status"
 										showModal={showModal}
 										setShowModal={setShowModal}
+										admin={collection.adminAddress}
 									/>
 								}
 							/>
@@ -202,9 +212,18 @@ const CollectionPage = ({ contract, metadata }) => {
 								text="Public-sale goes live in"
 								data={`${collection.saleStartTime}`}
 								editable="time"
+								admin={collection.adminAddress}
 							/>
 						}
-						else={<DashboardCard Icon={Timer} text="Sale" status={'Live'} editable="status" />}
+						else={
+							<DashboardCard
+								Icon={Timer}
+								admin={collection.adminAddress}
+								text="Sale"
+								status={'Live'}
+								editable="status"
+							/>
+						}
 					/>
 					<DashboardCard Icon={ImageSquare} text="NFTs sold" data={collection.tokensCount} />
 					<DashboardCard
@@ -284,9 +303,126 @@ const CollectionPage = ({ contract, metadata }) => {
 						</ButtonComp>
 					</Box>
 				</Box>
+				<If
+					condition={!!collection.presalePrice && collection.saleStartTime > Date.now() / 1000}
+					then={<Whitelists admin={collection.adminAddress} />}
+				/>
 			</Box>
 		</Box>
 	);
 };
 
 export default CollectionPage;
+
+const Whitelists = ({ admin }) => {
+	const [whitelist, setWhitelist] = useState('');
+	const [whitelistRemove, setWhitelistRemove] = useState('');
+	const [whitelistModalOpen, setWhitelistModalOpen] = useState(false);
+	const [whitelistArray, setWhitelistArray] = useState([]);
+	const [addModal, setAddModal] = useState(false);
+	const [removeModal, setRemoveModal] = useState(false);
+	const dispatch = useAppDispatch();
+	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
+	const user = useAppSelector(userSelector);
+
+	const handleAdd = () => {
+		const whitelistString = whitelist.replace(/\s+/g, '');
+		const whitelistsArray = whitelistString.split(',');
+		const list = [...whitelistsArray, ...presaleWhitelist];
+		let err = false;
+
+		whitelistsArray.every((address, index) => {
+			if (!ethers.utils.isAddress(address)) {
+				toast.error('Please check if all addresses are valid.');
+				err = true;
+				return false;
+			} else if (list.lastIndexOf(address) !== index) {
+				toast.error('Please remove duplicate addresses found in the list.');
+				err = true;
+				return false;
+			}
+			return true;
+		});
+
+		if (!err) {
+			setAddModal(true);
+			setWhitelistArray(whitelistsArray);
+			dispatch(setEditDetails({ data: whitelistsArray }));
+		}
+	};
+
+	const handleRemove = () => {
+		if (!presaleWhitelist.includes(whitelistRemove)) {
+			toast.error('Address not found in whitelist.');
+		} else if (!ethers.utils.isAddress(whitelistRemove)) {
+			toast.error('Please check if the address is valid.');
+		} else {
+			setRemoveModal(true);
+			dispatch(setEditDetails({ data: [...presaleWhitelist] }));
+		}
+	};
+
+	return (
+		<Box>
+			<Text as="h3" color="simply-blue" mt="wxl">
+				Whitelists:
+			</Text>
+			<Box mt="mxl" width="55.2rem">
+				<LabelledTextInput
+					value={whitelist}
+					setValue={setWhitelist}
+					placeholder="Enter a valid wallet address"
+					label="Add new Whitelist:"
+					helperText="You can add multiple addresses seperated by a comma ( , )."
+					disableValidation
+					width="100%"
+					disabled={admin !== user.address}
+				/>
+				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
+					<ButtonComp bg="tertiary" height="40px" px="mxl" onClick={() => setWhitelistModalOpen(true)} mr="mxs">
+						<Text as="h6">View Whitelist</Text>
+					</ButtonComp>
+					<ButtonComp
+						bg="primary"
+						height="40px"
+						px="mxl"
+						disable={!whitelist}
+						onClick={() => handleAdd()}
+						display={admin === user.address ? 'block' : 'none'}
+					>
+						<Text as="h6">Add</Text>
+					</ButtonComp>
+					<WhitelistModal visible={whitelistModalOpen} setVisible={setWhitelistModalOpen} readOnly />
+					<EditModalv2
+						visible={addModal}
+						setVisible={setAddModal}
+						data={[...whitelistArray, ...presaleWhitelist]}
+						type="whitelist_add"
+					/>
+				</Box>
+			</Box>
+			<Box mt="mxl" width="55.2rem" display={admin === user.address ? 'block' : 'none'}>
+				<LabelledTextInput
+					value={whitelistRemove}
+					setValue={setWhitelistRemove}
+					placeholder="Enter a valid wallet address"
+					label="Remove from Whitelist:"
+					helperText="You can add multiple addresses seperated by a comma ( , )."
+					disableValidation
+					width="100%"
+				/>
+				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
+					<ButtonComp bg="secondary" height="40px" px="mxl" disable={!whitelistRemove} onClick={() => handleRemove()}>
+						<Text as="h6">Remove</Text>
+					</ButtonComp>
+					<EditModalv2
+						visible={removeModal}
+						setVisible={setRemoveModal}
+						data={[whitelistRemove]}
+						type="whitelist_remove"
+					/>
+				</Box>
+			</Box>
+		</Box>
+	);
+};

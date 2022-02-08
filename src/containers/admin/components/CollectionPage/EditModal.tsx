@@ -119,13 +119,13 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 			else return <Step1Modal value={value} setValue={setValue} />;
 		}
 		if (step === 1) {
-			return <Step2Modal value={value} setValue={setValue} />;
+			return <Step2Modal />;
 		}
 		if (step === 2) {
-			return <Step3Modal value={value} setValue={setValue} />;
+			return <Step3Modal />;
 		}
 		if (step === 3) {
-			return <Step4Modal value={value} setValue={setValue} />;
+			return <Step4Modal />;
 		}
 	};
 
