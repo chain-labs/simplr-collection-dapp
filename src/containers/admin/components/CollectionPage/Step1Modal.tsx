@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import DateTime from 'src/components/DateTime';
 import If from 'src/components/If';
@@ -9,6 +9,9 @@ import { useAppSelector } from 'src/redux/hooks';
 
 const Step1Modal = ({ value, setValue }) => {
 	const modalData = useAppSelector(editSelector);
+	useEffect(() => {
+		console.log(value);
+	}, [value]);
 
 	return (
 		<Box>

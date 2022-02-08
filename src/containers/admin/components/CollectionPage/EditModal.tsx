@@ -58,7 +58,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 						toast.success('Reserve token updated');
 						setStep(3);
 					} catch (err) {
-						toast.error('Something Went Wrong');
+						toast.error('An unexpected error occured');
 						setVisible(false);
 					}
 				}
@@ -68,17 +68,18 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 						toast.success('Admin wallet address updated');
 						setStep(3);
 					} catch (err) {
-						toast.error('Something Went Wrong');
+						toast.error('An unexpected error occured');
 						setVisible(false);
 					}
 				}
 				if (modalData.editfield === 'Collection URI') {
 					try {
-						await modalData.contract.connect(signer).transferOwnership(value);
-						toast.success('Admin wallet address updated');
+						await modalData.contract.connect(signer).setProjectURI(value);
+						toast.success('Collection URI updated');
 						setStep(3);
 					} catch (err) {
-						toast.error('Something Went Wrong');
+						console.log(err);
+						toast.error('An unexpected error occured');
 						setVisible(false);
 					}
 				}
@@ -88,7 +89,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 						toast.success('Sale Paused');
 						setStep(3);
 					} catch (err) {
-						toast.error('Something Went Wrong');
+						toast.error('An unexpected error occured');
 						setVisible(false);
 					}
 				}
@@ -98,7 +99,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 						toast.success('Sale Unpaused');
 						setStep(3);
 					} catch (err) {
-						toast.error('Something Went Wrong');
+						toast.error('An unexpected error occured');
 						setVisible(false);
 					}
 				}
