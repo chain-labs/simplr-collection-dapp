@@ -43,6 +43,7 @@ const getInfo = (type: 'whitelist_add' | 'whitelist_remove' | 'airdrop') => {
 		}
 	}
 };
+
 const getConfirmInfo = (type: 'whitelist_add' | 'whitelist_remove' | 'airdrop') => {
 	switch (type) {
 		case 'whitelist_add': {
@@ -84,21 +85,28 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 	}, [step]);
 
 	useEffect(() => {
+		let interval;
 		const getGasDetails = async () => {
-			setInterval(async () => {
-				const fees = await provider.getGasPrice();
-				if (type === 'whitelist_add') {
-					const gas = await contract.connect(signer).estimateGas.presaleWhitelistBatch(arr);
-					setGas(ethers.utils.formatUnits(gas.mul(fees)));
-				} else if (type === 'whitelist_remove') {
-					const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
-					const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
-					const gas = await contract.connect(signer).estimateGas.removeWhitelist(prev, data[0]);
-					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+			interval = setInterval(async () => {
+				if (step < 2) {
+					const fees = await provider.getGasPrice();
+					if (type === 'whitelist_add') {
+						const gas = await contract.connect(signer).estimateGas.presaleWhitelistBatch(arr);
+						setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					} else if (type === 'whitelist_remove') {
+						const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
+						const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
+						const gas = await contract.connect(signer).estimateGas.removeWhitelist(prev, data[0]);
+						setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					}
 				}
 			}, 4000);
 		};
 		if (step > 0 && signer) getGasDetails();
+
+		return () => {
+			clearInterval(interval);
+		};
 	}, [step]);
 
 	const addWhitelist = async () => {
@@ -136,8 +144,6 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 					setStep(3);
 				});
 			} else if (type === 'whitelist_remove') {
-				console.log('count');
-
 				removeWhitelist().then(() => {
 					setStep(3);
 				});
