@@ -12,7 +12,7 @@ const Step1Modal = ({ value, setValue }) => {
 
 	return (
 		<Box>
-			<Text as="b3" fontWeight="medium" mb="ms">
+			<Text as="b3" fontWeight="medium" mb="ms" fontFamily="Switzer">
 				Enter new {modalData.label.toLocaleLowerCase()}
 			</Text>
 			<If
@@ -51,10 +51,10 @@ const Step1Modal = ({ value, setValue }) => {
 			/>
 
 			<Box mt="mxxl" />
-			<Text as="c1" color="gray-00" fontFamily="Open Sauce One">
+			<Text as="c1" color="gray-00">
 				OLD DATA : {modalData.data}
 			</Text>
-			<Text as="c1" color="gray-00" fontFamily="Open Sauce One" display="flex">
+			<Text as="c1" color="gray-00" display="flex">
 				ESTIMATED GAS COST :{' '}
 				<Text as="c1" color="simply-blue">
 					0.0001 ETH or 1 USD.

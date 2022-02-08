@@ -64,10 +64,10 @@ const lineHeights = (as) => {
 			return '150%';
 		case 'h2':
 		case 'h3':
-		case 'h4':
 		case 'h5':
 		case 'h6':
 			return '140%';
+		case 'h4':
 		case 'b3':
 			return '27px';
 		case 'b2':

@@ -4,20 +4,19 @@ import Text from 'src/components/Text';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
 
-const Step3Modal = ({ value, setValue }) => {
+const StatusModal = () => {
 	const modalData = useAppSelector(editSelector);
 
 	return (
 		<Box>
 			<Text as="h4" mb="ms" fontFamily="Switzer">
-				Change Underway
+				Do you want to {modalData.editable === 'Live' ? 'pause' : 'unpause'} the sale?
 			</Text>
-			<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Switzer">
-				Your changes are making their way through your connected wallet address on METAMASK{' '}
-			</Text>
+			<hr />
 
-			<Text as="c1" color="gray-00" display="flex" mt="mm">
-				GAS COST :{' '}
+			<Box mt="ml" />
+			<Text as="c1" color="gray-00" display="flex">
+				ESTIMATED GAS COST :{' '}
 				<Text as="c1" color="simply-blue">
 					0.0001 ETH or 1 USD.
 				</Text>
@@ -26,4 +25,4 @@ const Step3Modal = ({ value, setValue }) => {
 	);
 };
 
-export default Step3Modal;
+export default StatusModal;

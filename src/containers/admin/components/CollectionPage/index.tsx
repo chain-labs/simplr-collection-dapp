@@ -8,6 +8,9 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import useEthers from 'src/ethereum/useEthers';
+import { setEditDetails } from 'src/redux/edit';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 import DashboardCard from './DashboardCard';
 
 const CollectionPage = ({ contract, metadata }) => {
@@ -18,6 +21,8 @@ const CollectionPage = ({ contract, metadata }) => {
 	const [showModal, setShowModal] = useState(false);
 	const [adminAddress, setAdminAddress] = useState('');
 	const [edit, setEdit] = useState('');
+	const dispatch = useAppDispatch();
+	const user = useAppSelector(userSelector);
 	const [collection, setCollection] = useState({
 		maxTokens: '',
 		adminAddress: '',
@@ -64,11 +69,11 @@ const CollectionPage = ({ contract, metadata }) => {
 				details.presaleStartTime = presaleStartTime;
 			}
 			setCollection(details);
+			await dispatch(setEditDetails({ adminAddress: adminAddress }));
 		};
 
 		if (contract && provider) {
 			getDetails();
-
 			setInterval(getDetails, 150000);
 		}
 	}, [contract, provider, metadata]);
@@ -80,6 +85,19 @@ const CollectionPage = ({ contract, metadata }) => {
 			</Box>
 		);
 	}
+
+	const handleAction = (editData, type, placeholder, valueData) => {
+		setShowModal(true);
+		const editableData = {
+			type: type,
+			label: editData,
+			placeholder: placeholder,
+			data: valueData,
+			editable: type,
+			editfield: editData,
+		};
+		dispatch(setEditDetails(editableData));
+	};
 	return (
 		<Box overflow="visible">
 			<Box mt="mxxxl" width="116.8rem" mx="auto">
@@ -147,6 +165,8 @@ const CollectionPage = ({ contract, metadata }) => {
 										text="Pre-sale goes live in"
 										data={`${collection.presaleStartTime}`}
 										editable="time"
+										showModal={showModal}
+										setShowModal={setShowModal}
 									/>
 								}
 								else={
@@ -155,6 +175,8 @@ const CollectionPage = ({ contract, metadata }) => {
 										text="Pre-Sale"
 										status={collection.saleStartTime > Date.now() / 1000 ? 'Live' : 'Ended'}
 										editable="status"
+										showModal={showModal}
+										setShowModal={setShowModal}
 									/>
 								}
 							/>
@@ -187,7 +209,18 @@ const CollectionPage = ({ contract, metadata }) => {
 					<Box flex={1}>
 						<Box row between mb="mxs">
 							<Text as="h6">Collection URI</Text>
-							<Text as="h6" color="simply-blue" textDecoration="underline">
+
+							<Text
+								as="h6"
+								color="simply-blue"
+								textDecoration="underline"
+								cursor={collection.adminAddress === user.address ? 'pointer' : 'not-allowed'}
+								onClick={
+									collection.adminAddress === user.address
+										? () => handleAction('Collection URI', 'url', 'https://', collectionUri)
+										: () => setAdminAddress(adminAddress)
+								}
+							>
 								Edit
 							</Text>
 						</Box>
