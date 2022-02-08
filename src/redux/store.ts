@@ -13,6 +13,7 @@ export const store = configureStore({
 		payment: paymentReducer,
 		edit: EditReducer,
 	},
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export type AppDispatch = typeof store.dispatch;
