@@ -12,11 +12,10 @@ import WhitelistModal from 'src/containers/create/components/SalesPage/Whitelist
 import useEthers from 'src/ethereum/useEthers';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { addWhitelist, presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
+import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
 import { userSelector } from 'src/redux/user';
 import EditModalv2 from '../EditModalv2';
 import DashboardCard from './DashboardCard';
-import EditModal from './EditModal';
 
 const CollectionPage = ({ contract, metadata }) => {
 	const [provider] = useEthers();
@@ -122,7 +121,6 @@ const CollectionPage = ({ contract, metadata }) => {
 						Icon={User}
 						text="Admin Wallet Address"
 						data={collection.adminAddress}
-						setData={setAdminAddress}
 						editable="address"
 						type="string"
 						setShowModal={setShowModal}
@@ -309,11 +307,11 @@ const Whitelists = ({ admin }) => {
 	const handleAdd = () => {
 		const whitelistString = whitelist.replace(/\s+/g, '');
 		const whitelistsArray = whitelistString.split(',');
-		const list = [...presaleWhitelist, ...whitelistsArray];
+		const list = [...whitelistsArray, ...presaleWhitelist];
 		let err = false;
 
-		list.every((address, index) => {
-			if (!ethers.utils.isAddress(whitelist)) {
+		whitelistsArray.every((address, index) => {
+			if (!ethers.utils.isAddress(address)) {
 				toast.error('Please check if all addresses are valid.');
 				err = true;
 				return false;
@@ -373,7 +371,7 @@ const Whitelists = ({ admin }) => {
 					>
 						<Text as="h6">Add</Text>
 					</ButtonComp>
-					<WhitelistModal visible={whitelistModalOpen} setVisible={setWhitelistModalOpen} />
+					<WhitelistModal visible={whitelistModalOpen} setVisible={setWhitelistModalOpen} readOnly />
 					<EditModalv2
 						visible={addModal}
 						setVisible={setAddModal}
