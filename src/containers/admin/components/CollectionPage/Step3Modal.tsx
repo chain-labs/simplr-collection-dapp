@@ -4,7 +4,7 @@ import Text from 'src/components/Text';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
 
-const Step3Modal = ({ value, setValue }) => {
+const Step3Modal = () => {
 	const modalData = useAppSelector(editSelector);
 
 	return (

@@ -73,7 +73,6 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 						toast.error('Something Went Wrong');
 					})
 					.then(() => {
-						console.log('successfull');
 						toast.success('Updated');
 						setStep(3);
 					});
@@ -92,13 +91,13 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 			return <Step1Modal value={value} setValue={setValue} />;
 		}
 		if (step === 1) {
-			return <Step2Modal value={value} setValue={setValue} />;
+			return <Step2Modal />;
 		}
 		if (step === 2) {
-			return <Step3Modal value={value} setValue={setValue} />;
+			return <Step3Modal />;
 		}
 		if (step === 3) {
-			return <Step4Modal value={value} setValue={setValue} />;
+			return <Step4Modal />;
 		}
 	};
 

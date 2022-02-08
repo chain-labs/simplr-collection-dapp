@@ -88,13 +88,15 @@ const DashboardCard = ({
 					const countdown = `${days < 10 ? 0 : ''}${days}:${hours < 10 ? 0 : ''}${hours}:${
 						minutes < 10 ? 0 : ''
 					}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
-					console.log({ days, hours, minutes, seconds, countdown });
+
 					setValue(countdown);
 				} else {
 					const hours = Math.floor(remaining / HOUR_SECONDS);
 					const minutes = Math.floor((remaining - hours * HOUR_SECONDS) / MINUTE_SECONDS);
 					const seconds = Math.floor(remaining - hours * HOUR_SECONDS - minutes * MINUTE_SECONDS);
-					const countdown = `${minutes < 10 ? 0 : ''}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
+					const countdown = `${hours < 10 ? 0 : ''}${hours}:${minutes < 10 ? 0 : ''}${minutes}:${
+						seconds < 10 ? 0 : ''
+					}${seconds}`;
 					setValue(countdown);
 				}
 			}, 1000);

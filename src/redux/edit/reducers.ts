@@ -10,7 +10,7 @@ const intitalState: EditState = {
 	editable: '',
 	editfield: '',
 	metadata: {},
-	contract: {},
+	contract: null,
 };
 
 export const EditReducer = createReducer(intitalState, (builder) => {
