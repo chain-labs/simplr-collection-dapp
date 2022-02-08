@@ -106,6 +106,7 @@ const CollectionPage = ({ contract, metadata }) => {
 			data: valueData,
 			editable: type,
 			editfield: editData,
+			adminAddress: collection.adminAddress,
 		};
 		dispatch(setEditDetails(editableData));
 	};
@@ -129,6 +130,7 @@ const CollectionPage = ({ contract, metadata }) => {
 						setEdit={setEdit}
 						placeholder="new_admin_address"
 						editfield="wallet address"
+						admin={collection.adminAddress}
 					/>
 					<If
 						condition={collection.presalePrice !== '-1'}
@@ -145,6 +147,7 @@ const CollectionPage = ({ contract, metadata }) => {
 								setEdit={setEdit}
 								placeholder="Reserved Tokens"
 								editfield="reserve tokens"
+								admin={collection.adminAddress}
 							/>
 						}
 					/>
@@ -177,6 +180,7 @@ const CollectionPage = ({ contract, metadata }) => {
 										editable="time"
 										showModal={showModal}
 										setShowModal={setShowModal}
+										admin={collection.adminAddress}
 									/>
 								}
 								else={
@@ -187,6 +191,7 @@ const CollectionPage = ({ contract, metadata }) => {
 										editable="status"
 										showModal={showModal}
 										setShowModal={setShowModal}
+										admin={collection.adminAddress}
 									/>
 								}
 							/>
@@ -200,9 +205,18 @@ const CollectionPage = ({ contract, metadata }) => {
 								text="Public-sale goes live in"
 								data={`${collection.saleStartTime}`}
 								editable="time"
+								admin={collection.adminAddress}
 							/>
 						}
-						else={<DashboardCard Icon={Timer} text="Sale" status={'Live'} editable="status" />}
+						else={
+							<DashboardCard
+								Icon={Timer}
+								admin={collection.adminAddress}
+								text="Sale"
+								status={'Live'}
+								editable="status"
+							/>
+						}
 					/>
 					<DashboardCard Icon={ImageSquare} text="NFTs sold" data={collection.tokensCount} />
 					<DashboardCard

@@ -25,6 +25,7 @@ interface DashboardCardProps {
 	label?: any;
 	placeholder?: any;
 	editfield?: string;
+	admin?: string;
 }
 
 const DAY_SECONDS = 86400;
@@ -34,7 +35,7 @@ const MINUTE_SECONDS = 60;
 const DashboardCard = ({
 	text,
 	data,
-	setData,
+	admin,
 	editable,
 	status,
 	Icon,
@@ -43,7 +44,6 @@ const DashboardCard = ({
 	type,
 	setEdit,
 	edit,
-	label,
 	placeholder,
 	editfield,
 }: DashboardCardProps) => {
@@ -185,7 +185,7 @@ const DashboardCard = ({
 								border={editing ? '1px solid' : 'none'}
 								borderColor={editing ? '#dcdce8' : 'transparent'}
 								outline="none"
-								px={editable === 'address' || editable === 'number' ? (editing ? 'mxs' : 'mxl') : '0'}
+								px={editable === 'address' ? (editing ? 'mxs' : 'mxl') : '0'}
 								py={editable === 'address' || editable === 'number' ? 'mxs' : '0'}
 								as={editing ? 'input' : null}
 								type={editing && editable === 'number' ? 'number' : 'text'}
@@ -213,8 +213,8 @@ const DashboardCard = ({
 						<Box
 							ml="mxl"
 							center
-							onClick={modalData.adminAddress === user.address ? () => setDrawerOpen(true) : () => setDrawerOpen(false)}
-							cursor={modalData.adminAddress === user.address ? 'pointer' : 'not-allowed'}
+							onClick={admin === user.address ? () => setDrawerOpen(true) : () => setDrawerOpen(false)}
+							cursor={admin === user.address ? 'pointer' : 'not-allowed'}
 						>
 							<DotsThreeOutlineVertical color={theme.colors['gray-00']} size="20" weight="fill" />
 						</Box>
