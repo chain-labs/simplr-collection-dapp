@@ -94,7 +94,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 				}
 				if (modalData.editable === 'Paused') {
 					try {
-						await modalData.contract.connect(signer).Unpause();
+						await modalData.contract.connect(signer).unpause();
 						toast.success('Sale Unpaused');
 						setStep(3);
 					} catch (err) {
@@ -151,7 +151,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 				>
 					{getModalStep()}
 					<If
-						condition={(step === 0 && modalData.editable === 'Live') || modalData.editable === 'Paused'}
+						condition={step === 0 && (modalData.editable === 'Live' || modalData.editable === 'Paused')}
 						then={
 							<ButtonComp bg="primary" height="40px" mt="ml" onClick={handleAction}>
 								<Text as="h6" fontFamily="Switzer">
