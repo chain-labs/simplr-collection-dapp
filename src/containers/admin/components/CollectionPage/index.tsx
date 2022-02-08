@@ -38,22 +38,39 @@ const CollectionPage = ({ contract, metadata }) => {
 		totalFunds: '',
 		saleStartTime: 0,
 		presaleStartTime: 0,
+		paused: '',
+		projectURI: '',
 	});
 
 	useEffect(() => {
 		const getDetails = async () => {
-			try {
-				const maxTokens = await contract.callStatic.maximumTokens();
-				const adminAddress = await contract.callStatic.owner();
-				const reservedTokens = await contract.callStatic.reservedTokens();
-				const price = await contract.callStatic.price();
-				const totalSupply = await contract.callStatic.totalSupply();
-				const balance = await provider?.getBalance(contract.address);
-				const totalReleased = await contract.callStatic['totalReleased()']();
-				const totalFunds = balance.add(totalReleased);
-				const tokensCount = await contract.callStatic.tokensCount();
-				const saleStartTime = await contract.callStatic.publicSaleStartTime();
-
+			const maxTokens = await contract.callStatic.maximumTokens();
+			const adminAddress = await contract.callStatic.owner();
+			const reservedTokens = await contract.callStatic.reservedTokens();
+			const price = await contract.callStatic.price();
+			const totalSupply = await contract.callStatic.totalSupply();
+			const balance = await provider?.getBalance(contract.address);
+			const totalReleased = await contract.callStatic['totalReleased()']();
+			const totalFunds = balance.add(totalReleased);
+			const tokensCount = await contract.callStatic.tokensCount();
+			const saleStartTime = await contract.callStatic.publicSaleStartTime();
+			const paused = await contract.callStatic.paused();
+			const projectURI = await contract.callStatic.projectURI();
+			const details = {
+				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
+				adminAddress,
+				reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
+				price: ethers.utils.formatUnits(price, 18),
+				presalePrice: '-1',
+				totalSupply,
+				totalFunds: ethers.utils.formatUnits(totalFunds),
+				tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
+				saleStartTime,
+				presaleStartTime: 0,
+				paused,
+				projectURI,
+			};
+      
 				const whitelist = await contract.callStatic.getPresaleWhitelists();
 				const details = {
 					maxTokens: ethers.utils.formatUnits(maxTokens, 0),
@@ -187,7 +204,13 @@ const CollectionPage = ({ contract, metadata }) => {
 									<DashboardCard
 										Icon={Timer}
 										text="Pre-Sale"
-										status={collection.saleStartTime > Date.now() / 1000 ? 'Live' : 'Ended'}
+										status={
+											collection.saleStartTime > Date.now() / 1000 && !collection.paused
+												? 'Live'
+												: collection.paused
+												? 'Paused'
+												: 'Ended'
+										}
 										editable="status"
 										showModal={showModal}
 										setShowModal={setShowModal}
@@ -250,7 +273,7 @@ const CollectionPage = ({ contract, metadata }) => {
 						</Box>
 						<TextInput
 							placeholder="https://gdrive.com/***"
-							value={collectionUri}
+							value={collection.projectURI}
 							setValue={setCollectionURI}
 							disableValidation
 							disabled={!isEditableCollectionUri}
