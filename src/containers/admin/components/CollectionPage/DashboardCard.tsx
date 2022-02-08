@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import If from 'src/components/If';
 import Text from 'src/components/Text';
-import { setEditDetails } from 'src/redux/edit';
-import { useAppDispatch } from 'src/redux/hooks';
+import { editSelector, setEditDetails } from 'src/redux/edit';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
 import EditModal from './EditModal';
 import { formatDate } from 'src/utils/time';
+import { userSelector } from 'src/redux/user';
 
 interface DashboardCardProps {
 	Icon: React.ReactNode;
@@ -23,6 +24,8 @@ interface DashboardCardProps {
 	setEdit?: (any) => void;
 	label?: any;
 	placeholder?: any;
+	editfield?: string;
+	admin?: string;
 }
 
 const DAY_SECONDS = 86400;
@@ -32,7 +35,7 @@ const MINUTE_SECONDS = 60;
 const DashboardCard = ({
 	text,
 	data,
-	setData,
+	admin,
 	editable,
 	status,
 	Icon,
@@ -41,8 +44,8 @@ const DashboardCard = ({
 	type,
 	setEdit,
 	edit,
-	label,
 	placeholder,
+	editfield,
 }: DashboardCardProps) => {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [editing, setEditing] = useState(false);
@@ -50,6 +53,9 @@ const DashboardCard = ({
 	const [textV, setTextV] = useState('');
 	const [tooltipView, setTooltipView] = useState(false);
 	const [tooltipTime, setTooltipTime] = useState('');
+	const user = useAppSelector(userSelector);
+	const modalData = useAppSelector(editSelector);
+
 	const dispatch = useAppDispatch();
 
 	const handleAction = () => {
@@ -62,6 +68,19 @@ const DashboardCard = ({
 				placeholder: placeholder,
 				data: data,
 				editable: editable,
+				editfield: editfield,
+			};
+			dispatch(setEditDetails(editData));
+		}
+		if (status === 'Live' || status === 'Paused') {
+			setDrawerOpen(false);
+			setShowModal(true);
+			const editData = {
+				type: type,
+				label: text,
+				placeholder: placeholder,
+				editable: status,
+				editfield: editfield,
 			};
 			dispatch(setEditDetails(editData));
 		}
@@ -85,13 +104,15 @@ const DashboardCard = ({
 					const countdown = `${days < 10 ? 0 : ''}${days}:${hours < 10 ? 0 : ''}${hours}:${
 						minutes < 10 ? 0 : ''
 					}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
-					console.log({ days, hours, minutes, seconds, countdown });
+
 					setValue(countdown);
 				} else {
 					const hours = Math.floor(remaining / HOUR_SECONDS);
 					const minutes = Math.floor((remaining - hours * HOUR_SECONDS) / MINUTE_SECONDS);
 					const seconds = Math.floor(remaining - hours * HOUR_SECONDS - minutes * MINUTE_SECONDS);
-					const countdown = `${minutes < 10 ? 0 : ''}${minutes}:${seconds < 10 ? 0 : ''}${seconds}`;
+					const countdown = `${hours < 10 ? 0 : ''}${hours}:${minutes < 10 ? 0 : ''}${minutes}:${
+						seconds < 10 ? 0 : ''
+					}${seconds}`;
 					setValue(countdown);
 				}
 			}, 1000);
@@ -164,7 +185,7 @@ const DashboardCard = ({
 								border={editing ? '1px solid' : 'none'}
 								borderColor={editing ? '#dcdce8' : 'transparent'}
 								outline="none"
-								px={editable === 'address' || editable === 'number' ? (editing ? 'mxs' : 'mxl') : '0'}
+								px={editable === 'address' ? (editing ? 'mxs' : 'mxl') : '0'}
 								py={editable === 'address' || editable === 'number' ? 'mxs' : '0'}
 								as={editing ? 'input' : null}
 								type={editing && editable === 'number' ? 'number' : 'text'}
@@ -189,7 +210,12 @@ const DashboardCard = ({
 				condition={!!editable && (status === 'Sold Out' || status !== 'Ended')}
 				then={
 					<Box position="relative" onMouseLeave={() => setTimeout(() => setDrawerOpen(false), 1000)} cursor="pointer">
-						<Box ml="mxl" center onClick={() => setDrawerOpen(true)}>
+						<Box
+							ml="mxl"
+							center
+							onClick={admin === user.address ? () => setDrawerOpen(true) : () => setDrawerOpen(false)}
+							cursor={admin === user.address ? 'pointer' : 'not-allowed'}
+						>
 							<DotsThreeOutlineVertical color={theme.colors['gray-00']} size="20" weight="fill" />
 						</Box>
 						<If

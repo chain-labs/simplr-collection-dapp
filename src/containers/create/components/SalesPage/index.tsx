@@ -319,7 +319,7 @@ const SalesPage = ({ step, setStep }) => {
 				/>
 				<Box mt="mxxxl" />
 				<LabelledTextInput label="Public Sale Launch" required type="date">
-					<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} width="64rem" />
+					<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} />
 				</LabelledTextInput>
 				<Box mt="wm" />
 				<Presale
