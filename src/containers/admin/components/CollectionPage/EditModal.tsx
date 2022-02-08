@@ -82,7 +82,6 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 							setStep(3);
 						});
 				}
-				setStep(3);
 			}
 		}
 		if (step === 2) {
