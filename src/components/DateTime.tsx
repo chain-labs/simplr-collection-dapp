@@ -35,7 +35,7 @@ const DateTime = ({ value, setValue, disabled, disableValidation, width }: props
 					type="date"
 					value={date}
 					setValue={setDate}
-					width="28rem"
+					width="31rem"
 					required
 					{...{ disabled, disableValidation }}
 				/>
@@ -45,7 +45,7 @@ const DateTime = ({ value, setValue, disabled, disableValidation, width }: props
 					step="1"
 					value={time}
 					setValue={setTime}
-					width="100%"
+					width="31rem"
 					required
 					{...{ disabled, disableValidation }}
 				/>
@@ -54,7 +54,7 @@ const DateTime = ({ value, setValue, disabled, disableValidation, width }: props
 				data={disabled ? [] : timezones}
 				value={timezone}
 				setValue={setTimezone}
-				width={width}
+				width="100%"
 				{...{ disabled }}
 			/>
 		</Box>

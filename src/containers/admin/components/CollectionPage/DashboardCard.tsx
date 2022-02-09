@@ -9,6 +9,7 @@ import theme from 'src/styleguide/theme';
 import EditModal from './EditModal';
 import { formatDate } from 'src/utils/time';
 import { userSelector } from 'src/redux/user';
+import TimeEditModal from './TimeEditModal';
 
 interface DashboardCardProps {
 	Icon: React.ReactNode;
@@ -26,6 +27,7 @@ interface DashboardCardProps {
 	placeholder?: any;
 	editfield?: string;
 	admin?: string;
+	timeType?: 'presale' | 'sale';
 }
 
 const DAY_SECONDS = 86400;
@@ -46,6 +48,7 @@ const DashboardCard = ({
 	edit,
 	placeholder,
 	editfield,
+	timeType,
 }: DashboardCardProps) => {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [editing, setEditing] = useState(false);
@@ -54,12 +57,12 @@ const DashboardCard = ({
 	const [tooltipView, setTooltipView] = useState(false);
 	const [tooltipTime, setTooltipTime] = useState('');
 	const user = useAppSelector(userSelector);
-	const modalData = useAppSelector(editSelector);
+	const [isTimeEditing, setIsTimeEditing] = useState(false);
 
 	const dispatch = useAppDispatch();
 
 	const handleAction = () => {
-		if (editable === 'address' || editable === 'number' || editable === 'time') {
+		if (editable === 'address' || editable === 'number') {
 			setDrawerOpen(false);
 			setShowModal(true);
 			const editData = {
@@ -83,6 +86,9 @@ const DashboardCard = ({
 				editfield: editfield,
 			};
 			dispatch(setEditDetails(editData));
+		}
+		if (editable === 'time') {
+			setIsTimeEditing(true);
 		}
 	};
 
@@ -241,6 +247,7 @@ const DashboardCard = ({
 					</Box>
 				}
 			/>
+			<TimeEditModal visible={isTimeEditing} setVisible={setIsTimeEditing} type={timeType} />
 		</Box>
 	);
 };
