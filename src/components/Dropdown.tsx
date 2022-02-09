@@ -35,7 +35,6 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }
 				maxHeight="40rem"
 				position="absolute"
 				onClick={() => setVisible(!visible)}
-				border="1px solid black"
 			>
 				<If
 					condition={visible}
