@@ -9,6 +9,7 @@ import theme from 'src/styleguide/theme';
 import EditModal from './EditModal';
 import { formatDate } from 'src/utils/time';
 import { userSelector } from 'src/redux/user';
+import ButtonComp from 'src/components/Button';
 
 interface DashboardCardProps {
 	Icon: React.ReactNode;
@@ -76,6 +77,18 @@ const DashboardCard = ({
 			setDrawerOpen(false);
 			setShowModal(true);
 			const editData = {
+				type: type,
+				label: text,
+				placeholder: placeholder,
+				editable: status,
+				editfield: editfield,
+			};
+			dispatch(setEditDetails(editData));
+		}
+		if (editfield === 'Reveal') {
+			setShowModal(true);
+			const editData = {
+				data: data,
 				type: type,
 				label: text,
 				placeholder: placeholder,
@@ -198,7 +211,13 @@ const DashboardCard = ({
 							>
 								{!editing ? (
 									<Text as="h4" color="simply-blue">
-										{editable === 'address' ? getData(value) : editable === 'time' ? value : data}
+										{editable === 'address'
+											? getData(value)
+											: editable === 'time'
+											? value
+											: editfield === 'Reveal'
+											? ''
+											: data}
 									</Text>
 								) : null}
 							</Box>
@@ -206,6 +225,14 @@ const DashboardCard = ({
 					}
 				/>
 			</Box>
+			<If
+				condition={editfield === 'Reveal'}
+				then={
+					<ButtonComp bg="secondary" height="36px" px="12px" py="6px" onClick={handleAction}>
+						<Text as="h6">{editfield}</Text>
+					</ButtonComp>
+				}
+			/>
 			<If
 				condition={!!editable && (status === 'Sold Out' || status !== 'Ended')}
 				then={

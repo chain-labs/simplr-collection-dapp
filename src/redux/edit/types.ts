@@ -8,4 +8,5 @@ export interface EditState {
 	metadata?: any;
 	contract?: any;
 	adminAddress?: string;
+	revealable?: boolean;
 }

@@ -44,6 +44,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 		console.log(modalData.contract);
 		console.log(signer);
 		console.log(provider);
+		console.log(modalData.data);
 		if (step === 0) {
 			setStep(1);
 		}
@@ -103,6 +104,17 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 						setVisible(false);
 					}
 				}
+				if (modalData.editfield === 'Reveal') {
+					try {
+						await modalData.contract.connect(signer).setProjectURIAndReveal(modalData.data);
+						toast.success('Sale Unpaused');
+						setStep(3);
+					} catch (err) {
+						console.log(err);
+						toast.error('An unexpected error occured');
+						setVisible(false);
+					}
+				}
 			}
 		}
 		if (step === 2) {
@@ -115,7 +127,8 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 
 	const getModalStep = () => {
 		if (step === 0) {
-			if (modalData.editable === 'Live' || modalData.editable === 'Paused') return <StatusModal />;
+			if (modalData.editable === 'Live' || modalData.editable === 'Paused' || modalData.editfield === 'Reveal')
+				return <StatusModal />;
 			else return <Step1Modal value={value} setValue={setValue} />;
 		}
 		if (step === 1) {

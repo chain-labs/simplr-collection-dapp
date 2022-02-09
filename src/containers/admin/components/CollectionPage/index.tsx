@@ -40,6 +40,7 @@ const CollectionPage = ({ contract, metadata }) => {
 		presaleStartTime: 0,
 		paused: '',
 		projectURI: '',
+		revealed: false,
 	});
 
 	useEffect(() => {
@@ -56,6 +57,7 @@ const CollectionPage = ({ contract, metadata }) => {
 			const saleStartTime = await contract.callStatic.publicSaleStartTime();
 			const paused = await contract.callStatic.paused();
 			const projectURI = await contract.callStatic.projectURI();
+			const revealed = await contract.callStatic.isRevealed();
 			const details = {
 				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
 				adminAddress,
@@ -69,6 +71,7 @@ const CollectionPage = ({ contract, metadata }) => {
 				presaleStartTime: 0,
 				paused,
 				projectURI,
+				revealed,
 			};
 
 			const whitelist = await contract.callStatic.getPresaleWhitelists();
@@ -81,6 +84,8 @@ const CollectionPage = ({ contract, metadata }) => {
 				dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist } }));
 			}
 			setCollection(details);
+
+			console.log(revealed);
 		};
 
 		if (contract && provider) {
@@ -88,6 +93,7 @@ const CollectionPage = ({ contract, metadata }) => {
 
 			setInterval(getDetails, 15000);
 		}
+		console.log(metadata);
 	}, [contract, provider, metadata]);
 
 	if (!collection.price) {
@@ -161,6 +167,14 @@ const CollectionPage = ({ contract, metadata }) => {
 								data={`${collection.presalePrice} ETH`}
 							/>
 						}
+					/>
+					<DashboardCard
+						Icon={Timer}
+						text="Reveal NFTS"
+						editfield="Reveal"
+						showModal={showModal}
+						setShowModal={setShowModal}
+						data={collection.projectURI}
 					/>
 					<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
 				</Box>
@@ -237,7 +251,7 @@ const CollectionPage = ({ contract, metadata }) => {
 					URI:
 				</Text>
 				<Box row between mt="mxxxl">
-					<Box flex={1}>
+					<Box>
 						<Box row between mb="mxs">
 							<Text as="h6">Collection URI</Text>
 
@@ -268,21 +282,26 @@ const CollectionPage = ({ contract, metadata }) => {
 						</Text>
 					</Box>
 					<Box ml="wm" />
-					<Box flex={1}>
-						<Text as="h6" mb="mxs">
-							Loading Image URI
-						</Text>
-						<TextInput
-							placeholder="https://gdrive.com/somethingurl"
-							value="https://gdrive.com/somethingurl"
-							disableValidation
-							disabled
-							width="100%"
-						/>
-						<Text as="b1" mt="mxs" color="gray-00">
-							Placeholder image that will be displayed until the set reveal time.
-						</Text>
-					</Box>
+					<If
+						condition={collection.revealed === true}
+						then={
+							<Box flex={1}>
+								<Text as="h6" mb="mxs">
+									Loading Image URI
+								</Text>
+								<TextInput
+									placeholder="https://gdrive.com/somethingurl"
+									value=""
+									disableValidation
+									disabled
+									width="100%"
+								/>
+								<Text as="b1" mt="mxs" color="gray-00">
+									Placeholder image that will be displayed until the set reveal time.
+								</Text>
+							</Box>
+						}
+					/>
 				</Box>
 				<Text as="h3" color="simply-blue" mt="wxl">
 					Airdrop:
