@@ -239,7 +239,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 				<Box mt="mxl">
 					<ButtonComp
 						bg="primary"
-						disable={step === 2}
+						disable={step === 2 || (step === 1 && !gas)}
 						height="36px"
 						width="100%"
 						onClick={() => handleYes()}
