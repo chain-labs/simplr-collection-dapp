@@ -22,7 +22,7 @@ import {
 	saleSelector,
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
-import { createCollection, uploadToIPFS } from '../../utils';
+import { createCollection, unpinMetadata, uploadToIPFS } from '../../utils';
 import DeployedModal from './DeployedModal';
 import WhitelistComp from './WhitelistComp';
 
@@ -93,9 +93,15 @@ const PaymentSummaryPage = () => {
 	useEffect(() => {
 		if (metadata && ready) {
 			const transaction = async () => {
-				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer).then((tx) => {
-					setTransactionResult(tx);
-				});
+				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer)
+					.then((tx) => {
+						setTransactionResult(tx);
+					})
+					.catch((err) => {
+						toast.remove();
+						toast.error('Something went wrong! Try Again.');
+						unpinMetadata(metadata);
+					});
 				toast.promise(
 					res,
 					{
