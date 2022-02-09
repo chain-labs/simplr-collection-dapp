@@ -239,6 +239,7 @@ const CollectionPage = ({ contract, metadata }) => {
 								text="Sale"
 								status={'Live'}
 								editable="status"
+								setShowModal={setShowModal}
 							/>
 						}
 					/>
