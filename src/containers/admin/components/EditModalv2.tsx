@@ -102,27 +102,30 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 
 	useEffect(() => {
 		let interval;
+		const getGasPrice = async () => {
+			const fees = await provider.getGasPrice();
+			if (type === 'whitelist_add') {
+				const gas = await contract.connect(signer).estimateGas.presaleWhitelistBatch(arr);
+				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+			} else if (type === 'whitelist_remove') {
+				const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
+				const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
+				const gas = await contract.connect(signer).estimateGas.removeWhitelist(prev, data[0]);
+				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+			} else if (type === 'airdrop') {
+				const gas = await contract.connect(signer).estimateGas.transferReservedTokens(data);
+				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+			}
+		};
 		const getGasDetails = async () => {
+			getGasPrice();
 			interval = setInterval(async () => {
 				if (step < 2) {
-					const fees = await provider.getGasPrice();
-					if (type === 'whitelist_add') {
-						const gas = await contract.connect(signer).estimateGas.presaleWhitelistBatch(arr);
-						setGas(ethers.utils.formatUnits(gas.mul(fees)));
-					} else if (type === 'whitelist_remove') {
-						const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
-						const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
-						const gas = await contract.connect(signer).estimateGas.removeWhitelist(prev, data[0]);
-						setGas(ethers.utils.formatUnits(gas.mul(fees)));
-					} else if (type === 'airdrop') {
-						const gas = await contract.connect(signer).estimateGas.transferReservedTokens(data);
-						setGas(ethers.utils.formatUnits(gas.mul(fees)));
-					}
+					getGasPrice();
 				}
 			}, 4000);
 		};
 		if (step > 0 && signer) getGasDetails();
-
 		return () => {
 			clearInterval(interval);
 		};
