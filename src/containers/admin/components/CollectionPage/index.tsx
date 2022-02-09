@@ -250,6 +250,11 @@ const CollectionPage = ({ contract, metadata }) => {
 						data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
 					/>
 					<DashboardCard Icon={CurrencyEth} text="Funds Collected" data={`${collection.totalFunds} ETH`} />
+					<DashboardCard
+						Icon={ImageSquare}
+						text="Reserved Tokens remaining"
+						data={`${parseInt(collection.reservedTokens) - collection.totalSupply + parseInt(collection.tokensCount)}`}
+					/>
 				</Box>
 				<Text as="h3" color="simply-blue" mt="wxl">
 					URI:
