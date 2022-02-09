@@ -112,9 +112,6 @@ const PaymentSummaryPage = () => {
 
 	useEffect(() => {
 		if (transactionResult?.event) {
-			// const event = transactionResult?.event;
-			// const transaction = transactionResult?.transaction;
-			console.log({ transactionResult });
 			setIsDeploymentComplete(true);
 		}
 	}, [transactionResult]);
