@@ -53,7 +53,6 @@ export const uploadToIPFS = async (
 			},
 			revealable: sales.revealable.enabled
 				? {
-						revealAfterTimestamp: getTimestamp(sales.revealable.timestamp),
 						projectURI: sales.revealable.loadingImageUrl,
 						projectURIProvenance: ethers.utils.keccak256(
 							ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
@@ -154,9 +153,7 @@ export const createCollection = async (
 		projectURIProvenance: ethers.utils.keccak256(
 			ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
 		), // encoded hash of the project uri
-		revealAfterTimestamp: sales.revealable.enabled
-			? getTimestamp(sales.revealable.timestamp)
-			: parseInt(`${Date.now() / 1000 + 172800}`), // timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
+		// timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
 	};
 	const royalties = {
 		account: payments.royalties.account ?? collection.admin, //account that will receive royalties for secondary sale

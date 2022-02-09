@@ -47,10 +47,6 @@ const Revealable = ({
 				condition={isChecked}
 				then={
 					<Box mt="wxs" overflow="visible">
-						<LabelledTextInput label="Reveal Time" required>
-							<DateTime value={revealableTime} setValue={setRevealableTime} />
-						</LabelledTextInput>
-						<Box mt="mxxxl" />
 						<LabelledTextInput
 							type="url"
 							label="Loading Image URI"
