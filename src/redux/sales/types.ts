@@ -15,7 +15,6 @@ export interface SaleState {
 	};
 	revealable?: {
 		enabled?: boolean;
-		timestamp?: DateType;
 		loadingImageUrl?: string;
 	};
 	isAffiliable?: boolean;
