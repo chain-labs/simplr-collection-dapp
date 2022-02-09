@@ -34,10 +34,7 @@ export const getUnit = (network) => {
 export const getTimestamp = (timeObject: DateType) => {
 	const { date, time, timezone } = timeObject;
 	const label = timezone?.split(' ')[0];
-	const timestamp =
-		Date.parse(
-			`${date} ${time} ${label?.substring(1, label.length - 1) ?? `GMT${new Date().toString().split('GMT')[1]}`}`
-		) / 1000;
+	const timestamp = Date.parse(`${date} ${time} ${label ?? `GMT${new Date().toString().split('GMT')[1]}`}`) / 1000;
 	return timestamp;
 };
 
@@ -225,7 +222,7 @@ const SalesPage = ({ step, setStep }) => {
 					/>
 					<Box mt="mxxxl" />
 					<LabelledTextInput label="Public Sale Launch" required type="date">
-						<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} />
+						<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} width="100%" />
 					</LabelledTextInput>
 					<Box mt="wm" />
 					<Presale
