@@ -13,6 +13,7 @@ import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { getTimestamp } from 'src/containers/create/components/SalesPage';
+import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
@@ -59,6 +60,21 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	const { contract } = useAppSelector(editSelector);
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
+	const [saleTime, setSaleTime] = useState(null);
+	const [presaleTime, setPresaleTime] = useState(null);
+
+	const getContractDetails = async () => {
+		const saleTime = await contract.callStatic.publicSaleStartTime();
+		const presaleTime = await contract.callStatic.presaleStartTime();
+		setSaleTime(saleTime);
+		setPresaleTime(presaleTime);
+	};
+
+	useEffect(() => {
+		if (contract) {
+			getContractDetails();
+		}
+	}, [contract]);
 
 	useEffect(() => {
 		const now = new Date().toString();
@@ -75,6 +91,10 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 			const newDate = getTimestamp({ date, time, timezone });
 			if (newDate < now) {
 				toast.error("Can't set a date in the past");
+			} else if (type === 'presale' && saleTime < getTimestamp({ date, time, timezone })) {
+				toast.error("Can't set a Presale date after the public sale");
+			} else if (type === 'sale' && presaleTime > getTimestamp({ date, time, timezone })) {
+				toast.error("Can't set a Sale date before the presale");
 			} else {
 				setStep(1);
 			}
@@ -108,6 +128,9 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	};
 
 	useEffect(() => {
+		if (step === 0) {
+			setInfo(getInfo(type));
+		}
 		if (step === 1) {
 			getGas();
 			setInfo({ ...info, cta: 'Commit Changes' });
@@ -271,6 +294,8 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 						width="100%"
 						onClick={() => {
 							setVisible(false);
+							setTime('');
+							setDate('');
 						}}
 						mt="mm"
 						display={step < 2 ? 'block' : 'none'}
