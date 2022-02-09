@@ -148,18 +148,6 @@ export const createCollection = async (
 	const reserveTokens = sales.reserveTokens; // should be default, this will not activate reservable module
 	const isAffiliable = sales.isAffiliable; // true if user wants affiliable to be active
 
-	console.log({
-		contract,
-		baseCollection,
-		presaleable,
-		paymentSplitter,
-		projectURIProvenance: revealable.projectURIProvenance,
-		royalties,
-		reserveTokens,
-		metadata,
-		isAffiliable,
-	});
-
 	const transaction = await contract
 		.connect(signer)
 		.createCollection(
