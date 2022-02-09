@@ -120,7 +120,7 @@ const PaymentPage = ({ step, setStep }) => {
 
 		const payeeexist = payments?.paymentSplitter?.payees?.find((payee) => payee === beneficiary);
 		if (payeeexist) {
-			toast.error('Address already whitelisted');
+			toast.error('Address already enteredd');
 			return;
 		}
 		if (valid) {
@@ -260,7 +260,7 @@ const PaymentPage = ({ step, setStep }) => {
 									disable={!beneficiary || !beneficiaryPercentage}
 									onClick={handleAdd}
 								>
-									<Text as="h5">Add Beneficiary</Text>
+									<Text as="h5">Save Beneficiary</Text>
 								</ButtonComp>
 							}
 						/>

@@ -55,7 +55,7 @@ const SummaryPage = ({ visible, setVisible, setStep }) => {
 					</Box>
 					<Box pt="mxxxl" mx="auto" width="70rem" overflow="auto">
 						<Text as="h2" center>
-							Create new collection
+							Collection Summary
 						</Text>
 						<Box center mt="mxxxl" mb="ws">
 							<Text
