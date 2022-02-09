@@ -197,6 +197,7 @@ const CollectionPage = ({ contract, metadata }) => {
 										showModal={showModal}
 										setShowModal={setShowModal}
 										admin={collection.adminAddress}
+										timeType="presale"
 									/>
 								}
 								else={
@@ -228,6 +229,7 @@ const CollectionPage = ({ contract, metadata }) => {
 								data={`${collection.saleStartTime}`}
 								editable="time"
 								admin={collection.adminAddress}
+								timeType="sale"
 							/>
 						}
 						else={
