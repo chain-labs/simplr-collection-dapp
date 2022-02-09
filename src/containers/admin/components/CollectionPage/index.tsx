@@ -202,13 +202,7 @@ const CollectionPage = ({ contract, metadata }) => {
 									<DashboardCard
 										Icon={Timer}
 										text="Pre-Sale"
-										status={
-											collection.saleStartTime > Date.now() / 1000 && !collection.paused
-												? 'Live'
-												: collection.paused
-												? 'Paused'
-												: 'Ended'
-										}
+										status={collection.saleStartTime > Date.now() / 1000 ? 'Live' : 'Ended'}
 										editable="status"
 										showModal={showModal}
 										setShowModal={setShowModal}
@@ -219,12 +213,12 @@ const CollectionPage = ({ contract, metadata }) => {
 						}
 					/>
 					<If
-						condition={collection.saleStartTime > Date.now() / 1000}
+						condition={collection.presaleStartTime > Date.now() / 1000}
 						then={
 							<DashboardCard
 								Icon={Timer}
 								text="Public-sale goes live in"
-								data={`${collection.saleStartTime}`}
+								data={`${collection.presaleStartTime}`}
 								editable="time"
 								admin={collection.adminAddress}
 							/>
@@ -234,8 +228,17 @@ const CollectionPage = ({ contract, metadata }) => {
 								Icon={Timer}
 								admin={collection.adminAddress}
 								text="Sale"
-								status={'Live'}
+								status={
+									collection.saleStartTime > Date.now() / 1000 && !collection.paused
+										? 'Live'
+										: collection.paused
+										? 'Paused'
+										: 'Ended'
+								}
+								data={`${collection.saleStartTime}`}
 								editable="status"
+								showModal={showModal}
+								setShowModal={setShowModal}
 							/>
 						}
 					/>

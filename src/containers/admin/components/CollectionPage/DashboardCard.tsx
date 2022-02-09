@@ -234,7 +234,7 @@ const DashboardCard = ({
 				}
 			/>
 			<If
-				condition={!!editable && (status === 'Sold Out' || status !== 'Ended')}
+				condition={!!editable && (status === 'Sold Out' || status !== 'Ended' || text !== 'Pre-Sale')}
 				then={
 					<Box position="relative" onMouseLeave={() => setTimeout(() => setDrawerOpen(false), 1000)} cursor="pointer">
 						<Box
