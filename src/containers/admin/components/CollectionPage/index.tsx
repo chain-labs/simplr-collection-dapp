@@ -20,6 +20,8 @@ import EditModalv2 from '../EditModalv2';
 import DashboardCard from './DashboardCard';
 import theme from 'src/styleguide/theme';
 import AirdropModal from './AirdropModal';
+import Whitelists from './Whitelists';
+import Airdrop from './Airdrop';
 
 const CollectionPage = ({ contract, metadata }) => {
 	const [provider] = useEthers();
@@ -50,43 +52,50 @@ const CollectionPage = ({ contract, metadata }) => {
 
 	useEffect(() => {
 		const getDetails = async () => {
-			const maxTokens = await contract.callStatic.maximumTokens();
-			const adminAddress = await contract.callStatic.owner();
-			const reservedTokens = await contract.callStatic.reservedTokens();
-			const price = await contract.callStatic.price();
-			const totalSupply = await contract.callStatic.totalSupply();
-			const balance = await provider?.getBalance(contract.address);
-			const totalReleased = await contract.callStatic['totalReleased()']();
-			const totalFunds = balance.add(totalReleased);
-			const tokensCount = await contract.callStatic.tokensCount();
-			const saleStartTime = await contract.callStatic.publicSaleStartTime();
-			const paused = await contract.callStatic.paused();
-			const projectURI = await contract.callStatic.projectURI();
-			const details = {
-				maxTokens: ethers.utils.formatUnits(maxTokens, 0),
-				adminAddress,
-				reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
-				price: ethers.utils.formatUnits(price, 18),
-				presalePrice: '-1',
-				totalSupply,
-				totalFunds: ethers.utils.formatUnits(totalFunds),
-				tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
-				saleStartTime,
-				presaleStartTime: 0,
-				paused,
-				projectURI,
-			};
+			try {
+				const maxTokens = await contract.callStatic.maximumTokens();
+				const adminAddress = await contract.callStatic.owner();
+				const reservedTokens = await contract.callStatic.reservedTokens();
+				const price = await contract.callStatic.price();
+				const totalSupply = await contract.callStatic.totalSupply();
+				const balance = await provider?.getBalance(contract.address);
+				const totalReleased = await contract.callStatic['totalReleased()']();
+				const totalFunds = balance.add(totalReleased);
+				const tokensCount = await contract.callStatic.tokensCount();
+				const saleStartTime = await contract.callStatic.publicSaleStartTime();
+				const paused = await contract.callStatic.paused();
+				const projectURI = await contract.callStatic.projectURI();
+				const details = {
+					maxTokens: ethers.utils.formatUnits(maxTokens, 0),
+					adminAddress,
+					reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
+					price: ethers.utils.formatUnits(price, 18),
+					presalePrice: '-1',
+					totalSupply,
+					totalFunds: ethers.utils.formatUnits(totalFunds),
+					tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
+					saleStartTime,
+					presaleStartTime: 0,
+					paused,
+					projectURI,
+				};
 
-			const whitelist = await contract.callStatic.getPresaleWhitelists();
-			const isPresaleable = await contract.callStatic.isPresaleAllowed();
-			if (isPresaleable) {
-				const presalePrice = await contract.callStatic.presalePrice();
-				const presaleStartTime = await contract.callStatic.presaleStartTime();
-				details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
-				details.presaleStartTime = presaleStartTime;
-				dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist } }));
+				const isPresaleable = await contract.callStatic.isPresaleAllowed();
+				if (isPresaleable) {
+					const presalePrice = await contract.callStatic.presalePrice();
+					const presaleStartTime = await contract.callStatic.presaleStartTime();
+					details.presalePrice = ethers.utils.formatUnits(presalePrice, 18);
+					details.presaleStartTime = presaleStartTime;
+					const isWhitelisted = await contract.callStatic.isPresaleWhitelisted();
+					if (isWhitelisted) {
+						const whitelist = await contract.callStatic.getPresaleWhitelists();
+						dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist } }));
+					}
+				}
+				setCollection(details);
+			} catch (error) {
+				console.log(error);
 			}
-			setCollection(details);
 		};
 
 		if (contract && provider) {
@@ -95,21 +104,6 @@ const CollectionPage = ({ contract, metadata }) => {
 			setInterval(getDetails, 15000);
 		}
 	}, [contract, provider, metadata]);
-
-	const handleAirdrop = async () => {
-		const addressList = airdropAddress.replace(/\s+/g, '');
-		setAirdropAddress(addressList);
-		const addresses = addressList.split(',');
-		addresses.forEach((address, index) => {
-			if (!ethers.utils.isAddress(address)) {
-				toast.error('One of the Addresses is invalid');
-			} else if (addresses.lastIndexOf(address) !== index) {
-				toast.error('Duplicate addresses in the list');
-			} else {
-				setIsAirdropModalOpen(true);
-			}
-		});
-	};
 
 	if (!collection.price) {
 		return (
@@ -134,15 +128,6 @@ const CollectionPage = ({ contract, metadata }) => {
 	};
 	return (
 		<Box overflow="visible">
-			<AirdropModal
-				addresses={airdropAddress}
-				isOpen={isAirdropModalOpen}
-				setIsOpen={setIsAirdropModalOpen}
-				adminAddress={adminAddress}
-				contract={contract}
-				signer={signer}
-				setAirdropAddress={setAirdropAddress}
-			/>
 			<Box mt="mxxxl" width="116.8rem" mx="auto">
 				<Text as="h3" color="simply-blue">
 					Overview:
@@ -314,25 +299,7 @@ const CollectionPage = ({ contract, metadata }) => {
 						</Text>
 					</Box>
 				</Box>
-				<Text as="h3" color="simply-blue" mt="wxl">
-					Airdrop:
-				</Text>
-				<Box mt="mxl" width="55.2rem">
-					<LabelledTextInput
-						value={airdropAddress}
-						setValue={setAirdropAddress}
-						placeholder="Enter a valid wallet address"
-						label="Airdrop NFTs:"
-						helperText="Airdrop an NFT from your reserve to any wallet address."
-						disableValidation
-						width="100%"
-					/>
-					<Box row justifyContent="flex-end" mt="mxl" mb="wm">
-						<ButtonComp bg="tertiary" height="40px" width="9.2rem" disable={!airdropAddress}>
-							<Text as="h6">Airdrop</Text>
-						</ButtonComp>
-					</Box>
-				</Box>
+				<Airdrop />
 				<If
 					condition={!!collection.presalePrice && collection.saleStartTime > Date.now() / 1000}
 					then={<Whitelists admin={collection.adminAddress} />}
@@ -343,116 +310,3 @@ const CollectionPage = ({ contract, metadata }) => {
 };
 
 export default CollectionPage;
-
-const Whitelists = ({ admin }) => {
-	const [whitelist, setWhitelist] = useState('');
-	const [whitelistRemove, setWhitelistRemove] = useState('');
-	const [whitelistModalOpen, setWhitelistModalOpen] = useState(false);
-	const [whitelistArray, setWhitelistArray] = useState([]);
-	const [addModal, setAddModal] = useState(false);
-	const [removeModal, setRemoveModal] = useState(false);
-	const dispatch = useAppDispatch();
-	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
-	const user = useAppSelector(userSelector);
-
-	const handleAdd = () => {
-		const whitelistString = whitelist.replace(/\s+/g, '');
-		const whitelistsArray = whitelistString.split(',');
-		const list = [...whitelistsArray, ...presaleWhitelist];
-		let err = false;
-
-		whitelistsArray.every((address, index) => {
-			if (!ethers.utils.isAddress(address)) {
-				toast.error('Please check if all addresses are valid.');
-				err = true;
-				return false;
-			} else if (list.lastIndexOf(address) !== index) {
-				toast.error('Please remove duplicate addresses found in the list.');
-				err = true;
-				return false;
-			}
-			return true;
-		});
-
-		if (!err) {
-			setAddModal(true);
-			setWhitelistArray(whitelistsArray);
-			dispatch(setEditDetails({ data: whitelistsArray }));
-		}
-	};
-
-	const handleRemove = () => {
-		if (!presaleWhitelist.includes(whitelistRemove)) {
-			toast.error('Address not found in whitelist.');
-		} else if (!ethers.utils.isAddress(whitelistRemove)) {
-			toast.error('Please check if the address is valid.');
-		} else {
-			setRemoveModal(true);
-			dispatch(setEditDetails({ data: [...presaleWhitelist] }));
-		}
-	};
-
-	return (
-		<Box>
-			<Text as="h3" color="simply-blue" mt="wxl">
-				Whitelists:
-			</Text>
-			<Box mt="mxl" width="55.2rem">
-				<LabelledTextInput
-					value={whitelist}
-					setValue={setWhitelist}
-					placeholder="Enter a valid wallet address"
-					label="Add new Whitelist:"
-					helperText="You can add multiple addresses seperated by a comma ( , )."
-					disableValidation
-					width="100%"
-					disabled={admin !== user.address}
-				/>
-				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
-					<ButtonComp bg="tertiary" height="40px" px="mxl" onClick={() => setWhitelistModalOpen(true)} mr="mxs">
-						<Text as="h6">View Whitelist</Text>
-					</ButtonComp>
-					<ButtonComp
-						bg="primary"
-						height="40px"
-						px="mxl"
-						disable={!whitelist}
-						onClick={() => handleAdd()}
-						display={admin === user.address ? 'block' : 'none'}
-					>
-						<Text as="h6">Add</Text>
-					</ButtonComp>
-					<WhitelistModal visible={whitelistModalOpen} setVisible={setWhitelistModalOpen} readOnly />
-					<EditModalv2
-						visible={addModal}
-						setVisible={setAddModal}
-						data={[...whitelistArray, ...presaleWhitelist]}
-						type="whitelist_add"
-					/>
-				</Box>
-			</Box>
-			<Box mt="mxl" width="55.2rem" display={admin === user.address ? 'block' : 'none'}>
-				<LabelledTextInput
-					value={whitelistRemove}
-					setValue={setWhitelistRemove}
-					placeholder="Enter a valid wallet address"
-					label="Remove from Whitelist:"
-					helperText="You can add multiple addresses seperated by a comma ( , )."
-					disableValidation
-					width="100%"
-				/>
-				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
-					<ButtonComp bg="secondary" height="40px" px="mxl" disable={!whitelistRemove} onClick={() => handleRemove()}>
-						<Text as="h6">Remove</Text>
-					</ButtonComp>
-					<EditModalv2
-						visible={removeModal}
-						setVisible={setRemoveModal}
-						data={[whitelistRemove]}
-						type="whitelist_remove"
-					/>
-				</Box>
-			</Box>
-		</Box>
-	);
-};

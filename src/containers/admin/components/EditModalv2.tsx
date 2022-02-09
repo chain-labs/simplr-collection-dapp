@@ -21,6 +21,7 @@ interface Props {
 	setVisible: (visible: boolean) => void;
 	data: string[];
 	type: 'whitelist_add' | 'whitelist_remove' | 'airdrop';
+	clearInput: () => void;
 }
 
 const getInfo = (type: 'whitelist_add' | 'whitelist_remove' | 'airdrop') => {
@@ -39,6 +40,14 @@ const getInfo = (type: 'whitelist_add' | 'whitelist_remove' | 'airdrop') => {
 				confirmation: 'Do you want to remove this address from whitelist?',
 				yes: 'Remove',
 				no: 'No',
+			};
+		}
+		case 'airdrop': {
+			return {
+				title: 'Confirm Airdrop',
+				confirmation: 'Airdropping NFTs from your reserve to these addresses.',
+				yes: 'Airdrop',
+				no: 'Cancel',
 			};
 		}
 	}
@@ -60,10 +69,17 @@ const getConfirmInfo = (type: 'whitelist_add' | 'whitelist_remove' | 'airdrop') 
 					'Successfully removed  addresses from whitelist. Changes might take a while to reflect on your dashboard.',
 			};
 		}
+		case 'airdrop': {
+			return {
+				title: 'Airdrop Successful',
+				confirmation:
+					'Successfully airdropped NFTs to the address list. Changes might take a while to reflect on your dashboard.',
+			};
+		}
 	}
 };
 
-const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
+const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => {
 	const [step, setStep] = useState(0);
 	const [info, setInfo] = useState(getInfo(type));
 
@@ -97,6 +113,9 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 						const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
 						const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
 						const gas = await contract.connect(signer).estimateGas.removeWhitelist(prev, data[0]);
+						setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					} else if (type === 'airdrop') {
+						const gas = await contract.connect(signer).estimateGas.transferReservedTokens(data);
 						setGas(ethers.utils.formatUnits(gas.mul(fees)));
 					}
 				}
@@ -135,6 +154,18 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 		}
 	};
 
+	const airdrop = async () => {
+		try {
+			const transaction = await contract.connect(signer).transferReservedTokens(data);
+			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'Airdrop')[0]?.args;
+			return event;
+		} catch (err) {
+			console.log(err);
+			toast.error('An unexpected error occured.');
+			setVisible(false);
+		}
+	};
+
 	const handleYes = () => {
 		if (step === 0) {
 			setStep(1);
@@ -142,16 +173,24 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 			if (type === 'whitelist_add') {
 				addWhitelist().then(() => {
 					setStep(3);
+					clearInput();
 				});
 			} else if (type === 'whitelist_remove') {
 				removeWhitelist().then(() => {
 					setStep(3);
+					clearInput();
+				});
+			} else if (type === 'airdrop') {
+				airdrop().then(() => {
+					setStep(3);
+					clearInput();
 				});
 			}
 			setStep(2);
 		} else if (step === 3) {
 			setStep(0);
 			setVisible(false);
+			setGas(null);
 		}
 	};
 
@@ -227,6 +266,8 @@ const EditModalv2 = ({ visible, setVisible, data, type }: Props) => {
 								width="100%"
 								onClick={() => {
 									setVisible(false);
+									clearInput();
+									setGas(null);
 									setStep(0);
 								}}
 							>
