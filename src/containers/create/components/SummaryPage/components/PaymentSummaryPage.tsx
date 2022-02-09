@@ -93,34 +93,18 @@ const PaymentSummaryPage = () => {
 	useEffect(() => {
 		if (metadata && ready) {
 			const transaction = async () => {
+				const id = toast.loading('Transaction is processing', { duration: Infinity });
 				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer)
 					.then((tx) => {
+						toast.remove(id);
+						toast.success('Transaction Successful', { duration: 3000 });
 						setTransactionResult(tx);
 					})
 					.catch((err) => {
-						toast.remove();
+						toast.remove(id);
 						toast.error('Something went wrong! Try Again.');
 						unpinMetadata(metadata);
 					});
-				toast.promise(
-					res,
-					{
-						loading: 'Transaction is processing!',
-						success: 'Transaction was completed succesfully',
-						error: 'Something went wrong! Try Again.',
-					},
-					{
-						success: {
-							duration: 3000,
-						},
-						error: {
-							duration: 3000,
-						},
-						loading: {
-							duration: Infinity,
-						},
-					}
-				);
 			};
 			transaction();
 		}
