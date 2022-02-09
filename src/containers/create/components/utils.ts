@@ -65,13 +65,31 @@ export const uploadToIPFS = async (
 		},
 	};
 
-	const res = await axios.post(`${PINATA_URL}pinning/pinJSONToIPFS`, jsonBody, {
+	const res = await axios.post(
+		`${PINATA_URL}pinning/pinJSONToIPFS`,
+		{
+			pinataMetadata: {
+				name: `${collection.name.replace(' ', '_')}_metadata`,
+			},
+			pinataContent: jsonBody,
+		},
+		{
+			headers: {
+				pinata_api_key: PINATA_KEY,
+				pinata_secret_api_key: PINATA_KEY_SECRET,
+			},
+		}
+	);
+	return res.data.IpfsHash;
+};
+
+export const unpinMetadata = async (hash) => {
+	await axios.delete(`${PINATA_URL}pinning/unpin/${hash}`, {
 		headers: {
 			pinata_api_key: PINATA_KEY,
 			pinata_secret_api_key: PINATA_KEY_SECRET,
 		},
 	});
-	return res.data.IpfsHash;
 };
 
 export const createCollection = async (
