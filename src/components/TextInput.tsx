@@ -46,7 +46,11 @@ const TextInput = ({
 
 	const handleChange = (e) => {
 		e.preventDefault();
-		setValue(e.target.value);
+		if (type === 'number') {
+			setValue(parseFloat(e.target.value));
+		} else {
+			setValue(e.target.value);
+		}
 		if (e.target.value === '') setSearchIcon(true);
 		else setSearchIcon(false);
 	};
