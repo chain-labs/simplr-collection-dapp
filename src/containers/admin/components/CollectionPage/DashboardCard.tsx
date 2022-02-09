@@ -3,13 +3,15 @@ import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import If from 'src/components/If';
 import Text from 'src/components/Text';
-import { editSelector, setEditDetails } from 'src/redux/edit';
+import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
 import EditModal from './EditModal';
 import { formatDate } from 'src/utils/time';
 import { userSelector } from 'src/redux/user';
 import ButtonComp from 'src/components/Button';
+import TimeEditModal from './TimeEditModal';
+
 
 interface DashboardCardProps {
 	Icon: React.ReactNode;
@@ -27,6 +29,7 @@ interface DashboardCardProps {
 	placeholder?: any;
 	editfield?: string;
 	admin?: string;
+	timeType?: 'presale' | 'sale';
 }
 
 const DAY_SECONDS = 86400;
@@ -43,10 +46,10 @@ const DashboardCard = ({
 	setShowModal,
 	showModal,
 	type,
-	setEdit,
 	edit,
 	placeholder,
 	editfield,
+	timeType,
 }: DashboardCardProps) => {
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [editing, setEditing] = useState(false);
@@ -55,12 +58,12 @@ const DashboardCard = ({
 	const [tooltipView, setTooltipView] = useState(false);
 	const [tooltipTime, setTooltipTime] = useState('');
 	const user = useAppSelector(userSelector);
-	const modalData = useAppSelector(editSelector);
+	const [isTimeEditing, setIsTimeEditing] = useState(false);
 
 	const dispatch = useAppDispatch();
 
 	const handleAction = () => {
-		if (editable === 'address' || editable === 'number' || editable === 'time') {
+		if (editable === 'address' || editable === 'number') {
 			setDrawerOpen(false);
 			setShowModal(true);
 			const editData = {
@@ -96,6 +99,8 @@ const DashboardCard = ({
 				editfield: editfield,
 			};
 			dispatch(setEditDetails(editData));
+		if (editable === 'time') {
+			setIsTimeEditing(true);
 		}
 	};
 
@@ -105,7 +110,7 @@ const DashboardCard = ({
 		if (editable === 'time') {
 			const time = parseInt(data);
 
-			setInterval(() => {
+			const interval = setInterval(() => {
 				const now = Math.floor(Date.now() / 1000);
 				const remaining = time - now;
 
@@ -129,6 +134,7 @@ const DashboardCard = ({
 					setValue(countdown);
 				}
 			}, 1000);
+			return () => clearInterval(interval);
 		}
 	}, [data, setValue]);
 
@@ -267,6 +273,10 @@ const DashboardCard = ({
 						/>
 					</Box>
 				}
+			/>
+			<If
+				condition={editable === 'time'}
+				then={<TimeEditModal visible={isTimeEditing} setVisible={setIsTimeEditing} type={timeType} data={data} />}
 			/>
 		</Box>
 	);
