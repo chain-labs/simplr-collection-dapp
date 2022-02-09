@@ -199,8 +199,8 @@ const SalesPage = ({ step, setStep }) => {
 					<Box mt="mxxxl" />
 					<LabelledTextInput
 						type="number"
-						step="0.01"
-						min="0.01"
+						step="0.000001"
+						min="0"
 						unit={type ? getUnit(type) : 'ETH'}
 						label="Price per NFT"
 						required
