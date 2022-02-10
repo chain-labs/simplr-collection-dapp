@@ -55,10 +55,8 @@ const PaymentPage = ({ step, setStep }) => {
 			try {
 				const address = await Simplr?.callStatic.simplr();
 				const share = await Simplr?.callStatic.simplrShares();
-
 				const sharePercentage = ethers.utils.formatUnits(share?.toString());
 				const shareValue = parseFloat(sharePercentage) * 100;
-
 				setSimplrAddress(address);
 				setSimplrShares(shareValue);
 			} catch (err) {

@@ -65,7 +65,6 @@ const SalesPage = ({ step, setStep }) => {
 
 	const [isRevealable, setIsRevealable] = useState(revealable);
 	const [loadingUrl, setLoadingUrl] = useState<string>(sales.revealable.loadingImageUrl);
-	const [revealableTime, setRevealableTime] = useState<DateType>(sales.revealable.timestamp);
 
 	const addData = (Step) => {
 		const data = getData();
@@ -91,7 +90,6 @@ const SalesPage = ({ step, setStep }) => {
 			},
 			revealable: {
 				enabled: isRevealable,
-				timestamp: revealableTime,
 				loadingImageUrl: loadingUrl,
 			},
 			isAffiliable,
@@ -118,13 +116,6 @@ const SalesPage = ({ step, setStep }) => {
 				return;
 			} else if (publicSaleTime < presaleTime) {
 				toast.error('Presale start time should be earlier than public sale');
-				return;
-			}
-		}
-		if (isRevealable) {
-			const revealTime = getTimestamp(revealableTime);
-			if (revealTime > publicSaleTime) {
-				toast.error('Invalid Time');
 				return;
 			}
 		}
@@ -245,8 +236,6 @@ const SalesPage = ({ step, setStep }) => {
 						setIsChecked={setIsRevealable}
 						loadingUrl={loadingUrl}
 						setLoadingUrl={setLoadingUrl}
-						revealableTime={revealableTime}
-						setRevealableTime={setRevealableTime}
 					/>
 					<Box mt="wm" />
 					<Affiliable isChecked={isAffiliable} setIsChecked={setIsAffiliable} />

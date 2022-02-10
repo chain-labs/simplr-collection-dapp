@@ -1,28 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Box from 'src/components/Box';
-import DateTime from 'src/components/DateTime';
 import If from 'src/components/If';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import Toggle from 'src/components/Toggle';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { revealableToggleSelector, toggleRevealable } from 'src/redux/sales';
-import { DateType } from 'src/redux/sales/types';
 
 const Revealable = ({
 	isChecked,
 	setIsChecked,
 	loadingUrl,
 	setLoadingUrl,
-	revealableTime,
-	setRevealableTime,
 }: {
 	isChecked?: boolean;
 	setIsChecked: (boolean) => void;
 	loadingUrl?: string;
 	setLoadingUrl: (string) => void;
-	revealableTime?: DateType;
-	setRevealableTime: (number) => void;
 }) => {
 	const checked = useAppSelector(revealableToggleSelector);
 	const dispatch = useAppDispatch();
