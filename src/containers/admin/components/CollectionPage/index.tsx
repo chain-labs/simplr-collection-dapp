@@ -66,6 +66,7 @@ const CollectionPage = ({ contract, metadata }) => {
 				const saleStartTime = await contract.callStatic.publicSaleStartTime();
 				const paused = await contract.callStatic.paused();
 				const projectURI = await contract.callStatic.projectURI();
+				const revealed = await contract.callStatic.isRevealed();
 				const details = {
 					maxTokens: ethers.utils.formatUnits(maxTokens, 0),
 					adminAddress,
@@ -79,6 +80,7 @@ const CollectionPage = ({ contract, metadata }) => {
 					presaleStartTime: 0,
 					paused,
 					projectURI,
+					revealed,
 				};
 
 				const isPresaleable = await contract.callStatic.isPresaleAllowed();
@@ -97,7 +99,6 @@ const CollectionPage = ({ contract, metadata }) => {
 			} catch (error) {
 				console.log(error);
 			}
-			setCollection(details);
 		};
 
 		if (contract && provider) {
