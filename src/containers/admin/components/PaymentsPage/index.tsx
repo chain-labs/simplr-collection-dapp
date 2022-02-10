@@ -12,6 +12,7 @@ import useSigner from 'src/ethereum/useSigner';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
+import RoyaltyEditModal from './RoyaltyEditModal';
 import WithdrawModal from './WithdrawModal';
 
 const PaymentsPage = ({ contract, metadata }) => {
@@ -207,6 +208,7 @@ const Royalties = ({ admin, contract, signer }) => {
 		account: '',
 		value: 0,
 	});
+	const [isRoyaltyModalOpen, setIsRoyaltyModalOpen] = useState(false);
 
 	const editRoyalties = async () => {
 		if (!ethers.utils.isAddress(address)) {
@@ -224,10 +226,7 @@ const Royalties = ({ admin, contract, signer }) => {
 				.then(() => {
 					toast.success('Updated');
 					setEdit(false);
-					setRoyalty({
-						account: address,
-						value: percentage,
-					});
+					setIsRoyaltyModalOpen(true);
 				});
 		}
 	};
@@ -265,17 +264,10 @@ const Royalties = ({ admin, contract, signer }) => {
 				condition={!edit}
 				then={
 					<Box row overflow="visible" mb="ms">
-						<TextInput
-							value={royalty.account}
-							type="text"
-							width="45.2rem"
-							disableValidation
-							disabled
-							fontSize="1.4rem"
-						/>
+						<TextInput value={address} type="text" width="45.2rem" disableValidation disabled fontSize="1.4rem" />
 						<Box ml="mxs" />
 						<TextInput
-							value={`${royalty.value}%`}
+							value={`${percentage}%`}
 							type="text"
 							width="9.2rem"
 							disabled
@@ -317,6 +309,13 @@ const Royalties = ({ admin, contract, signer }) => {
 						</Box>
 					</Box>
 				}
+			/>
+			<RoyaltyEditModal
+				visible={isRoyaltyModalOpen}
+				setVisible={setIsRoyaltyModalOpen}
+				data={royalty}
+				setData={setRoyalty}
+				{...{ address, percentage }}
 			/>
 		</Box>
 	);
