@@ -260,9 +260,6 @@ const PaymentSummaryPage = () => {
 					<Box ml="mxxxl" />
 					<Toggle value={affiliable} disabled mobile />
 				</Text>
-				<Text as="b1" color="simply-gray" mt="mm">
-					Would you like to turn on affiliate marketing for this collection?
-				</Text>
 			</Box>
 			<Box mt="mxxxl" />
 			<ButtonComp
