@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { CircleNotch } from 'phosphor-react';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -39,7 +40,6 @@ const PaymentSummaryPage = () => {
 	const presaleMaxHolding = sales.presaleable.presaleMaxHolding;
 	const [presaleStartTime, setPresaleStartTime] = useState<DateType>(sales.presaleable.presaleStartTime);
 	const loadingUrl = sales.revealable.loadingImageUrl;
-	const [revealableTime, setRevealableTime] = useState<DateType>(sales.revealable.timestamp);
 	const payments = useAppSelector(paymentSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 
@@ -55,6 +55,7 @@ const PaymentSummaryPage = () => {
 	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
 	const [isDeploymentComplete, setIsDeploymentComplete] = useState<boolean>(false);
+	const [cta, setCta] = useState('Create Collection');
 
 	useEffect(() => {
 		const getAddress = async () => {
@@ -94,6 +95,7 @@ const PaymentSummaryPage = () => {
 		if (metadata && ready) {
 			const transaction = async () => {
 				const id = toast.loading('Transaction is processing', { duration: Infinity });
+				setCta('Creating Collection');
 				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer)
 					.then((tx) => {
 						toast.remove(id);
@@ -182,10 +184,6 @@ const PaymentSummaryPage = () => {
 				condition={revealable}
 				then={
 					<Box mt="wxs" overflow="visible">
-						<LabelledTextInput label="Reveal Time">
-							<DateTime value={revealableTime} setValue={setRevealableTime} disabled disableValidation />
-						</LabelledTextInput>
-						<Box mt="mxxxl" />
 						<LabelledTextInput
 							label="Loading Image URI"
 							placeholder="https://"
@@ -267,8 +265,19 @@ const PaymentSummaryPage = () => {
 				</Text>
 			</Box>
 			<Box mt="mxxxl" />
-			<ButtonComp bg="primary" width="100%" height="56px" type="submit" onClick={() => sendData()}>
-				<Text as="h4">Create Collection</Text>
+			<ButtonComp
+				bg="primary"
+				width="100%"
+				height="56px"
+				type="submit"
+				onClick={() => sendData()}
+				disable={cta !== 'Create Collection'}
+				center
+			>
+				<Text as="h4">{cta}</Text>
+				<Box center ml="mxs" className="spin" display={cta === 'Creating Collection' ? 'flex' : 'none'}>
+					<CircleNotch size="24" />
+				</Box>
 			</ButtonComp>
 			<DeployedModal isOpen={isDeploymentComplete} transactionResult={transactionResult} />
 		</Box>
