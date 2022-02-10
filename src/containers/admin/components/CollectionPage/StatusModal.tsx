@@ -10,7 +10,8 @@ const StatusModal = ({ gas }) => {
 	return (
 		<Box>
 			<Text as="h4" mb="ms" fontFamily="Switzer">
-				Do you want to {modalData.editable === 'Live' ? 'pause' : 'unpause'} the sale?
+				Do you want to{' '}
+				{modalData.editable === 'Live' ? 'pause' : modalData.editfield === 'Reveal' ? 'Reveal' : 'unpause'} the sale?
 			</Text>
 			<hr />
 
