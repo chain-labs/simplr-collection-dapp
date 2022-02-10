@@ -276,7 +276,10 @@ const Royalties = ({ admin, contract, signer }) => {
 						<Box ml="mxs" />
 						<TextInput
 							value={`${royalty.value}%`}
-							type="text"
+							type="number"
+							step="0.01"
+							min="0"
+							max="10"
 							width="9.2rem"
 							disabled
 							disableValidation

@@ -6,8 +6,37 @@ import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
 import Link from 'next/link';
+import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
+
+const blockExplorer = (chain) => {
+	switch (chain) {
+		case 1:
+			return 'https://etherscan.io';
+		case 4:
+			return 'https://rinkeby.etherscan.io';
+		case 137:
+			return 'https://polygonscan.com';
+		case 80001:
+			return 'https://mumbai.polygonscan.com';
+	}
+};
+
+const explorer = (chain) => {
+	switch (chain) {
+		case 1:
+			return 'Etherscan';
+		case 4:
+			return 'Etherscan';
+		case 137:
+			return 'Polygonscan';
+		case 80001:
+			return 'Polygonscan';
+	}
+};
 
 const DeployedModal = ({ isOpen, transactionResult }) => {
+	const user = useAppSelector(userSelector);
 	if (!isOpen) {
 		console.log({ isOpen });
 
@@ -43,6 +72,11 @@ const DeployedModal = ({ isOpen, transactionResult }) => {
 						<Link href={`/admin/${transactionResult?.event?.collection}`}>
 							<ButtonComp bg="primary" height="40px" width="100%">
 								<Text as="h6">Go to Dashboard</Text>
+							</ButtonComp>
+						</Link>
+						<Link href={`${blockExplorer(user.network.chain)}/address/${transactionResult?.event?.collection}`}>
+							<ButtonComp bg="secondary" height="40px" width="100%" mt="mm">
+								<Text as="h6">View on {explorer(user.network.chain)}</Text>
 							</ButtonComp>
 						</Link>
 					</Box>

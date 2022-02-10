@@ -55,10 +55,8 @@ const PaymentPage = ({ step, setStep }) => {
 			try {
 				const address = await Simplr?.callStatic.simplr();
 				const share = await Simplr?.callStatic.simplrShares();
-
 				const sharePercentage = ethers.utils.formatUnits(share?.toString());
 				const shareValue = parseFloat(sharePercentage) * 100;
-
 				setSimplrAddress(address);
 				setSimplrShares(shareValue);
 			} catch (err) {
@@ -120,13 +118,13 @@ const PaymentPage = ({ step, setStep }) => {
 
 		const payeeexist = payments?.paymentSplitter?.payees?.find((payee) => payee === beneficiary);
 		if (payeeexist) {
-			toast.error('Address already whitelisted');
+			toast.error('Address already entered');
 			return;
 		}
 		if (valid) {
 			if (parseFloat(beneficiaryPercentage) <= maxShare) {
-				dispatch(addBeneficiary({ payee: beneficiary, shares: parseInt(beneficiaryPercentage) }));
-				setMaxShare(maxShare - parseInt(beneficiaryPercentage));
+				dispatch(addBeneficiary({ payee: beneficiary, shares: parseFloat(beneficiaryPercentage) }));
+				setMaxShare(maxShare - parseFloat(beneficiaryPercentage));
 				toast.success('Beneficiary added');
 				setBeneficiaryPercentage('');
 				setBeneficiary('');
@@ -140,7 +138,7 @@ const PaymentPage = ({ step, setStep }) => {
 
 	const handleRemove = (payee, share) => {
 		dispatch(removeBeneficiary(payee));
-		setMaxShare(maxShare + parseInt(share));
+		setMaxShare(maxShare + parseFloat(share));
 		toast.success('Beneficiary removed');
 	};
 
@@ -191,6 +189,7 @@ const PaymentPage = ({ step, setStep }) => {
 									setValue={setRoyaltyPercentage}
 									max="10"
 									min="0"
+									step="0.01"
 									placeholder="eg. 5"
 									type="number"
 									width="21.4rem"
@@ -240,7 +239,8 @@ const PaymentPage = ({ step, setStep }) => {
 											value={beneficiaryPercentage}
 											setValue={setBeneficiaryPercentage}
 											max={`${maxShare}`}
-											min="1"
+											min="0.01"
+											step="0.01"
 											placeholder="Share%"
 											type="number"
 											width="21.4rem"
@@ -260,7 +260,7 @@ const PaymentPage = ({ step, setStep }) => {
 									disable={!beneficiary || !beneficiaryPercentage}
 									onClick={handleAdd}
 								>
-									<Text as="h5">Add Beneficiary</Text>
+									<Text as="h5">Save Beneficiary</Text>
 								</ButtonComp>
 							}
 						/>

@@ -20,7 +20,6 @@ const intitalState: SaleState = {
 	},
 	revealable: {
 		enabled: false,
-		timestamp: null,
 		loadingImageUrl: '',
 	},
 	isAffiliable: false,
