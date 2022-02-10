@@ -181,14 +181,18 @@ const CollectionPage = ({ contract, metadata }) => {
 							/>
 						}
 					/>
-					<DashboardCard
-						Icon={Timer}
-						text="Reveal NFTS"
-						editfield="Reveal"
-						showModal={showModal}
-						setShowModal={setShowModal}
-						data={collection.projectURI}
-					/>
+					{!collection.revealed ? (
+						<DashboardCard
+							Icon={Timer}
+							text="Reveal NFTS"
+							editfield="Reveal"
+							showModal={showModal}
+							setShowModal={setShowModal}
+							data={collection.projectURI}
+						/>
+					) : (
+						''
+					)}
 					<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
 				</Box>
 				<Text as="h3" color="simply-blue" mt="wxl">
