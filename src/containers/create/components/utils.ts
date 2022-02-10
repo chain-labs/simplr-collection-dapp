@@ -53,7 +53,6 @@ export const uploadToIPFS = async (
 			},
 			revealable: sales.revealable.enabled
 				? {
-						revealAfterTimestamp: getTimestamp(sales.revealable.timestamp),
 						projectURI: sales.revealable.loadingImageUrl,
 						projectURIProvenance: ethers.utils.keccak256(
 							ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
@@ -65,13 +64,31 @@ export const uploadToIPFS = async (
 		},
 	};
 
-	const res = await axios.post(`${PINATA_URL}pinning/pinJSONToIPFS`, jsonBody, {
+	const res = await axios.post(
+		`${PINATA_URL}pinning/pinJSONToIPFS`,
+		{
+			pinataMetadata: {
+				name: `${collection.name.replace(' ', '_')}_metadata`,
+			},
+			pinataContent: jsonBody,
+		},
+		{
+			headers: {
+				pinata_api_key: PINATA_KEY,
+				pinata_secret_api_key: PINATA_KEY_SECRET,
+			},
+		}
+	);
+	return res.data.IpfsHash;
+};
+
+export const unpinMetadata = async (hash) => {
+	await axios.delete(`${PINATA_URL}pinning/unpin/${hash}`, {
 		headers: {
 			pinata_api_key: PINATA_KEY,
 			pinata_secret_api_key: PINATA_KEY_SECRET,
 		},
 	});
-	return res.data.IpfsHash;
 };
 
 export const createCollection = async (
@@ -136,9 +153,7 @@ export const createCollection = async (
 		projectURIProvenance: ethers.utils.keccak256(
 			ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
 		), // encoded hash of the project uri
-		revealAfterTimestamp: sales.revealable.enabled
-			? getTimestamp(sales.revealable.timestamp)
-			: parseInt(`${Date.now() / 1000 + 172800}`), // timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
+		// timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
 	};
 	const royalties = {
 		account: payments.royalties.account ?? collection.admin, //account that will receive royalties for secondary sale

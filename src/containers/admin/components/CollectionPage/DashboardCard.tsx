@@ -9,6 +9,7 @@ import theme from 'src/styleguide/theme';
 import EditModal from './EditModal';
 import { formatDate } from 'src/utils/time';
 import { userSelector } from 'src/redux/user';
+import ButtonComp from 'src/components/Button';
 import TimeEditModal from './TimeEditModal';
 
 interface DashboardCardProps {
@@ -86,8 +87,20 @@ const DashboardCard = ({
 			};
 			dispatch(setEditDetails(editData));
 		}
-		if (editable === 'time') {
-			setIsTimeEditing(true);
+		if (editfield === 'Reveal') {
+			setShowModal(true);
+			const editData = {
+				data: data,
+				type: type,
+				label: text,
+				placeholder: placeholder,
+				editable: status,
+				editfield: editfield,
+			};
+			dispatch(setEditDetails(editData));
+			if (editable === 'time') {
+				setIsTimeEditing(true);
+			}
 		}
 	};
 
@@ -204,7 +217,13 @@ const DashboardCard = ({
 							>
 								{!editing ? (
 									<Text as="h4" color="simply-blue">
-										{editable === 'address' ? getData(value) : editable === 'time' ? value : data}
+										{editable === 'address'
+											? getData(value)
+											: editable === 'time'
+											? value
+											: editfield === 'Reveal'
+											? ''
+											: data}
 									</Text>
 								) : null}
 							</Box>
@@ -213,7 +232,15 @@ const DashboardCard = ({
 				/>
 			</Box>
 			<If
-				condition={!!editable && (status === 'Sold Out' || status !== 'Ended')}
+				condition={editfield === 'Reveal'}
+				then={
+					<ButtonComp bg="secondary" height="36px" px="12px" py="6px" onClick={handleAction}>
+						<Text as="h6">{editfield}</Text>
+					</ButtonComp>
+				}
+			/>
+			<If
+				condition={!!editable && (status === 'Sold Out' || status !== 'Ended' || text !== 'Pre-Sale')}
 				then={
 					<Box position="relative" onMouseLeave={() => setTimeout(() => setDrawerOpen(false), 1000)} cursor="pointer">
 						<Box

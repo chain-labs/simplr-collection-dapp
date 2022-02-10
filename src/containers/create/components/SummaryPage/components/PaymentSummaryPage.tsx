@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { CircleNotch } from 'phosphor-react';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -22,7 +23,7 @@ import {
 	saleSelector,
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
-import { createCollection, uploadToIPFS } from '../../utils';
+import { createCollection, unpinMetadata, uploadToIPFS } from '../../utils';
 import DeployedModal from './DeployedModal';
 import WhitelistComp from './WhitelistComp';
 
@@ -39,7 +40,6 @@ const PaymentSummaryPage = () => {
 	const presaleMaxHolding = sales.presaleable.presaleMaxHolding;
 	const [presaleStartTime, setPresaleStartTime] = useState<DateType>(sales.presaleable.presaleStartTime);
 	const loadingUrl = sales.revealable.loadingImageUrl;
-	const [revealableTime, setRevealableTime] = useState<DateType>(sales.revealable.timestamp);
 	const payments = useAppSelector(paymentSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 
@@ -55,6 +55,7 @@ const PaymentSummaryPage = () => {
 	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
 	const [isDeploymentComplete, setIsDeploymentComplete] = useState<boolean>(false);
+	const [cta, setCta] = useState('Create Collection');
 
 	useEffect(() => {
 		const getAddress = async () => {
@@ -93,28 +94,19 @@ const PaymentSummaryPage = () => {
 	useEffect(() => {
 		if (metadata && ready) {
 			const transaction = async () => {
-				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer).then((tx) => {
-					setTransactionResult(tx);
-				});
-				toast.promise(
-					res,
-					{
-						loading: 'Transaction is processing!',
-						success: 'Transaction was completed succesfully',
-						error: 'Something went wrong! Try Again.',
-					},
-					{
-						success: {
-							duration: 3000,
-						},
-						error: {
-							duration: 3000,
-						},
-						loading: {
-							duration: Infinity,
-						},
-					}
-				);
+				const id = toast.loading('Transaction is processing', { duration: Infinity });
+				setCta('Creating Collection');
+				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer)
+					.then((tx) => {
+						toast.remove(id);
+						toast.success('Transaction Successful', { duration: 3000 });
+						setTransactionResult(tx);
+					})
+					.catch((err) => {
+						toast.remove(id);
+						toast.error('Something went wrong! Try Again.');
+						unpinMetadata(metadata);
+					});
 			};
 			transaction();
 		}
@@ -122,9 +114,6 @@ const PaymentSummaryPage = () => {
 
 	useEffect(() => {
 		if (transactionResult?.event) {
-			// const event = transactionResult?.event;
-			// const transaction = transactionResult?.transaction;
-			console.log({ transactionResult });
 			setIsDeploymentComplete(true);
 		}
 	}, [transactionResult]);
@@ -195,10 +184,6 @@ const PaymentSummaryPage = () => {
 				condition={revealable}
 				then={
 					<Box mt="wxs" overflow="visible">
-						<LabelledTextInput label="Reveal Time">
-							<DateTime value={revealableTime} setValue={setRevealableTime} disabled disableValidation />
-						</LabelledTextInput>
-						<Box mt="mxxxl" />
 						<LabelledTextInput
 							label="Loading Image URI"
 							placeholder="https://"
@@ -275,13 +260,21 @@ const PaymentSummaryPage = () => {
 					<Box ml="mxxxl" />
 					<Toggle value={affiliable} disabled mobile />
 				</Text>
-				<Text as="b1" color="simply-gray" mt="mm">
-					Would you like to turn on affiliate marketing for this collection?
-				</Text>
 			</Box>
 			<Box mt="mxxxl" />
-			<ButtonComp bg="primary" width="100%" height="56px" type="submit" onClick={() => sendData()}>
-				<Text as="h4">Create Collection</Text>
+			<ButtonComp
+				bg="primary"
+				width="100%"
+				height="56px"
+				type="submit"
+				onClick={() => sendData()}
+				disable={cta !== 'Create Collection'}
+				center
+			>
+				<Text as="h4">{cta}</Text>
+				<Box center ml="mxs" className="spin" display={cta === 'Creating Collection' ? 'flex' : 'none'}>
+					<CircleNotch size="24" />
+				</Box>
 			</ButtonComp>
 			<DeployedModal isOpen={isDeploymentComplete} transactionResult={transactionResult} />
 		</Box>

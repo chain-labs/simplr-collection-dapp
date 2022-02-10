@@ -16,6 +16,7 @@ import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, removeWhitelist } from 'src/redux/sales';
+import DashboardCard from './DashboardCard';
 import StatusModal from './StatusModal';
 import Step1Modal from './Step1Modal';
 import Step2Modal from './Step2Modal';
@@ -59,7 +60,9 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editable === 'Paused') {
 				const gas = await modalData.contract.connect(signer).estimateGas.unpause();
-
+				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+			} else if (modalData.editfield === 'Reveal') {
+				const gas = await modalData.contract.connect(signer).estimateGas.setProjectURIAndReveal(modalData.data);
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			}
 		} catch (err) {
@@ -88,14 +91,17 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 			setLoading(true);
 			if (provider && signer) {
 				if (modalData.editfield === 'reserve tokens') {
-					try {
-						await modalData.contract.connect(signer).reserveTokens(value);
-						toast.success('Reserve token updated');
-						setStep(3);
-					} catch (err) {
-						toast.error('An unexpected error occured');
-						setVisible(false);
-					}
+					const transaction = await modalData.contract.connect(signer).reserveTokens(value);
+					transaction
+						.wait()
+						.then(() => {
+							toast.success('Reserve token updated');
+							setStep(3);
+						})
+						.catch(() => {
+							toast.error('An unexpected error occured');
+							setVisible(false);
+						});
 				}
 				if (modalData.editfield === 'wallet address') {
 					const transaction = await modalData.contract.connect(signer).transferOwnership(value);
@@ -149,6 +155,20 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 							setVisible(false);
 						});
 				}
+				if (modalData.editfield === 'Reveal') {
+					const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(modalData.data);
+					transaction
+						.wait()
+						.then(() => {
+							toast.success('Sale Unpaused');
+							setStep(3);
+						})
+						.catch((err) => {
+							console.log(err);
+							toast.error('An unexpected error occured');
+							setVisible(false);
+						});
+				}
 			}
 		}
 		if (step === 2) {
@@ -161,7 +181,8 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 
 	const getModalStep = () => {
 		if (step === 0) {
-			if (modalData.editable === 'Live' || modalData.editable === 'Paused') return <StatusModal gas={gas} />;
+			if (modalData.editable === 'Live' || modalData.editable === 'Paused' || modalData.editfield === 'Reveal')
+				return <StatusModal gas={gas} />;
 			else return <Step1Modal value={value} setValue={setValue} gas={gas} />;
 		}
 		if (step === 1) {
