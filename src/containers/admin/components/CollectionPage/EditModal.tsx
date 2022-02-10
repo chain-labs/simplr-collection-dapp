@@ -16,6 +16,7 @@ import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, removeWhitelist } from 'src/redux/sales';
+import DashboardCard from './DashboardCard';
 import StatusModal from './StatusModal';
 import Step1Modal from './Step1Modal';
 import Step2Modal from './Step2Modal';
@@ -89,7 +90,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 			setStep(2);
 			setLoading(true);
 			if (provider && signer) {
-        if (modalData.editfield === 'reserve tokens') {
+				if (modalData.editfield === 'reserve tokens') {
 					const transaction = await modalData.contract.connect(signer).reserveTokens(value);
 					transaction
 						.wait()
@@ -155,20 +156,21 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 						});
 				}
 				if (modalData.editfield === 'Reveal') {
-						const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(modalData.data);
-            transaction
-              .wait().then(() => {
-  						  toast.success('Sale Unpaused');
-	  					  setStep(3);
-              })
-			  		  .catch ((err) => {
-    						console.log(err);
-		    				toast.error('An unexpected error occured');
-				    		setVisible(false);
-            });
-					}
+					const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(modalData.data);
+					transaction
+						.wait()
+						.then(() => {
+							toast.success('Sale Unpaused');
+							setStep(3);
+						})
+						.catch((err) => {
+							console.log(err);
+							toast.error('An unexpected error occured');
+							setVisible(false);
+						});
 				}
 			}
+		}
 		if (step === 2) {
 			setStep(3);
 		}
@@ -179,7 +181,8 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 
 	const getModalStep = () => {
 		if (step === 0) {
-			if (modalData.editable === 'Live' || modalData.editable === 'Paused' || modalData.editfield === 'Reveal') return <StatusModal gas={gas} />;
+			if (modalData.editable === 'Live' || modalData.editable === 'Paused' || modalData.editfield === 'Reveal')
+				return <StatusModal gas={gas} />;
 			else return <Step1Modal value={value} setValue={setValue} gas={gas} />;
 		}
 		if (step === 1) {
