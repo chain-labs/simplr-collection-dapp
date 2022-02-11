@@ -25,6 +25,19 @@ module.exports = withPlugins([
 					},
 				];
 			},
+			async headers() {
+				return [
+					{
+						source: '/drive.google.com/file/d/:path',
+						headers: [
+							{
+								key: 'Access-Control-Allow-Origin',
+								value: '*',
+							},
+						],
+					},
+				];
+			},
 		}),
 	],
 	nextConfig,
