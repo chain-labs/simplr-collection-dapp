@@ -80,3 +80,7 @@ svg {
 .spin {	
 	animation: spin 1.5s linear infinite;
 }
+
+a:hover {
+	text-decoration: underline;
+}

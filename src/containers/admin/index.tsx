@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
+import Link from 'next/link';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
 import { getContractDetails } from 'src/ethereum/useCustomContract';
@@ -11,11 +11,15 @@ import { setEditDetails } from 'src/redux/edit';
 import theme from 'src/styleguide/theme';
 import CollectionPage from './components/CollectionPage';
 import PaymentsPage from './components/PaymentsPage';
+import { blockExplorer } from 'src/utils/links';
+import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 
 const AdminDashboardComponent = ({ metadata, id }) => {
 	const [step, setStep] = useState(0);
 	const [provider] = useEthers();
 	const [contract, setContract] = useState<ethers.Contract>();
+	const user = useAppSelector(userSelector);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -64,9 +68,11 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 					<Text as="b1" mr="mxxs">
 						Contract Address:
 					</Text>
-					<Text as="b1" color="simply-blue">
-						{id}
-					</Text>
+					<Box as="a" href={`${blockExplorer(user.network.chain)}/address/${id}`} target="_blank" rel="noreferrer">
+						<Text as="b1" color="simply-blue">
+							{id}
+						</Text>
+					</Box>
 				</Box>
 			</Box>
 			<Box row between mx="auto" width="21.6rem">
@@ -90,7 +96,12 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 				</Text>
 			</Box>
 			<Box height="0.1rem" width="115.7rem" mx="auto" bg="rgba(220, 220, 229, 0.5)" mt="mm" />
-			{getPage(step)}
+			<Box display={step === 0 ? 'block' : 'none'}>
+				<CollectionPage contract={contract} metadata={metadata} />
+			</Box>
+			<Box display={step === 1 ? 'block' : 'none'}>
+				<PaymentsPage contract={contract} metadata={metadata} />
+			</Box>
 		</Box>
 	);
 };
