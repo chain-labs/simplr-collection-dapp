@@ -5,8 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
-import useContract from 'src/ethereum/useContract';
-import useCustomContract, { getContractDetails } from 'src/ethereum/useCustomContract';
+import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import { setEditDetails } from 'src/redux/edit';
 import theme from 'src/styleguide/theme';
@@ -61,6 +60,14 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 				/>
 				<Text as="h3">{metadata?.collectionDetails.name}</Text>
 				<Text as="h3">({metadata?.collectionDetails.symbol ?? '...'})</Text>
+				<Box mt="ms" row>
+					<Text as="b1" mr="mxxs">
+						Contract Address:
+					</Text>
+					<Text as="b1" color="simply-blue">
+						{id}
+					</Text>
+				</Box>
 			</Box>
 			<Box row between mx="auto" width="21.6rem">
 				<Text

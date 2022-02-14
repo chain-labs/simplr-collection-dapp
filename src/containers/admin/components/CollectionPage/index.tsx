@@ -17,7 +17,6 @@ import Airdrop from './Airdrop';
 
 const CollectionPage = ({ contract, metadata }) => {
 	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
 	const [collectionUri, setCollectionURI] = useState('');
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [showModal, setShowModal] = useState(false);
