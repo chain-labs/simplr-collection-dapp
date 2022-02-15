@@ -12,12 +12,10 @@ import { Toaster } from 'react-hot-toast';
 import { ethers } from 'ethers';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
-import { networkSelector } from 'src/redux/user';
-import axios from 'axios';
+import { checkImageUrl } from './utils';
 
 const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
-	const currentNetwork = useAppSelector(networkSelector);
 
 	const dispatch = useAppDispatch();
 
@@ -69,21 +67,14 @@ const CollectionPage = ({ step, setStep }) => {
 
 	const addCollectionDetails = async (e) => {
 		e.preventDefault();
-		// console.log('Hello');
-		// const link =
-		// 	'https://firebasestorage.googleapis.com/v0/b/money-heist-event.appspot.com/o/Task%202%20intro.jpg?alt=media&token=74bdbf2a-2199-4e27-8dd5-bd360eef9e85';
-		// await axios({
-		// 	method: 'POST',
-		// 	url: '/api/checkImage',
-		// 	data: {
-		// 		url: link,
-		// 	},
-		// });
 		const valid = ethers.utils.isAddress(adminAddress);
+		const check = (await checkImageUrl(collectionLogoURL)) && (await checkImageUrl(collectionBannerURL));
 		if (networkValue === -1) {
-			toast.error('Please select the newwork');
+			toast.error('Please select the network');
 		} else if (!valid) {
 			toast.error('Invalid wallet address');
+		} else if (!check) {
+			toast.error('Invalid image URL');
 		} else {
 			const data = getData();
 			dispatch(setCollectionDetails(data));

@@ -163,7 +163,7 @@ interface InputProps {
 
 export const InputElement = styled(Box)(
 	(props: InputProps) => `
-	padding: ${`${props.theme.space.ms} ${props.theme.space.mm}`};
+	padding: ${`${props.theme.space.ms} ${props.theme.space.wxs} ${props.theme.space.ms} ${props.theme.space.mm}`};
 	font-size: ${props.fontSize ?? '1.6rem'};
 	font-family: 'Switzer', sans-serif;
 	border-radius: 8px;
