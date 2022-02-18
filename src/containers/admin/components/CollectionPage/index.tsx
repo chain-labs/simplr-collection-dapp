@@ -21,7 +21,7 @@ const CollectionPage = ({ contract, metadata }) => {
 	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [adminAddress, setAdminAddress] = useState('');
-	const [loadPercentage, setLoadPercentage] = useState(0);
+	const [loadPercentage, setLoadPercentage] = useState(1);
 
 	const [edit, setEdit] = useState('');
 	const dispatch = useAppDispatch();
@@ -93,7 +93,9 @@ const CollectionPage = ({ contract, metadata }) => {
 		};
 
 		if (contract && provider) {
-			setLoadPercentage(85);
+			setTimeout(() => {
+				setLoadPercentage(85);
+			}, 1000);
 			getDetails().then(() => {
 				setLoadPercentage(100);
 			});
@@ -243,7 +245,7 @@ const CollectionPage = ({ contract, metadata }) => {
 								<DashboardCard
 									Icon={Timer}
 									text="Public-sale goes live in"
-									data={`${collection.presaleStartTime}`}
+									data={`${collection.saleStartTime}`}
 									editable="time"
 									admin={collection.adminAddress}
 									timeType="sale"
