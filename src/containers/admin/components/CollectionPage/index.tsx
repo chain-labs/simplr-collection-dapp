@@ -95,7 +95,7 @@ const CollectionPage = ({ contract, metadata }) => {
 		if (contract && provider) {
 			setTimeout(() => {
 				setLoadPercentage(85);
-			}, 1000);
+			}, 100);
 			getDetails().then(() => {
 				setLoadPercentage(100);
 			});
