@@ -6,7 +6,6 @@ import If from 'src/components/If';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { setSaleDetails } from 'src/redux/sales';
@@ -87,15 +86,14 @@ const CollectionPage = ({ contract, metadata }) => {
 					}
 				}
 				setCollection(details);
+				return details;
 			} catch (error) {
 				console.log(error);
 			}
 		};
 
 		if (contract && provider) {
-			setTimeout(() => {
-				setLoadPercentage(85);
-			}, 100);
+			setLoadPercentage(95);
 			getDetails().then(() => {
 				setLoadPercentage(100);
 			});
@@ -129,10 +127,10 @@ const CollectionPage = ({ contract, metadata }) => {
 							height="100%"
 							borderRadius="16px"
 							width={`${loadPercentage}%`}
-							bg="simply-blue"
 							css={`
-								transition: width ${loadPercentage <= 85 ? '7s' : '1s'} ease-in-out;
+								transition: width ${loadPercentage > 95 ? '0.5s' : '7s'} ease-in-out;
 							`}
+							bg="simply-blue"
 						/>
 					</Box>
 				</Box>
