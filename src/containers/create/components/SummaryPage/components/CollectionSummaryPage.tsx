@@ -7,6 +7,7 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Dropdown from 'src/components/Dropdown';
 import ButtonComp from 'src/components/Button';
 import Text from 'src/components/Text';
+import Dropzone from 'src/components/Dropzone';
 
 const CollectionSummaryPage = ({ modalStep, setModalStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
@@ -77,27 +78,13 @@ const CollectionSummaryPage = ({ modalStep, setModalStep }) => {
 				disabled
 			/>
 			<Box mt="mxxxl" />
-			<LabelledTextInput
-				type="url"
-				label="Collection Logo URL"
-				placeholder="https://"
-				helperText="Accepts JPEG and PNG files."
-				width="100%"
-				value={collectionLogoURL}
-				disableValidation
-				disabled
-			/>
+			<LabelledTextInput label="Collection Logo URL" required>
+				<Dropzone image={collectionLogoURL} disabled />
+			</LabelledTextInput>
 			<Box mt="mxxxl" />
-			<LabelledTextInput
-				type="url"
-				label="Collection Banner URL"
-				placeholder="https://"
-				helperText="Accepts JPEG and PNG files."
-				width="100%"
-				value={collectionBannerURL}
-				disabled
-				disableValidation
-			/>
+			<LabelledTextInput label="Collection Banner URL" required>
+				<Dropzone image={collectionBannerURL} disabled />
+			</LabelledTextInput>
 			<Box mt="mxxxl" />
 			<LabelledTextInput
 				type="email"
