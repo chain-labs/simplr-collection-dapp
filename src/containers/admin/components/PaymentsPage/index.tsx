@@ -1,5 +1,4 @@
-import { ethers, utils } from 'ethers';
-import { XCircle } from 'phosphor-react';
+import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -11,7 +10,7 @@ import useEthers from 'src/ethereum/useEthers';
 import useSigner from 'src/ethereum/useSigner';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
-import theme from 'src/styleguide/theme';
+import RoyaltyEditModal from './RoyaltyEditModal';
 import WithdrawModal from './WithdrawModal';
 
 const PaymentsPage = ({ contract, metadata }) => {
@@ -24,7 +23,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 	const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(0);
 	const [admin, setAdmin] = useState('');
 
-	const [provider, setProvider] = useEthers();
+	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
 
 	const user = useAppSelector(userSelector);
@@ -40,7 +39,6 @@ const PaymentsPage = ({ contract, metadata }) => {
 	}, [contract]);
 
 	useEffect(() => {
-		console.log(contract);
 		const hydrate = () => {
 			if (metadata) {
 				const getPayment = async (share) => {
@@ -90,7 +88,7 @@ const PaymentsPage = ({ contract, metadata }) => {
 			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'PaymentReleased')[0]?.args;
 			return event;
 		};
-		const event = getEvent(transaction)
+		getEvent(transaction)
 			.then(() => {
 				setIsWithdrawModalOpen(1);
 				toast.dismiss();
@@ -207,6 +205,7 @@ const Royalties = ({ admin, contract, signer }) => {
 		account: '',
 		value: 0,
 	});
+	const [isRoyaltyModalOpen, setIsRoyaltyModalOpen] = useState(false);
 
 	const editRoyalties = async () => {
 		if (!ethers.utils.isAddress(address)) {
@@ -224,18 +223,15 @@ const Royalties = ({ admin, contract, signer }) => {
 				.then(() => {
 					toast.success('Updated');
 					setEdit(false);
-					setRoyalty({
-						account: address,
-						value: percentage,
-					});
+					setIsRoyaltyModalOpen(true);
 				});
 		}
 	};
 
 	useEffect(() => {
 		const getRoyalty = async () => {
-			const royalty = await contract.callStatic.royalties();
-			setRoyalty({ ...royalty, value: royalty.value / 100 });
+			const r = await contract.callStatic.royalties();
+			setRoyalty({ account: r[0], value: parseInt(r[1].toString()) / 100 });
 			setAddress(royalty.account);
 			setPercentage(royalty.value / 100);
 		};
@@ -276,10 +272,7 @@ const Royalties = ({ admin, contract, signer }) => {
 						<Box ml="mxs" />
 						<TextInput
 							value={`${royalty.value}%`}
-							type="number"
-							step="0.01"
-							min="0"
-							max="10"
+							type="text"
 							width="9.2rem"
 							disabled
 							disableValidation
@@ -320,6 +313,13 @@ const Royalties = ({ admin, contract, signer }) => {
 						</Box>
 					</Box>
 				}
+			/>
+			<RoyaltyEditModal
+				visible={isRoyaltyModalOpen}
+				setVisible={setIsRoyaltyModalOpen}
+				data={royalty}
+				setData={setRoyalty}
+				{...{ address, percentage }}
 			/>
 		</Box>
 	);
