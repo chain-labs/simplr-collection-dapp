@@ -10,18 +10,54 @@ const PINATA_KEY = process.env.NEXT_PUBLIC_IPFS_API_PINATA_KEY;
 const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_IPFS_PINATA_API_SECRET;
 const PINATA_URL = 'https://api.pinata.cloud/';
 
+export const unpinMetadata = async (hash) => {
+	await axios.delete(`${PINATA_URL}pinning/unpin/${hash}`, {
+		headers: {
+			pinata_api_key: PINATA_KEY,
+			pinata_secret_api_key: PINATA_KEY_SECRET,
+		},
+	});
+};
+
 export const uploadToIPFS = async (
 	collection: CollectionState,
 	sales: SaleState,
 	payments: PaymentState,
 	simplrAddress: string
 ) => {
+	const bannerData = new FormData();
+	const logoData = new FormData();
+	bannerData.append('file', collection.banner_url);
+	bannerData.append('pinataMetadata', JSON.stringify({ name: `${collection.name.replace(' ', '_')}_banner` }));
+	const banner_res = await axios.post(`${PINATA_URL}pinning/pinFileToIPFS`, bannerData, {
+		maxBodyLength: Infinity,
+		headers: {
+			// @ts-expect-error boundary not found
+			'Content-Type': `multipart/form-data; boundary=${bannerData._boundary}`,
+			pinata_api_key: PINATA_KEY,
+			pinata_secret_api_key: PINATA_KEY_SECRET,
+		},
+	});
+
+	logoData.append('file', collection.logo_url);
+	logoData.append('pinataMetadata', JSON.stringify({ name: `${collection.name.replace(' ', '_')}_logo` }));
+
+	const logo_res = await axios.post(`${PINATA_URL}pinning/pinFileToIPFS`, logoData, {
+		maxBodyLength: Infinity,
+		headers: {
+			// @ts-expect-error boundary not found
+			'Content-Type': `multipart/form-data; boundary=${bannerData._boundary}`,
+			pinata_api_key: PINATA_KEY,
+			pinata_secret_api_key: PINATA_KEY_SECRET,
+		},
+	});
+
 	const jsonBody = {
 		collectionDetails: {
 			name: collection.name,
 			symbol: collection.symbol,
-			logoUrl: collection.logo_url,
-			bannerImageUrl: collection.banner_url,
+			logoUrl: `https://simplr.mypinata.cloud/ipfs/${logo_res.data.IpfsHash}`,
+			bannerImageUrl: `https://simplr.mypinata.cloud/ipfs/${banner_res.data.IpfsHash}`,
 			contactEmail: collection.contact_email,
 			websiteUrl: collection.website_url,
 			adminAddress: collection.admin,
@@ -63,32 +99,31 @@ export const uploadToIPFS = async (
 			isAffiliable: sales.isAffiliable,
 		},
 	};
-
-	const res = await axios.post(
-		`${PINATA_URL}pinning/pinJSONToIPFS`,
-		{
-			pinataMetadata: {
-				name: `${collection.name.replace(' ', '_')}_metadata`,
+	try {
+		const res = await axios.post(
+			`${PINATA_URL}pinning/pinJSONToIPFS`,
+			{
+				pinataMetadata: {
+					name: `${collection.name.replace(' ', '_')}_metadata`,
+				},
+				pinataContent: jsonBody,
 			},
-			pinataContent: jsonBody,
-		},
-		{
-			headers: {
-				pinata_api_key: PINATA_KEY,
-				pinata_secret_api_key: PINATA_KEY_SECRET,
-			},
-		}
-	);
-	return res.data.IpfsHash;
-};
-
-export const unpinMetadata = async (hash) => {
-	await axios.delete(`${PINATA_URL}pinning/unpin/${hash}`, {
-		headers: {
-			pinata_api_key: PINATA_KEY,
-			pinata_secret_api_key: PINATA_KEY_SECRET,
-		},
-	});
+			{
+				headers: {
+					pinata_api_key: PINATA_KEY,
+					pinata_secret_api_key: PINATA_KEY_SECRET,
+				},
+			}
+		);
+		return {
+			banner: jsonBody.collectionDetails.bannerImageUrl.split('ipfs/')[1],
+			logo: jsonBody.collectionDetails.logoUrl.split('ipfs/')[1],
+			metadata: res.data.IpfsHash,
+		};
+	} catch (e) {
+		unpinMetadata(jsonBody.collectionDetails.logoUrl.split('ipfs/')[1]);
+		unpinMetadata(jsonBody.collectionDetails.bannerImageUrl.split('ipfs/')[1]);
+	}
 };
 
 export const createCollection = async (

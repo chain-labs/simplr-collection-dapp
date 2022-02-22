@@ -4,8 +4,8 @@ export interface CollectionState {
 	symbol?: string;
 	project_uri?: string;
 	website_url?: string;
-	logo_url?: string;
-	banner_url?: string;
+	logo_url?: File;
+	banner_url?: File;
 	contact_email?: string;
 	admin?: string;
 	collection_validated?: boolean;
