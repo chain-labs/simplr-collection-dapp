@@ -1,7 +1,6 @@
 import axios from 'axios';
 import AdminDashboardComponent from 'containers/admin';
 import { ethers } from 'ethers';
-import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -35,3 +34,10 @@ const AdminDashboardPage = () => {
 };
 
 export default AdminDashboardPage;
+
+AdminDashboardPage.getInitialProps = async ({ res }) => {
+	if (res) {
+		res.setHeader('Cache-Control', 'no-store');
+	}
+	return { cache: false };
+};
