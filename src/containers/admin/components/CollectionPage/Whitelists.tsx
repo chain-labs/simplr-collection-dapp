@@ -49,10 +49,11 @@ const Whitelists = ({ admin }) => {
 		}
 	};
 
-	const handleRemove = () => {
-		if (!presaleWhitelist.includes(whitelistRemove)) {
+	const handleRemove = (address) => {
+		setWhitelistRemove(address);
+		if (!presaleWhitelist.includes(address)) {
 			toast.error('Address not found in whitelist.');
-		} else if (!ethers.utils.isAddress(whitelistRemove)) {
+		} else if (!ethers.utils.isAddress(address)) {
 			toast.error('Please check if the address is valid.');
 		} else {
 			setRemoveModal(true);
@@ -90,36 +91,18 @@ const Whitelists = ({ admin }) => {
 					>
 						<Text as="h6">Add</Text>
 					</ButtonComp>
-					<WhitelistModal visible={whitelistModalOpen} setVisible={setWhitelistModalOpen} readOnly />
+					<WhitelistModal
+						visible={whitelistModalOpen}
+						setVisible={setWhitelistModalOpen}
+						admin
+						handleWhitelistRemove={handleRemove}
+					/>
 					<EditModalv2
 						visible={addModal}
 						setVisible={setAddModal}
 						data={[...whitelistArray, ...presaleWhitelist]}
 						type="whitelist_add"
 						clearInput={() => setWhitelist('')}
-					/>
-				</Box>
-			</Box>
-			<Box mt="mxl" width="55.2rem" display={admin === user.address ? 'block' : 'none'}>
-				<LabelledTextInput
-					value={whitelistRemove}
-					setValue={setWhitelistRemove}
-					placeholder="Enter a valid wallet address"
-					label="Remove from Whitelist:"
-					helperText="You can add multiple addresses seperated by a comma ( , )."
-					disableValidation
-					width="100%"
-				/>
-				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
-					<ButtonComp bg="secondary" height="40px" px="mxl" disable={!whitelistRemove} onClick={() => handleRemove()}>
-						<Text as="h6">Remove</Text>
-					</ButtonComp>
-					<EditModalv2
-						visible={removeModal}
-						setVisible={setRemoveModal}
-						data={[whitelistRemove]}
-						type="whitelist_remove"
-						clearInput={() => setWhitelistRemove('')}
 					/>
 				</Box>
 			</Box>
