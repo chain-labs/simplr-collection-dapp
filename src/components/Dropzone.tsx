@@ -1,5 +1,5 @@
 import { Eye, Trash, UploadSimple } from 'phosphor-react';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import theme from 'src/styleguide/theme';
 import Box from './Box';
 import ButtonComp from './Button';
@@ -21,24 +21,40 @@ const Dropzone = React.memo(
 			}
 		};
 
+		useEffect(() => {
+			if (image) {
+				containerRef.current.style.backgroundImage = `url(${URL.createObjectURL(image)})`;
+			} else {
+				containerRef.current.style.backgroundImage = `transparent`;
+			}
+		}, [image]);
+
 		const handleDragEnter = (e) => {
 			e.preventDefault();
 			containerRef.current.style.backgroundColor = theme.colors['blue-00'];
+			console.log('drag enter');
 		};
 
 		const handleDragLeave = (e) => {
 			e.preventDefault();
-			containerRef.current.style.backgroundColor = 'transparent';
+			const target = e.toElement || e.relatedTarget;
+			if (target.parentNode !== containerRef.current && target !== containerRef.current) {
+				containerRef.current.style.backgroundColor = 'transparent';
+				console.log('drag leave');
+			}
 		};
 
 		const handleDragOver = (e) => {
 			e.preventDefault();
+			console.log('drag over');
 		};
 
 		const fileDrop = (e) => {
 			e.preventDefault();
+			containerRef.current.style.backgroundColor = 'transparent';
 			const file = e.dataTransfer.files[0];
 			setImage(file);
+			console.log('file drop', file);
 		};
 
 		return (
@@ -78,12 +94,6 @@ const Dropzone = React.memo(
 							  }
 							: null
 					}
-					css={`
-						pointer-events: ${image ? 'onclick' : 'all'};
-						* {
-							pointer-events: 'none';
-						}
-					`}
 				>
 					<If
 						condition={!image}
@@ -102,6 +112,11 @@ const Dropzone = React.memo(
 									}}
 									type="none"
 									disable={disabled}
+									css={`
+										* {
+											pointer-events: none;
+										}
+									`}
 								>
 									<UploadSimple size="16" color={theme.colors['simply-blue']} />
 									<Text as="h6" ml="mxxs">
@@ -130,31 +145,21 @@ const Dropzone = React.memo(
 								<Box row justifyContent="flex-end" height="100%" alignItems="flex-end">
 									<Box
 										cursor="pointer"
-										mr="mxs"
-										css={`
-									svg {
-										color: ${theme.colors['simply-white']};
-										&:hover {
-											color: ${theme.colors['green-50']}
-									}
-								`}
-									>
-										<Eye size="20" weight="fill" />
-									</Box>
-									<Box
-										cursor="pointer"
 										onClick={(e) => {
 											e.preventDefault();
 											setImage(null);
 											containerRef.current.style.backgroundImage = 'none';
 										}}
 										css={`
-									svg {
-										color: ${theme.colors['simply-white']};
-										&:hover {
-											color: ${theme.colors['red-50']}
-									}
-								`}
+											svg {
+												color: ${theme.colors['simply-white']};
+											}
+											&:hover {
+												svg {
+													color: ${theme.colors['red-50']};
+												}
+											}
+										`}
 									>
 										<Trash size="20" weight="fill" />
 									</Box>
@@ -165,7 +170,7 @@ const Dropzone = React.memo(
 					<Box
 						as="input"
 						type="file"
-						accept="image/jpeg, image/png"
+						accept="image/jpeg, image/png, image/jpg"
 						ref={fileEl}
 						display="none"
 						onChange={handleChange}

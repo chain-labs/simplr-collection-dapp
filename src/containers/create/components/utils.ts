@@ -1,14 +1,15 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
+import toast from 'react-hot-toast';
 import { SignerProps } from 'src/ethereum/types';
 import { CollectionState, networks } from 'src/redux/collection/types';
 import { PaymentState } from 'src/redux/payment/types';
 import { SaleState } from 'src/redux/sales/types';
 import { getTimestamp } from './SalesPage';
 
-const PINATA_KEY = process.env.NEXT_PUBLIC_IPFS_API_PINATA_KEY;
-const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_IPFS_PINATA_API_SECRET;
-const PINATA_URL = 'https://api.pinata.cloud/';
+export const PINATA_KEY = process.env.NEXT_PUBLIC_IPFS_API_PINATA_KEY;
+export const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_IPFS_PINATA_API_SECRET;
+export const PINATA_URL = 'https://api.pinata.cloud/';
 
 export const unpinMetadata = async (hash) => {
 	await axios.delete(`${PINATA_URL}pinning/unpin/${hash}`, {
@@ -99,31 +100,26 @@ export const uploadToIPFS = async (
 			isAffiliable: sales.isAffiliable,
 		},
 	};
-	try {
-		const res = await axios.post(
-			`${PINATA_URL}pinning/pinJSONToIPFS`,
-			{
-				pinataMetadata: {
-					name: `${collection.name.replace(' ', '_')}_metadata`,
-				},
-				pinataContent: jsonBody,
+	const res = await axios.post(
+		`${PINATA_URL}pinning/pinJSONToIPFS`,
+		{
+			pinataMetadata: {
+				name: `${collection.name.replace(' ', '_')}_metadata`,
 			},
-			{
-				headers: {
-					pinata_api_key: PINATA_KEY,
-					pinata_secret_api_key: PINATA_KEY_SECRET,
-				},
-			}
-		);
-		return {
-			banner: jsonBody.collectionDetails.bannerImageUrl.split('ipfs/')[1],
-			logo: jsonBody.collectionDetails.logoUrl.split('ipfs/')[1],
-			metadata: res.data.IpfsHash,
-		};
-	} catch (e) {
-		unpinMetadata(jsonBody.collectionDetails.logoUrl.split('ipfs/')[1]);
-		unpinMetadata(jsonBody.collectionDetails.bannerImageUrl.split('ipfs/')[1]);
-	}
+			pinataContent: jsonBody,
+		},
+		{
+			headers: {
+				pinata_api_key: PINATA_KEY,
+				pinata_secret_api_key: PINATA_KEY_SECRET,
+			},
+		}
+	);
+	return {
+		banner: jsonBody.collectionDetails.bannerImageUrl.split('ipfs/')[1],
+		logo: jsonBody.collectionDetails.logoUrl.split('ipfs/')[1],
+		metadata: res.data.IpfsHash,
+	};
 };
 
 export const createCollection = async (
