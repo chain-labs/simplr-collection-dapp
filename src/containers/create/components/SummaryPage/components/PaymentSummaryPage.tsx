@@ -105,9 +105,9 @@ const PaymentSummaryPage = () => {
 					.catch((err) => {
 						toast.remove(id);
 						toast.error('Something went wrong! Try Again.');
-						unpinMetadata(metadata.banner);
-						unpinMetadata(metadata.logo);
-						unpinMetadata(metadata.metadata);
+						// unpinMetadata(metadata.banner);
+						// unpinMetadata(metadata.logo);
+						// unpinMetadata(metadata.metadata);
 					});
 			};
 			transaction();
