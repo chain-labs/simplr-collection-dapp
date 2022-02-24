@@ -13,9 +13,11 @@ interface Props {
 	visible: boolean;
 	setVisible: (boolean) => void;
 	readOnly?: boolean;
+	admin?: boolean;
+	handleWhitelistRemove?: (any) => any;
 }
 
-const WhitelistModal = ({ visible, setVisible, readOnly }: Props) => {
+const WhitelistModal = ({ visible, setVisible, readOnly, admin, handleWhitelistRemove }: Props) => {
 	const whiteList = useAppSelector(presaleWhitelistSelector);
 	const [empty, setEmpty] = useState(false); // Checks if search result is empty
 	const [searchInput, setSearchInput] = useState('');
@@ -23,8 +25,12 @@ const WhitelistModal = ({ visible, setVisible, readOnly }: Props) => {
 	const dispatch = useAppDispatch();
 
 	const handleRemove = (address) => {
-		dispatch(removeWhitelist(address));
-		toast.success(`Removed from whitelist`);
+		if (admin) {
+			handleWhitelistRemove(address);
+		} else {
+			dispatch(removeWhitelist(address));
+			toast.success(`Removed from whitelist`);
+		}
 	};
 
 	useEffect(() => {
