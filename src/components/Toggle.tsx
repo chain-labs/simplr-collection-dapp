@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Box, { BoxProps } from './Box';
 
 export interface ToggleProps extends BoxProps {
@@ -11,7 +11,7 @@ export interface ToggleProps extends BoxProps {
 	className?: string;
 	disabled?: boolean;
 }
-const Toggle = ({ value, setValue, mobile, disabled, children, ...restProps }: ToggleProps): JSX.Element => {
+const Toggle = ({ value, setValue, mobile, disabled }: ToggleProps): JSX.Element => {
 	return (
 		<Box>
 			<Box

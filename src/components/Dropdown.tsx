@@ -18,7 +18,7 @@ interface Props {
 
 const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }: Props) => {
 	const [visible, setVisible] = useState(false);
-	const ref = useOuterClick((evt) => {
+	const ref = useOuterClick(() => {
 		setVisible(false);
 	});
 	return (

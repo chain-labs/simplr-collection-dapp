@@ -1,4 +1,4 @@
-import { Eye, Trash, UploadSimple } from 'phosphor-react';
+import { Trash, UploadSimple } from 'phosphor-react';
 import React, { useEffect, useRef } from 'react';
 import theme from 'src/styleguide/theme';
 import Box from './Box';
@@ -32,7 +32,6 @@ const Dropzone = React.memo(
 		const handleDragEnter = (e) => {
 			e.preventDefault();
 			containerRef.current.style.backgroundColor = theme.colors['blue-00'];
-			console.log('drag enter');
 		};
 
 		const handleDragLeave = (e) => {
@@ -40,13 +39,11 @@ const Dropzone = React.memo(
 			const target = e.toElement || e.relatedTarget;
 			if (target.parentNode !== containerRef.current && target !== containerRef.current) {
 				containerRef.current.style.backgroundColor = 'transparent';
-				console.log('drag leave');
 			}
 		};
 
 		const handleDragOver = (e) => {
 			e.preventDefault();
-			console.log('drag over');
 		};
 
 		const fileDrop = (e) => {
@@ -54,7 +51,6 @@ const Dropzone = React.memo(
 			containerRef.current.style.backgroundColor = 'transparent';
 			const file = e.dataTransfer.files[0];
 			setImage(file);
-			console.log('file drop', file);
 		};
 
 		return (
