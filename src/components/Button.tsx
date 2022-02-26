@@ -32,7 +32,7 @@ export interface ButtonProps extends BoxProps {
 	type?: string;
 }
 
-const ButtonComp = ({ bg, disable, height, children, type, ...restProps }: ButtonProps): JSX.Element => {
+const ButtonComp = ({ bg, disable, height, children, ...restProps }: ButtonProps): JSX.Element => {
 	const buttonColour = color[bg];
 	const hColor = !disable ? hoverColor[bg] : 'simply-white';
 	const bColor = borderColor(bg);
