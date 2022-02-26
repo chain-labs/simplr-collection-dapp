@@ -238,7 +238,9 @@ const CollectionPage = ({ contract, metadata }) => {
 							}
 						/>
 						<If
-							condition={collection.presaleStartTime > Date.now() / 1000}
+							condition={
+								collection.presaleStartTime > Date.now() / 1000 || collection.saleStartTime > Date.now() / 1000
+							}
 							then={
 								<DashboardCard
 									Icon={Timer}

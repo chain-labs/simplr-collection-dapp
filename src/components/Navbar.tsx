@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Box from 'src/components/Box';
 import useEthers, { requestAccount } from 'src/ethereum/useEthers';
 import useListeners from 'src/ethereum/useListeners';
@@ -17,7 +17,7 @@ const Navbar = () => {
 
 	const network = useAppSelector(networkSelector);
 
-	const [provider, setProvider, ethers] = useEthers();
+	const [provider, setProvider] = useEthers();
 	const [signer, setSigner] = useSigner(provider);
 	useListeners(provider, setProvider, setSigner);
 

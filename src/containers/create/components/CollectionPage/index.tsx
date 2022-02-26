@@ -13,6 +13,7 @@ import { ethers } from 'ethers';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 import { networkSelector } from 'src/redux/user';
+import Dropzone from 'src/components/Dropzone';
 
 const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
@@ -24,8 +25,8 @@ const CollectionPage = ({ step, setStep }) => {
 	const [collectionSymbol, setCollectionSymbol] = useState<string>(collectionData.symbol);
 	const [collectionURI, setCollectionURI] = useState<string>(collectionData.project_uri);
 	const [collectionWebURL, setCollectionWebURL] = useState<string>(collectionData.website_url);
-	const [collectionLogoURL, setCollectionLogoURL] = useState<string>(collectionData.logo_url);
-	const [collectionBannerURL, setCollectionBannerURL] = useState<string>(collectionData.banner_url);
+	const [collectionLogoURL, setCollectionLogoURL] = useState<File>(collectionData.logo_url);
+	const [collectionBannerURL, setCollectionBannerURL] = useState<File>(collectionData.banner_url);
 	const [email, setEmail] = useState<string>(collectionData.contact_email);
 	const [adminAddress, setAdminAddress] = useState<string>(collectionData.admin);
 	const [networkData, setNetworkData] = useState([]);
@@ -89,8 +90,6 @@ const CollectionPage = ({ step, setStep }) => {
 			const name = networkData[networkValue];
 
 			if (networkValue === 137 || networkValue === 80001) {
-				console.log({ chainId, rpc, name, networkValue });
-
 				// @ts-expect-error ethereum in window
 				window.ethereum.request({
 					method: 'wallet_addEthereumChain',
@@ -185,27 +184,13 @@ const CollectionPage = ({ step, setStep }) => {
 						required
 					/>
 					<Box mt="mxxxl" />
-					<LabelledTextInput
-						type="url"
-						label="Collection Logo URL"
-						placeholder="https://"
-						helperText="Accepts JPEG and PNG files."
-						width="100%"
-						value={collectionLogoURL}
-						setValue={setCollectionLogoURL}
-						required
-					/>
+					<LabelledTextInput label="Collection Logo URL" required>
+						<Dropzone image={collectionLogoURL} setImage={setCollectionLogoURL} />
+					</LabelledTextInput>
 					<Box mt="mxxxl" />
-					<LabelledTextInput
-						type="url"
-						label="Collection Banner URL"
-						placeholder="https://"
-						helperText="Accepts JPEG and PNG files."
-						width="100%"
-						value={collectionBannerURL}
-						setValue={setCollectionBannerURL}
-						required
-					/>
+					<LabelledTextInput label="Collection Banner URL" required>
+						<Dropzone image={collectionBannerURL} setImage={setCollectionBannerURL} />
+					</LabelledTextInput>
 					<Box mt="mxxxl" />
 					<LabelledTextInput
 						type="email"

@@ -48,7 +48,7 @@ const PaymentSummaryPage = () => {
 
 	// const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares));
 	const CollectionFactory = useContract('CollectionFactoryV2', collection.type, provider);
-	const [metadata, setMetadata] = useState<string>();
+	const [metadata, setMetadata] = useState<{ metadata: string; logo: string; banner: string }>();
 	const [transactionResult, setTransactionResult] = useState<any>();
 	const [ready, setReady] = useState(false);
 	const [simplrAddress, setSimplrAddress] = useState<string>();
@@ -76,9 +76,10 @@ const PaymentSummaryPage = () => {
 	}, [CollectionFactory]);
 
 	const sendData = async () => {
+		setCta('Creating Collection');
 		const res = uploadToIPFS(collection, sales, payments, simplrAddress)
-			.then((hash) => {
-				setMetadata(hash);
+			.then((res) => {
+				setMetadata(res);
 			})
 			.catch((err) => {
 				console.log({ err });
@@ -95,8 +96,7 @@ const PaymentSummaryPage = () => {
 		if (metadata && ready) {
 			const transaction = async () => {
 				const id = toast.loading('Transaction is processing', { duration: Infinity });
-				setCta('Creating Collection');
-				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer)
+				createCollection(CollectionFactory, metadata.metadata, collection, sales, payments, signer)
 					.then((tx) => {
 						toast.remove(id);
 						toast.success('Transaction Successful', { duration: 3000 });
@@ -105,7 +105,9 @@ const PaymentSummaryPage = () => {
 					.catch((err) => {
 						toast.remove(id);
 						toast.error('Something went wrong! Try Again.');
-						unpinMetadata(metadata);
+						// unpinMetadata(metadata.banner);
+						// unpinMetadata(metadata.logo);
+						// unpinMetadata(metadata.metadata);
 					});
 			};
 			transaction();

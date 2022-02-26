@@ -54,7 +54,7 @@ const Whitelists = ({ admin }) => {
 		if (!presaleWhitelist.includes(address)) {
 			toast.error('Address not found in whitelist.');
 		} else if (!ethers.utils.isAddress(address)) {
-			toast.error('Please check if the address is valid.');
+			toast.error('Please check if the address is valid. ');
 		} else {
 			setRemoveModal(true);
 			dispatch(setEditDetails({ data: [...presaleWhitelist] }));
