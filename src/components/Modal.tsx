@@ -18,8 +18,8 @@ const Modal = ({ children, visible }) => {
 			left="0"
 			height="100vh"
 			width="100vw"
-			overflowY="scroll"
-			pb="15rem"
+			overflowY="auto"
+			overflowX="hidden"
 			zIndex={15}
 		>
 			{children}
