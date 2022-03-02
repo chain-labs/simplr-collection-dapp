@@ -13,8 +13,6 @@ import { blockExplorer, explorer } from 'src/utils/links';
 const DeployedModal = ({ isOpen, transactionResult }) => {
 	const user = useAppSelector(userSelector);
 	if (!isOpen) {
-		console.log({ isOpen });
-
 		return null;
 	} else {
 		return ReactDom.createPortal(
