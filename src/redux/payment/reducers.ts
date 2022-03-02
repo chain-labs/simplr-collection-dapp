@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { addBeneficiary, removeBeneficiary } from '.';
+import { addBeneficiary, clearBeneficiaries, removeBeneficiary } from '.';
 import { setPaymentDetails } from './actions';
 import { PaymentState } from './types';
 
@@ -34,6 +34,11 @@ export const paymentReducer = createReducer(intitalState, (builder) => {
 				state?.paymentSplitter?.payees?.splice(index, 1);
 				state?.paymentSplitter?.shares?.splice(index, 1);
 			}
+			return state;
+		})
+		.addCase(clearBeneficiaries, (state) => {
+			state.paymentSplitter.payees = [];
+			state.paymentSplitter.shares = [];
 			return state;
 		});
 });

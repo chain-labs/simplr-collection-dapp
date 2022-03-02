@@ -6,3 +6,5 @@ export const setPaymentDetails = createAction<PaymentState>('payment/SET_PAYMENT
 export const addBeneficiary = createAction<{ payee: string; shares: number }>('payment/ADD_BENEFICIARY');
 
 export const removeBeneficiary = createAction<string>('payment/REMOVE_BENEFICIARY');
+
+export const clearBeneficiaries = createAction('payment/CLEAR_BENEFICIARIES');
