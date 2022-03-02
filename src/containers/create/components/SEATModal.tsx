@@ -54,7 +54,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
 											width="100%"
 											onClick={earlyPass ? () => setIsOpen(false) : null}
 										>
-											<Text as="h5">Let&apos;s Go!</Text>
+											<Text as="h5">{earlyPass ? "Let's Go!" : 'Get a SEAT!'}</Text>
 										</ButtonComp>
 										<If
 											condition={!toBoolean(SEAT_TOGGLE) && !earlyPass}
