@@ -1962,7 +1962,7 @@
       "chainId": "4",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0xF5a0c7d1EbbB44e6E187518eE6674298D9DE3e85",
+          "address": "0x5b4f8e5faB2E2B99D9Cbd0C0B202afBdcE7577f9",
           "abi": [
             {
               "anonymous": false,
@@ -6196,7 +6196,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0xaf3b6AA554006dEE4379CA956d5b0864CDb1F98b",
+          "address": "0xfAb7a611f639EF37e162a051387A63575C30A8f7",
           "abi": [
             {
               "inputs": [
@@ -6550,11 +6550,29 @@
                   "internalType": "bool",
                   "name": "_isAffiliable",
                   "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "_useEarlyPass",
+                  "type": "bool"
                 }
               ],
               "name": "createCollection",
               "outputs": [],
               "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "freePass",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -6638,6 +6656,19 @@
                 }
               ],
               "name": "setAffiliateRegistry",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_freePass",
+                  "type": "address"
+                }
+              ],
+              "name": "setFreePass",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -11617,7 +11648,7 @@
       "chainId": "80001",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0x12164dA7FB4A16f03BbdeD2B774F608bA55a6d6F",
+          "address": "0x2a3A0FED178484389C58fA50492B582aA7B650f9",
           "abi": [
             {
               "anonymous": false,
@@ -15851,7 +15882,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0x86EBD2Ba0f0e34cEa74F5aa8dC2c6Ed3dD9b017e",
+          "address": "0x6E5C5592036e9976e56cbb09D68F4426de2C8a70",
           "abi": [
             {
               "inputs": [
@@ -16205,11 +16236,29 @@
                   "internalType": "bool",
                   "name": "_isAffiliable",
                   "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "_useEarlyPass",
+                  "type": "bool"
                 }
               ],
               "name": "createCollection",
               "outputs": [],
               "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "freePass",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -16293,6 +16342,19 @@
                 }
               ],
               "name": "setAffiliateRegistry",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_freePass",
+                  "type": "address"
+                }
+              ],
+              "name": "setFreePass",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
