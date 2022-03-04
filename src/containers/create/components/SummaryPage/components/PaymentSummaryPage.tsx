@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { CircleNotch } from 'phosphor-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -29,7 +29,7 @@ import ApprovalModal from './ApprovalModal';
 import DeployedModal from './DeployedModal';
 import WhitelistComp from './WhitelistComp';
 
-const PaymentSummaryPage = () => {
+const PaymentSummaryPage = ({ setModalStep }) => {
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
 	const collection = useAppSelector(collectionSelector);
@@ -84,63 +84,20 @@ const PaymentSummaryPage = () => {
 		};
 		getAddress();
 	}, [CollectionFactory]);
+	const ref = useRef({ showApprovalModal });
 
 	const createCollectionHandler = async () => {
 		setCta('Creating Collection');
 		setShowApprovalModal(true);
-		try {
-			const SEATInstance = await getSEATDetails();
-			console.log({ SEATInstance });
-		} catch (err) {
-			console.log({ err });
-		}
-	};
-
-	// const approveToken = async () => {};
-
-	const sendData = async () => {
-		const res = uploadToIPFS(collection, sales, payments, simplrAddress)
-			.then((res) => {
-				setMetadata(res);
-			})
-			.catch((err) => {
-				console.log({ err });
-			});
-		toast.promise(res, {
-			loading: 'Pinning Metadata to IPFS',
-			success: 'Metadata Pinned to IPFS',
-			error: 'Something went wrong! Try Again.',
-		});
-		setReady(true);
+		ref.current.showApprovalModal = true;
 	};
 
 	useEffect(() => {
-		if (metadata && ready) {
-			const transaction = async () => {
-				const id = toast.loading('Transaction is processing', { duration: Infinity });
-				createCollection(CollectionFactory, metadata.metadata, collection, sales, payments, signer)
-					.then((tx) => {
-						toast.remove(id);
-						toast.success('Transaction Successful', { duration: 3000 });
-						setTransactionResult(tx);
-					})
-					.catch((err) => {
-						toast.remove(id);
-						toast.error('Something went wrong! Try Again.');
-						// unpinMetadata(metadata.banner);
-						// unpinMetadata(metadata.logo);
-						// unpinMetadata(metadata.metadata);
-					});
-			};
-			transaction();
+		if (!showApprovalModal && ref.current.showApprovalModal) {
+			setModalStep(0);
+			setCta('Create Collection');
 		}
-	}, [metadata, ready]);
-
-	useEffect(() => {
-		if (transactionResult?.event) {
-			setIsDeploymentComplete(true);
-		}
-	}, [transactionResult]);
+	}, [showApprovalModal]);
 
 	return (
 		<Box overflow="visible">
