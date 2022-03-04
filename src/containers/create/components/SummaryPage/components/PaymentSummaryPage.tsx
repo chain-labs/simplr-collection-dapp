@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { CircleNotch } from 'phosphor-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -11,6 +11,7 @@ import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import Toggle from 'src/components/Toggle';
 import useContract from 'src/ethereum/useContract';
+import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import useSigner from 'src/ethereum/useSigner';
 import { collectionSelector } from 'src/redux/collection';
@@ -24,10 +25,11 @@ import {
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
 import { createCollection, unpinMetadata, uploadToIPFS } from '../../utils';
+import ApprovalModal from './ApprovalModal';
 import DeployedModal from './DeployedModal';
 import WhitelistComp from './WhitelistComp';
 
-const PaymentSummaryPage = () => {
+const PaymentSummaryPage = ({ setModalStep }) => {
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
 	const collection = useAppSelector(collectionSelector);
@@ -56,6 +58,14 @@ const PaymentSummaryPage = () => {
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
 	const [isDeploymentComplete, setIsDeploymentComplete] = useState<boolean>(false);
 	const [cta, setCta] = useState('Create Collection');
+	const [showApprovalModal, setShowApprovalModal] = useState<boolean>(false);
+
+	const getSEATDetails = async () => {
+		const abi = getContractDetails('AffiliateCollection');
+		const seatAddress = await CollectionFactory.callStatic.freePass();
+		const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, provider);
+		return SEATInstance;
+	};
 
 	useEffect(() => {
 		const getAddress = async () => {
@@ -74,55 +84,24 @@ const PaymentSummaryPage = () => {
 		};
 		getAddress();
 	}, [CollectionFactory]);
+	const ref = useRef({ showApprovalModal });
 
-	const sendData = async () => {
+	const createCollectionHandler = async () => {
 		setCta('Creating Collection');
-		const res = uploadToIPFS(collection, sales, payments, simplrAddress)
-			.then((res) => {
-				setMetadata(res);
-			})
-			.catch((err) => {
-				console.log({ err });
-			});
-		toast.promise(res, {
-			loading: 'Pinning Metadata to IPFS',
-			success: 'Metadata Pinned to IPFS',
-			error: 'Something went wrong! Try Again.',
-		});
-		setReady(true);
+		setShowApprovalModal(true);
+		ref.current.showApprovalModal = true;
 	};
 
 	useEffect(() => {
-		if (metadata && ready) {
-			const transaction = async () => {
-				const id = toast.loading('Transaction is processing', { duration: Infinity });
-				createCollection(CollectionFactory, metadata.metadata, collection, sales, payments, signer)
-					.then((tx) => {
-						toast.remove(id);
-						toast.success('Transaction Successful', { duration: 3000 });
-						setTransactionResult(tx);
-					})
-					.catch((err) => {
-						toast.remove(id);
-						toast.error('Something went wrong! Try Again.');
-						// unpinMetadata(metadata.banner);
-						// unpinMetadata(metadata.logo);
-						// unpinMetadata(metadata.metadata);
-					});
-			};
-			transaction();
+		if (!showApprovalModal && ref.current.showApprovalModal) {
+			setModalStep(0);
+			setCta('Create Collection');
 		}
-	}, [metadata, ready]);
-
-	useEffect(() => {
-		if (transactionResult?.event) {
-			setIsDeploymentComplete(true);
-		}
-	}, [transactionResult]);
+	}, [showApprovalModal]);
 
 	return (
 		<Box overflow="visible">
-			{/* <WhitelistComp visible={showWhitelistModal} setVisible={setShowWhitelistModal} /> */}
+			<ApprovalModal isOpen={showApprovalModal} setIsOpen={setShowApprovalModal} />
 			<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 				Pre-sale
 				<Box ml="mxxxl" />
@@ -269,7 +248,7 @@ const PaymentSummaryPage = () => {
 				width="100%"
 				height="56px"
 				type="submit"
-				onClick={() => sendData()}
+				onClick={() => createCollectionHandler()}
 				disable={cta !== 'Create Collection'}
 				center
 			>
