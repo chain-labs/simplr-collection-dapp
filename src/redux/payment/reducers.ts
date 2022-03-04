@@ -4,6 +4,7 @@ import { setPaymentDetails } from './actions';
 import { PaymentState } from './types';
 
 const intitalState: PaymentState = {
+	useEarlyPass: true,
 	royalties: {
 		account: null,
 		value: null,

@@ -42,12 +42,12 @@ const DeployedModal = ({ isOpen, transactionResult }) => {
 								Congratulations, you have successfully deployed the smart contracts for your NFT collection!
 							</Text>
 						</Box>
-						<Link href={`/admin/${transactionResult?.event?.collection}`}>
+						<Link href={`/admin/${transactionResult}`}>
 							<ButtonComp bg="primary" height="40px" width="100%">
 								<Text as="h6">Go to Dashboard</Text>
 							</ButtonComp>
 						</Link>
-						<Link href={`${blockExplorer(user.network.chain)}/address/${transactionResult?.event?.collection}`}>
+						<Link href={`${blockExplorer(user.network.chain)}/address/${transactionResult}`}>
 							<ButtonComp bg="secondary" height="40px" width="100%" mt="mm">
 								<Text as="h6">View on {explorer(user.network.chain)}</Text>
 							</ButtonComp>
@@ -55,7 +55,7 @@ const DeployedModal = ({ isOpen, transactionResult }) => {
 					</Box>
 				</Box>
 			</Modal>,
-			document.getElementById('portal')
+			document.getElementById('portal-2')
 		);
 	}
 };

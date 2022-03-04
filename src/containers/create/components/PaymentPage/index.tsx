@@ -46,13 +46,14 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState('');
 	const [showSummaryPage, setShowSummaryPage] = useState<boolean>();
 	const [simplrShares, setSimplrShares] = useState<number>(10);
-	const [useEarlyPass, setUseEarlyPass] = useState<boolean>(true);
+	const [useEarlyPass, setUseEarlyPass] = useState<boolean>(payments.useEarlyPass && earlyPass);
 	const [maxShare, setMaxShare] = useState<number>(
 		getMaxShares(beneficiaries?.shares, useEarlyPass ? 0 : simplrShares)
 	);
 	const [showTooltip, setShowTooltip] = useState(false);
 	const [simplrAddress, setSimplrAddress] = useState<string>();
 	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
+	const [initialRender, setInitialRender] = useState(true);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -79,6 +80,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 
 	const getData = () => {
 		const data = {
+			useEarlyPass,
 			royalties: {
 				account: royaltyAddress,
 				value: royaltyPercentage,
@@ -86,13 +88,16 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 		};
 		return data;
 	};
-
 	useEffect(() => {
-		if (!useEarlyPass) {
-			setMaxShare(getMaxShares([], simplrShares));
-			dispatch(clearBeneficiaries());
+		if (initialRender) {
+			setInitialRender(false);
 		} else {
-			setMaxShare(getMaxShares(beneficiaries?.shares, 0));
+			if (!useEarlyPass) {
+				setMaxShare(getMaxShares([], simplrShares));
+				dispatch(clearBeneficiaries());
+			} else {
+				setMaxShare(getMaxShares(beneficiaries?.shares, 0));
+			}
 		}
 	}, [useEarlyPass]);
 

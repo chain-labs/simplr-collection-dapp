@@ -1,4 +1,5 @@
 export interface PaymentState {
+	useEarlyPass?: boolean;
 	royalties?: {
 		account?: string;
 		value?: number;

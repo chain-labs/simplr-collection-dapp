@@ -11,6 +11,7 @@ import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import Toggle from 'src/components/Toggle';
 import useContract from 'src/ethereum/useContract';
+import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import useSigner from 'src/ethereum/useSigner';
 import { collectionSelector } from 'src/redux/collection';
@@ -24,6 +25,7 @@ import {
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
 import { createCollection, unpinMetadata, uploadToIPFS } from '../../utils';
+import ApprovalModal from './ApprovalModal';
 import DeployedModal from './DeployedModal';
 import WhitelistComp from './WhitelistComp';
 
@@ -56,6 +58,14 @@ const PaymentSummaryPage = () => {
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
 	const [isDeploymentComplete, setIsDeploymentComplete] = useState<boolean>(false);
 	const [cta, setCta] = useState('Create Collection');
+	const [showApprovalModal, setShowApprovalModal] = useState<boolean>(false);
+
+	const getSEATDetails = async () => {
+		const abi = getContractDetails('AffiliateCollection');
+		const seatAddress = await CollectionFactory.callStatic.freePass();
+		const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, provider);
+		return SEATInstance;
+	};
 
 	useEffect(() => {
 		const getAddress = async () => {
@@ -75,8 +85,20 @@ const PaymentSummaryPage = () => {
 		getAddress();
 	}, [CollectionFactory]);
 
-	const sendData = async () => {
+	const createCollectionHandler = async () => {
 		setCta('Creating Collection');
+		setShowApprovalModal(true);
+		try {
+			const SEATInstance = await getSEATDetails();
+			console.log({ SEATInstance });
+		} catch (err) {
+			console.log({ err });
+		}
+	};
+
+	// const approveToken = async () => {};
+
+	const sendData = async () => {
 		const res = uploadToIPFS(collection, sales, payments, simplrAddress)
 			.then((res) => {
 				setMetadata(res);
@@ -122,7 +144,7 @@ const PaymentSummaryPage = () => {
 
 	return (
 		<Box overflow="visible">
-			{/* <WhitelistComp visible={showWhitelistModal} setVisible={setShowWhitelistModal} /> */}
+			<ApprovalModal isOpen={showApprovalModal} setIsOpen={setShowApprovalModal} />
 			<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 				Pre-sale
 				<Box ml="mxxxl" />
@@ -269,7 +291,7 @@ const PaymentSummaryPage = () => {
 				width="100%"
 				height="56px"
 				type="submit"
-				onClick={() => sendData()}
+				onClick={() => createCollectionHandler()}
 				disable={cta !== 'Create Collection'}
 				center
 			>

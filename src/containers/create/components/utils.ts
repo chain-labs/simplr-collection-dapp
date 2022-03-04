@@ -149,6 +149,7 @@ export const createCollection = async (
 		publicSaleStartTime: getTimestamp(sales.publicSaleStartTime), // timestamp of public sale start
 		projectURI: sales.revealable.enabled ? sales.revealable.loadingImageUrl : collection.project_uri, // placeholder or collection uri depending upon what they choose for reveal
 	};
+
 	const presaleable = sales.presaleable.enabled
 		? {
 				presaleReservedTokens: sales.presaleable.presaleReservedTokens, // tokens that will be sold under presale, should be less than maximum tokens
@@ -186,6 +187,7 @@ export const createCollection = async (
 		), // encoded hash of the project uri
 		// timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
 	};
+
 	const royalties = {
 		account: payments.royalties.account ?? collection.admin, //account that will receive royalties for secondary sale
 		value: payments.royalties.value ? payments.royalties.value * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
@@ -194,21 +196,42 @@ export const createCollection = async (
 	const reserveTokens = sales.reserveTokens; // should be default, this will not activate reservable module
 	const isAffiliable = sales.isAffiliable; // true if user wants affiliable to be active
 
-	const transaction = await contract
-		.connect(signer)
-		.createCollection(
-			type,
-			baseCollection,
-			presaleable,
-			paymentSplitter,
-			revealable.projectURIProvenance,
-			royalties,
-			reserveTokens,
-			metadata,
-			isAffiliable,
-			{ value: upfrontFee.toString() }
-		);
-	const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
+	if (payments.useEarlyPass) {
+		const transaction = await contract
+			.connect(signer)
+			.createCollection(
+				type,
+				baseCollection,
+				presaleable,
+				paymentSplitter,
+				revealable.projectURIProvenance,
+				royalties,
+				reserveTokens,
+				metadata,
+				isAffiliable,
+				true
+			);
+		const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
 
-	return { transaction, event };
+		return { transaction, event };
+	} else {
+		const transaction = await contract
+			.connect(signer)
+			.createCollection(
+				type,
+				baseCollection,
+				presaleable,
+				paymentSplitter,
+				revealable.projectURIProvenance,
+				royalties,
+				reserveTokens,
+				metadata,
+				isAffiliable,
+				false,
+				{ value: upfrontFee }
+			);
+		const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
+
+		return { transaction, event };
+	}
 };
