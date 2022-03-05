@@ -4,7 +4,7 @@ import SalesPage from './components/SalesPage';
 import PaymentPage from './components/PaymentPage';
 import CollectionPage from './components/CollectionPage';
 import SEATModal from './components/SEATModal';
-import TncModal from './components/TncModal';
+import Tnc from './components/Tnc';
 import If from 'src/components/If';
 
 const CreateComp = ({ balance }) => {
@@ -29,7 +29,7 @@ const CreateComp = ({ balance }) => {
 
 	const getFormPage = () => {
 		if (step === -1) {
-			return <TncModal setStep={setStep} />;
+			return <Tnc setStep={setStep} />;
 		}
 		if (step === 1) {
 			return <SalesPage setStep={setStep} step={step} />;
