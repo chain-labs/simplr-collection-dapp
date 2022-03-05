@@ -15,6 +15,7 @@ export const fontSizes = {
 	c1: '1rem',
 	c2: '1rem',
 	c3: '1rem',
+	c4: '1.2rem',
 };
 
 const fontWeights = {
@@ -39,6 +40,7 @@ const fontW = {
 	c1: fontWeights.bold,
 	c2: fontWeights.medium,
 	c3: fontWeights.regular,
+	c4: fontWeights.medium,
 };
 
 const charSpacing = {
@@ -51,7 +53,7 @@ const charSpacing = {
 	h6: '0px',
 	b3: '0.1px',
 	b2: '-0.1px',
-	b1: '-0.1px',
+	b1: '0.1px',
 	c1: '0.4px',
 	c2: '0.4px',
 	c3: '0.4px',
@@ -73,10 +75,12 @@ const lineHeights = (as) => {
 		case 'b2':
 			return '24px';
 		case 'b1':
+			return '26px';
 		case 'c1':
 			return '21px';
 		case 'c2':
 		case 'c3':
+		case 'c4':
 			return '18px';
 	}
 	return as === 'h1' || as === 'headline' ? '150%' : '140%';
@@ -89,7 +93,7 @@ const fontFamily = (as) => {
 };
 
 export interface TextProps extends BoxProps {
-	as?: 'headline' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3' | 'c1' | 'c2' | 'c3';
+	as?: 'headline' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3' | 'c1' | 'c2' | 'c3' | 'c4';
 	fontWeight?: 'semi-bold' | 'bold' | 'medium' | 'regular' | 'thin';
 	children?: string | React.ReactNode;
 	id?: string;

@@ -7,15 +7,59 @@ import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
 import Navbar from 'src/components/Navbar';
 import { SEAT_TOGGLE, toBoolean } from 'src/utils/constants';
+import useEthers from 'src/ethereum/useEthers';
+import useSigner from 'src/ethereum/useSigner';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 interface Props {
 	isOpen: boolean;
 	setIsOpen: (boolean) => void;
 	earlyPass?: boolean;
 	loading?: boolean;
+	setTncStatus?: (any) => void;
 }
 
-const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
+const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Props) => {
+	const [provider] = useEthers();
+	const [signer] = useSigner(provider);
+	const [address, setAddress] = useState<string>();
+
+	useEffect(() => {
+		if (signer) {
+			try {
+				signer
+					.getAddress()
+					.then((address) => {
+						setAddress(address);
+					})
+					.catch((err) => {
+						console.log({ err });
+					});
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}, [signer]);
+	const handleSeat = async () => {
+		setIsOpen(false);
+		await axios
+			.post('https://simplr-tnc-microservice.herokuapp.com/getUserBySigner', {
+				signer: address,
+			})
+			.then(
+				(response) => {
+					console.log(typeof response.data.status);
+					if (response.data.status === 'true') {
+						setTncStatus('signed');
+					} else setTncStatus('unsigned');
+				},
+				(error) => {
+					console.log(error);
+				}
+			);
+	};
+
 	if (!isOpen) {
 		return null;
 	} else {
@@ -46,12 +90,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
 											<Box mt="ms" />
 											<Benefit title="Skip Waitlist" />
 										</Box>
-										<ButtonComp
-											bg="primary"
-											height="48px"
-											width="100%"
-											onClick={earlyPass ? () => setIsOpen(false) : null}
-										>
+										<ButtonComp bg="primary" height="48px" width="100%" onClick={earlyPass ? () => handleSeat() : null}>
 											<Text as="h5">{earlyPass ? "Let's Go!" : 'Get a SEAT!'}</Text>
 										</ButtonComp>
 										<If
@@ -64,7 +103,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
 													center
 													row
 													cursor="pointer"
-													onClick={() => setIsOpen(false)}
+													onClick={() => handleSeat()}
 												>
 													Continue without SEAT
 													<CaretRight size="16" color={theme.colors['simply-blue']} />
