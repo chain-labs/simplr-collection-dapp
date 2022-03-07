@@ -49,10 +49,10 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 		const operator = await CollectionFactory.address;
 		const allowance = await SEATInstance.isApprovedForAll(walletAddress, operator);
 
-		console.log(allowance);
 		if (!allowance) {
+			console.log({ allowance });
 			const transaction = await SEATInstance.connect(signer).setApprovalForAll(operator, true);
-			const event = await transaction.wait().events;
+			const event = (await transaction.wait()).events?.filter((event) => event.event === 'ApprovalForAll');
 			return event;
 		} else {
 			return true;
@@ -62,6 +62,8 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 	const handleApprove = async () => {
 		approvePass()
 			.then(async (res) => {
+				console.log({ res });
+
 				setStep(1);
 				const address = await CollectionFactory?.callStatic.simplr();
 				uploadToIPFS(collection, sales, payments, address)
@@ -81,15 +83,17 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 								// SEATInstance.connect(signer).setApprovalForAll(await CollectionFactory.address, false);
 							});
 					})
-					.catch(async () => {
+					.catch(async (err) => {
 						const er = [...error];
 						er[1] = true;
+
 						setError(er);
 						setStep(2);
 						// SEATInstance.connect(signer).setApprovalForAll(await CollectionFactory.address, false);
 					});
 			})
-			.catch(() => {
+			.catch((err) => {
+				console.error({ err });
 				const er = [...error];
 				er[0] = true;
 				setError(er);
@@ -168,7 +172,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 										else={
 											<If
 												condition={!error[0]}
-												then={<Check size="32" color={theme.colors['green-50']} />}
+												then={<Check size="34" color={theme.colors['green-50']} />}
 												else={<X size="32" color={theme.colors['red-50']} />}
 											/>
 										}
