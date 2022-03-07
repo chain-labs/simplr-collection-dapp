@@ -1,12 +1,10 @@
-import { CaretRight, Check, CheckCircle } from 'phosphor-react';
-import ReactDom from 'react-dom';
+import { CaretRight, CheckCircle } from 'phosphor-react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
-import Link from 'next/link';
 import Navbar from 'src/components/Navbar';
 import { SEAT_TOGGLE, toBoolean } from 'src/utils/constants';
 
@@ -32,7 +30,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
 								<>
 									<Box borderRadius="16px" boxShadow="shadow-500" py="wxs" px="mxxxl" maxWidth="43rem" column mb="wxs">
 										<Text as="h2" color="simply-blue" textAlign="center" mb="mxxxl">
-											{earlyPass ? 'Thank you for getting a SEAT!' : 'Oops... Looks like you don’t hold a SEAT.'}
+											{earlyPass ? 'Congratulations on getting a SEAT!' : 'Oops... Looks like you don’t hold a SEAT.'}
 										</Text>
 										<Box ml="mxl" mb={earlyPass ? '7.2rem' : 'wxs'}>
 											<Text as="h5" mb="ml">
