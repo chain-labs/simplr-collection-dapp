@@ -7,10 +7,10 @@ import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
 import Navbar from 'src/components/Navbar';
 import { SEAT_TOGGLE, toBoolean } from 'src/utils/constants';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 
 interface Props {
 	isOpen: boolean;
@@ -21,26 +21,13 @@ interface Props {
 }
 
 const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Props) => {
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
 	const [address, setAddress] = useState<string>();
+	const userAddress = useAppSelector(userSelector);
 
 	useEffect(() => {
-		if (signer) {
-			try {
-				signer
-					.getAddress()
-					.then((address) => {
-						setAddress(address);
-					})
-					.catch((err) => {
-						console.log({ err });
-					});
-			} catch (err) {
-				console.log(err);
-			}
-		}
-	}, [signer]);
+		setAddress(userAddress.address);
+	}, [userAddress]);
+
 	const handleSeat = async () => {
 		setIsOpen(false);
 		await axios
@@ -49,7 +36,6 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Prop
 			})
 			.then(
 				(response) => {
-					console.log(typeof response.data.status);
 					if (response.data.status === 'true') {
 						setTncStatus('signed');
 					} else setTncStatus('unsigned');

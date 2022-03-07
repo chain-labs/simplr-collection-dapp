@@ -10,7 +10,7 @@ import { CircleNotch } from 'phosphor-react';
 import toast, { Toaster } from 'react-hot-toast';
 import Checkbox from 'src/components/Checkbox';
 
-const TncModal = ({ setStep }) => {
+const Tnc = ({ setStep }) => {
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
 	const [loading, setLoading] = useState(false);
@@ -107,4 +107,4 @@ const TncModal = ({ setStep }) => {
 	);
 };
 
-export default TncModal;
+export default Tnc;
