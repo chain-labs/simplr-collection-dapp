@@ -1,26 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import DateTime from 'src/components/DateTime';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
-import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
 import { saleSelector } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
 
-const SalesSummaryPage = ({ modalStep, setModalStep }) => {
-	const collection = useAppSelector(collectionSelector);
+const SalesSummaryPage = ({ setModalStep }) => {
 	const sales = useAppSelector(saleSelector);
-	const { type } = collection;
+	const componentRef = useRef(null);
 	const [maxTokens, setMaxTokens] = useState<number>(sales.maximumTokens);
 	const [maxPurchase, setMaxPurchase] = useState<number>(sales.maxPurchase);
 	const [maxHolding, setMaxHolding] = useState<number>(sales.maxHolding);
 	const [price, setPrice] = useState<number>(sales.price);
 	const [reserveTokens, setReserveTokens] = useState<number>(sales.reserveTokens);
 	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<DateType>(sales.publicSaleStartTime);
+
+	useEffect(() => {
+		componentRef.current.scrollIntoView();
+	}, []);
 	return (
-		<Box overflow="visible" mb="20rem" width="100%">
+		<Box overflow="visible" mb="mxxl" width="100%">
+			<Box ref={componentRef} />
 			<LabelledTextInput
 				type="number"
 				min="1"

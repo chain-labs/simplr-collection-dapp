@@ -50,7 +50,6 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 		const allowance = await SEATInstance.isApprovedForAll(walletAddress, operator);
 
 		if (!allowance) {
-			console.log({ allowance });
 			const transaction = await SEATInstance.connect(signer).setApprovalForAll(operator, true);
 			const event = (await transaction.wait()).events?.filter((event) => event.event === 'ApprovalForAll');
 			return event;
@@ -61,9 +60,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 
 	const handleApprove = async () => {
 		approvePass()
-			.then(async (res) => {
-				console.log({ res });
-
+			.then(async () => {
 				setStep(1);
 				const address = await CollectionFactory?.callStatic.simplr();
 				uploadToIPFS(collection, sales, payments, address)
@@ -84,6 +81,8 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 							});
 					})
 					.catch(async (err) => {
+						console.log({ err });
+
 						const er = [...error];
 						er[1] = true;
 

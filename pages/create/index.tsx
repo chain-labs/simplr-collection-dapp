@@ -26,10 +26,8 @@ const CreatePage = () => {
 
 	const getSEATDetails = async () => {
 		try {
-			console.log({ provider, CollectionFactory, user: user.address });
 			const abi = getContractDetails('AffiliateCollection');
 			const seatAddress = await CollectionFactory.callStatic.freePass();
-			console.log({ seatAddress });
 			const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, provider);
 			const balance = await SEATInstance.callStatic['balanceOf(address)'](user.address);
 
