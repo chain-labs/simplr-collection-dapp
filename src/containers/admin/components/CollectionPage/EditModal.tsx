@@ -1,22 +1,16 @@
 import { ethers } from 'ethers';
-import { useRouter } from 'next/router';
 import { CircleNotch } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
-import DateTime from 'src/components/DateTime';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
-import TextInput from 'src/components/TextInput';
-import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
-import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { presaleWhitelistSelector, removeWhitelist } from 'src/redux/sales';
-import DashboardCard from './DashboardCard';
+import { useAppSelector } from 'src/redux/hooks';
 import StatusModal from './StatusModal';
 import Step1Modal from './Step1Modal';
 import Step2Modal from './Step2Modal';
@@ -26,24 +20,17 @@ import Step4Modal from './Step4Modal';
 interface props {
 	visible: boolean;
 	setVisible: (boolean) => void;
-	edit?: string;
-	data?: any;
-	label?: any;
-	placeholder?: any;
 }
 
-const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
+const EditModal = ({ visible, setVisible }: props) => {
 	const modalData = useAppSelector(editSelector);
 	const [value, setValue] = useState('');
 	const [step, setStep] = useState(0);
-	const [loading, setLoading] = useState(false);
 	const [gas, setGas] = useState('');
 
-	const [provider, setProvider] = useEthers();
+	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
 	const getGasPrice = async () => {
-		console.log('gas');
-
 		const fees = await provider?.getGasPrice();
 		try {
 			if (modalData.editfield === 'reserve tokens') {
@@ -88,7 +75,6 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 		}
 		if (step === 1) {
 			setStep(2);
-			setLoading(true);
 			if (provider && signer) {
 				if (modalData.editfield === 'reserve tokens') {
 					const transaction = await modalData.contract.connect(signer).reserveTokens(value);
@@ -150,7 +136,7 @@ const EditModal = ({ visible, setVisible, edit, data, label }: props) => {
 							toast.success('Sale Unpaused');
 							setStep(3);
 						})
-						.catch((err) => {
+						.catch(() => {
 							toast.error('An unexpected error occured');
 							setVisible(false);
 						});

@@ -6826,7 +6826,7 @@
       "chainId": "137",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0x1611F187f0c49F41b49D0514aDa95eC5c73764b3",
+          "address": "0x1Eb1cb11Ff9Da8E5187Ee084b4Db79e79d8DB6E4",
           "abi": [
             {
               "anonymous": false,
@@ -7136,6 +7136,11 @@
             {
               "inputs": [
                 {
+                  "internalType": "address",
+                  "name": "_receiver",
+                  "type": "address"
+                },
+                {
                   "internalType": "uint256",
                   "name": "_quantity",
                   "type": "uint256"
@@ -7200,6 +7205,11 @@
             },
             {
               "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
                 {
                   "internalType": "uint256",
                   "name": "_quantity",
@@ -7876,6 +7886,24 @@
                   "internalType": "uint256",
                   "name": "",
                   "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "royalties",
+              "outputs": [
+                {
+                  "internalType": "address payable",
+                  "name": "account",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint96",
+                  "name": "value",
+                  "type": "uint96"
                 }
               ],
               "stateMutability": "view",
@@ -11042,7 +11070,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0x055655958CA48261888E5EB1D5dB68A77BBAB3dd",
+          "address": "0xF5a0c7d1EbbB44e6E187518eE6674298D9DE3e85",
           "abi": [
             {
               "inputs": [
@@ -11396,11 +11424,29 @@
                   "internalType": "bool",
                   "name": "_isAffiliable",
                   "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "_useEarlyPass",
+                  "type": "bool"
                 }
               ],
               "name": "createCollection",
               "outputs": [],
               "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "freePass",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
               "type": "function"
             },
             {
@@ -11484,6 +11530,19 @@
                 }
               ],
               "name": "setAffiliateRegistry",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_freePass",
+                  "type": "address"
+                }
+              ],
+              "name": "setFreePass",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -11648,7 +11707,7 @@
       "chainId": "80001",
       "contracts": {
         "AffiliateCollection": {
-          "address": "0x2a3A0FED178484389C58fA50492B582aA7B650f9",
+          "address": "0x7dE2783F25F70c9533899E0e1546bC52FdcC7a24",
           "abi": [
             {
               "anonymous": false,
@@ -11958,6 +12017,11 @@
             {
               "inputs": [
                 {
+                  "internalType": "address",
+                  "name": "_receiver",
+                  "type": "address"
+                },
+                {
                   "internalType": "uint256",
                   "name": "_quantity",
                   "type": "uint256"
@@ -12022,6 +12086,11 @@
             },
             {
               "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
                 {
                   "internalType": "uint256",
                   "name": "_quantity",
@@ -15882,7 +15951,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0x6E5C5592036e9976e56cbb09D68F4426de2C8a70",
+          "address": "0xc2fefdF54E38b9240FFD38011dDD9e6A93C494B2",
           "abi": [
             {
               "inputs": [

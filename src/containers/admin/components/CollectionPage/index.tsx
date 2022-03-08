@@ -13,11 +13,11 @@ import { userSelector } from 'src/redux/user';
 import DashboardCard from './DashboardCard';
 import Whitelists from './Whitelists';
 import Airdrop from './Airdrop';
+import { getUnitByChainId } from 'src/utils/chains';
 
-const CollectionPage = ({ contract, metadata }) => {
+const CollectionPage = ({ contract, metadata, ready }) => {
 	const [provider] = useEthers();
 	const [collectionUri, setCollectionURI] = useState('');
-	const [isEditableCollectionUri, setIsEditableCollectionUri] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 	const [adminAddress, setAdminAddress] = useState('');
 	const [loadPercentage, setLoadPercentage] = useState(1);
@@ -92,7 +92,7 @@ const CollectionPage = ({ contract, metadata }) => {
 			}
 		};
 
-		if (contract && provider) {
+		if (contract && provider && ready) {
 			setLoadPercentage(95);
 			getDetails().then(() => {
 				setLoadPercentage(100);
@@ -100,8 +100,7 @@ const CollectionPage = ({ contract, metadata }) => {
 
 			setInterval(getDetails, 15000);
 		}
-		console.log(metadata);
-	}, [contract, provider, metadata]);
+	}, [contract, provider, metadata, ready]);
 
 	const handleAction = (editData, type, placeholder, valueData) => {
 		setShowModal(true);
@@ -184,7 +183,7 @@ const CollectionPage = ({ contract, metadata }) => {
 								<DashboardCard
 									Icon={CurrencyEth}
 									text="Price per NFT (Pre-sale)"
-									data={`${collection.presalePrice} ETH`}
+									data={`${collection.presalePrice} ${getUnitByChainId(user.network.chain)}`}
 								/>
 							}
 						/>
@@ -200,7 +199,11 @@ const CollectionPage = ({ contract, metadata }) => {
 						) : (
 							''
 						)}
-						<DashboardCard Icon={CurrencyEth} text="Price per NFT (Public sale)" data={`${collection.price} ETH`} />
+						<DashboardCard
+							Icon={CurrencyEth}
+							text="Price per NFT (Public sale)"
+							data={`${collection.price} ${getUnitByChainId(user.network.chain)}`}
+						/>
 					</Box>
 					<Text as="h3" color="simply-blue" mt="wxl">
 						Sales:
@@ -276,7 +279,11 @@ const CollectionPage = ({ contract, metadata }) => {
 							text="NFTs remaining"
 							data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
 						/>
-						<DashboardCard Icon={CurrencyEth} text="Funds Collected" data={`${collection.totalFunds} ETH`} />
+						<DashboardCard
+							Icon={CurrencyEth}
+							text="Funds Collected"
+							data={`${collection.totalFunds} ${getUnitByChainId(user.network.chain)}`}
+						/>
 						<DashboardCard
 							Icon={ImageSquare}
 							text="Reserved Tokens remaining"
@@ -312,8 +319,8 @@ const CollectionPage = ({ contract, metadata }) => {
 								value={collection.projectURI}
 								setValue={setCollectionURI}
 								disableValidation
-								disabled={!isEditableCollectionUri}
 								width="100%"
+								disabled
 							/>
 							<Text as="b1" mt="mxs" color="gray-00">
 								Collection URI is the URL where your NFT media and metadata are stored.{' '}

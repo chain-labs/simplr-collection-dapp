@@ -45,15 +45,12 @@ const DashboardCard = ({
 	setShowModal,
 	showModal,
 	type,
-	edit,
 	placeholder,
 	editfield,
 	timeType,
 }: DashboardCardProps) => {
 	const [drawerOpen, setDrawerOpen] = useState(false);
-	const [editing, setEditing] = useState(false);
 	const [value, setValue] = useState(data);
-	const [textV, setTextV] = useState('');
 	const [tooltipView, setTooltipView] = useState(false);
 	const [tooltipTime, setTooltipTime] = useState('');
 	const user = useAppSelector(userSelector);
@@ -162,10 +159,7 @@ const DashboardCard = ({
 			<Box center width="4.8rem" height="4.8rem" borderRadius="50%" bg="blue-00">
 				{/* @ts-expect-error Icon as props */}
 				<Icon color={theme.colors['simply-blue']} size="20" weight="bold" />
-				<If
-					condition={showModal}
-					then={<EditModal visible={showModal} setVisible={setShowModal} edit={edit} data={data} label={textV} />}
-				/>
+				<If condition={showModal} then={<EditModal visible={showModal} setVisible={setShowModal} />} />
 			</Box>
 			<Box row between ml="mm" width="40rem" position="relative">
 				<Text as="h5">{text}</Text>
@@ -199,33 +193,25 @@ const DashboardCard = ({
 								}
 							/>
 							<Box
-								bg={editable === 'address' ? (editing ? 'simply-white' : 'blue-00') : 'transparent'}
+								bg={editable === 'address' ? 'blue-00' : 'transparent'}
 								borderRadius="8px"
-								border={editing ? '1px solid' : 'none'}
-								borderColor={editing ? '#dcdce8' : 'transparent'}
 								outline="none"
-								px={editable === 'address' ? (editing ? 'mxs' : 'mxl') : '0'}
+								px={editable === 'address' ? 'mxl' : '0'}
 								py={editable === 'address' || editable === 'number' ? 'mxs' : '0'}
-								as={editing ? 'input' : null}
-								type={editing && editable === 'number' ? 'number' : 'text'}
-								value={value}
-								onChange={(e) => setValue(e.target.value)}
 								fontFamily="inherit"
 								fontSize="1.4rem"
 								onMouseOver={() => setTooltipView(true)}
 								onMouseLeave={() => setTimeout(() => setTooltipView(false), 3000)}
 							>
-								{!editing ? (
-									<Text as="h4" color="simply-blue">
-										{editable === 'address'
-											? getData(value)
-											: editable === 'time'
-											? value
-											: editfield === 'Reveal'
-											? ''
-											: data}
-									</Text>
-								) : null}
+								<Text as="h4" color="simply-blue">
+									{editable === 'address'
+										? getData(value)
+										: editable === 'time'
+										? value
+										: editfield === 'Reveal'
+										? ''
+										: data}
+								</Text>
 							</Box>
 						</Box>
 					}

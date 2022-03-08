@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import { blockExplorer, explorer } from 'src/utils/links';
+import { getShortNameByChainId } from 'src/utils/chains';
 
 const DeployedModal = ({ isOpen, transactionResult }) => {
 	const user = useAppSelector(userSelector);
@@ -42,16 +43,21 @@ const DeployedModal = ({ isOpen, transactionResult }) => {
 								Congratulations, you have successfully deployed the smart contracts for your NFT collection!
 							</Text>
 						</Box>
-						<Link href={`/admin/${transactionResult}`}>
+						<Link href={`/admin/${getShortNameByChainId(user.network.chain)}:${transactionResult}`}>
 							<ButtonComp bg="primary" height="40px" width="100%">
 								<Text as="h6">Go to Dashboard</Text>
 							</ButtonComp>
 						</Link>
-						<Link href={`${blockExplorer(user.network.chain)}/address/${transactionResult}`}>
+						<Box
+							as="a"
+							target="_blank"
+							href={`${blockExplorer(user.network.chain)}/address/${transactionResult}`}
+							width="100%"
+						>
 							<ButtonComp bg="secondary" height="40px" width="100%" mt="mm">
 								<Text as="h6">View on {explorer(user.network.chain)}</Text>
 							</ButtonComp>
-						</Link>
+						</Box>
 					</Box>
 				</Box>
 			</Modal>,

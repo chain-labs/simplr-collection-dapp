@@ -7,6 +7,9 @@ import { useDispatch } from 'react-redux';
 import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import { setEditDetails } from 'src/redux/edit';
+import { useAppSelector } from 'src/redux/hooks';
+import { networkSelector } from 'src/redux/user';
+import { getNetworkByShortName } from 'src/utils/chains';
 
 const AdminDashboardPage = () => {
 	const router = useRouter();
@@ -14,10 +17,13 @@ const AdminDashboardPage = () => {
 	const [provider] = useEthers();
 	const [metadata, setMetadata] = useState();
 	const dispatch = useDispatch();
+	const currentNetwork = useAppSelector(networkSelector);
+	const [ready, setReady] = useState(false);
 
 	const getMetadata = async () => {
 		const abi = getContractDetails('AffiliateCollection');
-		const contract = new ethers.Contract(`${id}`, abi, provider);
+		const address = `${id}`.split(':')[1];
+		const contract = new ethers.Contract(`${address}`, abi, provider);
 		const qid = await contract.callStatic.metadata();
 		const res = await axios.get(`https://simplr.mypinata.cloud/ipfs/${qid}`);
 		setMetadata(res.data);
@@ -26,11 +32,60 @@ const AdminDashboardPage = () => {
 
 	useEffect(() => {
 		if (id && provider) {
-			getMetadata();
+			if (process.browser) {
+				const shortName = `${id}`.split(':')[0];
+				const network = getNetworkByShortName(shortName);
+				const chainId = `0x${network.chainId.toString(16)}`;
+				if (network.chainId !== currentNetwork.chain) {
+					if (network.chainId === 137 || network.chainId === 80001) {
+						// @ts-expect-error ethereum in window
+						window.ethereum
+							.request({
+								method: 'wallet_addEthereumChain',
+								params: [
+									{
+										chainId,
+										chainName: network.name,
+										rpcUrls: network.rpc,
+									},
+								],
+							})
+							.then(() => {
+								// @ts-expect-error ethereum in window
+								window.ethereum
+									.request({
+										method: 'wallet_switchEthereumChain',
+										params: [{ chainId }],
+									})
+									.then(() => {
+										setReady(true);
+									})
+									.catch((err) => console.log({ err }));
+							});
+					} else {
+						// @ts-expect-error ethereum in window
+						window.ethereum
+							.request({
+								method: 'wallet_switchEthereumChain',
+								params: [{ chainId }],
+							})
+							.then(() => {
+								setReady(true);
+							})
+							.catch((err) => console.log({ err }));
+					}
+				} else setReady(true);
+			}
 		}
 	}, [id, provider]);
 
-	return <AdminDashboardComponent metadata={metadata} id={id} />;
+	useEffect(() => {
+		if (ready) {
+			getMetadata();
+		}
+	}, [ready]);
+
+	return <AdminDashboardComponent metadata={metadata} id={id} ready={ready} />;
 };
 
 export default AdminDashboardPage;

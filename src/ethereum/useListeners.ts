@@ -18,7 +18,7 @@ const useListeners = (
 				}
 			});
 			window?.ethereum?.on('chainChanged', async (chainId) => {
-				const PROVIDER = new ethers.providers.Web3Provider(window.ethereum);
+				const PROVIDER = new ethers.providers.Web3Provider(window.ethereum, 'any');
 				setProvider(PROVIDER);
 			});
 		}
