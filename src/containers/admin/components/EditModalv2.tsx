@@ -12,7 +12,9 @@ import useEthers from 'src/ethereum/useEthers';
 import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
+import { networkSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
+import { getUnitByChainId } from 'src/utils/chains';
 import Step2Modal from './CollectionPage/Step2Modal';
 import Step3Modal from './CollectionPage/Step3Modal';
 
@@ -87,6 +89,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const [signer] = useSigner(provider);
 	const { contract, data: arr } = useAppSelector(editSelector);
 	const [gas, setGas] = useState('');
+	const currentNetwork = useAppSelector(networkSelector);
 
 	useEffect(() => {
 		if (step === 0) {
@@ -230,7 +233,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 											GAS COST:
 										</Text>
 										<Text as="c1" color="simply-blue">
-											{gas ? `${gas} ETH` : 'Fetching...'}
+											{gas ? `${gas} ${getUnitByChainId(currentNetwork.chain)}` : 'Fetching...'}
 										</Text>
 									</Box>
 								)}
