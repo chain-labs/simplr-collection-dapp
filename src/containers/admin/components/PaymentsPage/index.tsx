@@ -227,14 +227,16 @@ const Royalties = ({ admin, contract, signer, ready }) => {
 			contract
 				.connect(signer)
 				.setRoyalties({ account: address, value: percentage * 100 })
-				.catch((err) => {
-					console.error(err);
-					toast.error('Something Went Wrong');
-				})
 				.then(() => {
 					toast.success('Updated');
 					setEdit(false);
 					setIsRoyaltyModalOpen(true);
+				})
+				.catch((err) => {
+					console.error(err);
+					toast.error('Something Went Wrong');
+					setIsRoyaltyModalOpen(false);
+					setEdit(false);
 				});
 		}
 	};

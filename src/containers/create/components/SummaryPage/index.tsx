@@ -17,9 +17,9 @@ const SummaryPage = ({ visible, setVisible, setStep }) => {
 
 	const getFormPage = () => {
 		if (modalStep === 0) {
-			return <CollectionSummaryPage setModalStep={setModalStep} modalStep={modalStep} />;
+			return <CollectionSummaryPage setModalStep={setModalStep} />;
 		} else if (modalStep === 1) {
-			return <SalesSummaryPage setModalStep={setModalStep} modalStep={modalStep} />;
+			return <SalesSummaryPage setModalStep={setModalStep} />;
 		} else if (modalStep === 2) {
 			return <PaymentSummaryPage setModalStep={setModalStep} />;
 		}

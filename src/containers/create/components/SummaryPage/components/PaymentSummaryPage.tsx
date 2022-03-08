@@ -1,7 +1,5 @@
-import { ethers } from 'ethers';
 import { CircleNotch } from 'phosphor-react';
 import React, { useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import DateTime from 'src/components/DateTime';
@@ -10,11 +8,6 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import Toggle from 'src/components/Toggle';
-import useContract from 'src/ethereum/useContract';
-import { getContractDetails } from 'src/ethereum/useCustomContract';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
-import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
 import { beneficiariesSelector, paymentSelector } from 'src/redux/payment';
 import {
@@ -24,15 +17,10 @@ import {
 	saleSelector,
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
-import { createCollection, unpinMetadata, uploadToIPFS } from '../../utils';
 import ApprovalModal from './ApprovalModal';
-import DeployedModal from './DeployedModal';
 import WhitelistComp from './WhitelistComp';
 
 const PaymentSummaryPage = ({ setModalStep }) => {
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
-	const collection = useAppSelector(collectionSelector);
 	const sales = useAppSelector(saleSelector);
 	const presaleable = useAppSelector(presaleableToggleSelector);
 	const revealable = useAppSelector(revealableToggleSelector);
@@ -48,42 +36,16 @@ const PaymentSummaryPage = ({ setModalStep }) => {
 	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
 	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
 
-	// const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares));
-	const CollectionFactory = useContract('CollectionFactoryV2', collection.type, provider);
-	const [metadata, setMetadata] = useState<{ metadata: string; logo: string; banner: string }>();
-	const [transactionResult, setTransactionResult] = useState<any>();
-	const [ready, setReady] = useState(false);
-	const [simplrAddress, setSimplrAddress] = useState<string>();
-	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
-	const [isDeploymentComplete, setIsDeploymentComplete] = useState<boolean>(false);
 	const [cta, setCta] = useState('Create Collection');
 	const [showApprovalModal, setShowApprovalModal] = useState<boolean>(false);
 
-	const getSEATDetails = async () => {
-		const abi = getContractDetails('AffiliateCollection');
-		const seatAddress = await CollectionFactory.callStatic.freePass();
-		const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, provider);
-		return SEATInstance;
-	};
+	const componentRef = useRef(null);
 
 	useEffect(() => {
-		const getAddress = async () => {
-			try {
-				const address = await CollectionFactory?.callStatic.simplr();
-				const share = await CollectionFactory?.callStatic.simplrShares();
+		componentRef.current.scrollIntoView();
+	}, []);
 
-				const sharePercentage = ethers.utils.formatUnits(share?.toString());
-				const shareValue = parseFloat(sharePercentage) * 100;
-
-				setSimplrAddress(address);
-				setSimplrShares(shareValue);
-			} catch (err) {
-				console.log({ err });
-			}
-		};
-		getAddress();
-	}, [CollectionFactory]);
 	const ref = useRef({ showApprovalModal });
 
 	const createCollectionHandler = async () => {
@@ -100,7 +62,8 @@ const PaymentSummaryPage = ({ setModalStep }) => {
 	}, [showApprovalModal]);
 
 	return (
-		<Box overflow="visible">
+		<Box overflow="visible" mb="mxxl" ref={componentRef}>
+			<Box ref={componentRef} />
 			<ApprovalModal isOpen={showApprovalModal} setIsOpen={setShowApprovalModal} />
 			<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 				Pre-sale
@@ -257,7 +220,6 @@ const PaymentSummaryPage = ({ setModalStep }) => {
 					<CircleNotch size="24" />
 				</Box>
 			</ButtonComp>
-			<DeployedModal isOpen={isDeploymentComplete} transactionResult={transactionResult} />
 		</Box>
 	);
 };

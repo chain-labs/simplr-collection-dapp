@@ -21,10 +21,6 @@ const Airdrop = () => {
 				toast.error('One of the Addresses is invalid');
 				err = true;
 				return false;
-			} else if (addresses.lastIndexOf(address) !== index) {
-				toast.error('Duplicate addresses in the list');
-				err = true;
-				return false;
 			}
 			return true;
 		});

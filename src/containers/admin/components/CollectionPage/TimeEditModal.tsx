@@ -13,7 +13,6 @@ import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { getTimestamp } from 'src/containers/create/components/SalesPage';
-import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
@@ -62,6 +61,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	const [signer] = useSigner(provider);
 	const [saleTime, setSaleTime] = useState(null);
 	const [presaleTime, setPresaleTime] = useState(null);
+	const [error, setError] = useState(false);
 
 	const getContractDetails = async () => {
 		const saleTime = await contract.callStatic.publicSaleStartTime();
@@ -112,11 +112,21 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	};
 
 	const setNewTime = async () => {
-		const transaction = await contract
-			.connect(signer)
-			.setSaleStartTime(getTimestamp({ date, time, timezone }), type !== 'presale');
-		const event = (await transaction.wait())?.events;
-		return event;
+		try {
+			const transaction = await contract
+				.connect(signer)
+				.setSaleStartTime(getTimestamp({ date, time, timezone }), type !== 'presale');
+			const event = (await transaction.wait())?.events;
+			return event;
+		} catch (err) {
+			setInfo({
+				title: 'Transaction Failed',
+				cta: 'Return to Dashboard',
+				confirmation: `An unexpected error happened and we couldn't change the ${type} time`,
+			});
+			setError(true);
+			setStep(3);
+		}
 	};
 
 	const getGas = async () => {
@@ -139,7 +149,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 			setInfo({ ...info, cta: 'Opening Metamask' });
 		}
 		if (step === 3) {
-			setInfo({ ...info, cta: 'Return to Dashboard' });
+			if (!error) setInfo({ ...info, cta: 'Return to Dashboard' });
 		}
 	}, [step]);
 
@@ -222,53 +232,58 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 									</Box>
 								}
 							/>
-							<Box between>
-								<Box my="mxl">
-									<Box row>
-										<Text as="c1" fontWeight="bold" color="disable-black">
-											CURRENT DATE:
-										</Text>
-										<Text as="c1" color="simply-blue" ml="mxs">
-											{oldDate}
-										</Text>
-									</Box>
-									<Box row>
-										<Text as="c1" fontWeight="bold" color="disable-black">
-											CURRENT TIME:
-										</Text>
-										<Text as="c1" color="simply-blue" ml="mxs">
-											{oldTime}
-										</Text>
-									</Box>
-								</Box>
-								<If
-									condition={step === 3}
-									then={
+							<If
+								condition={!error}
+								then={
+									<Box between>
 										<Box my="mxl">
 											<Box row>
 												<Text as="c1" fontWeight="bold" color="disable-black">
-													UPDATED DATE:
+													CURRENT DATE:
 												</Text>
 												<Text as="c1" color="simply-blue" ml="mxs">
-													{date && time
-														? format(new Date(getTimestamp({ date, time, timezone }) * 1000), 'dd/MM/yyyy')
-														: ''}
+													{oldDate}
 												</Text>
 											</Box>
 											<Box row>
 												<Text as="c1" fontWeight="bold" color="disable-black">
-													UPDATED TIME:
+													CURRENT TIME:
 												</Text>
 												<Text as="c1" color="simply-blue" ml="mxs">
-													{data && time
-														? format(new Date(getTimestamp({ date, time, timezone }) * 1000), 'OOOOO, pp')
-														: ''}
+													{oldTime}
 												</Text>
 											</Box>
 										</Box>
-									}
-								/>
-							</Box>
+										<If
+											condition={step === 3}
+											then={
+												<Box my="mxl">
+													<Box row>
+														<Text as="c1" fontWeight="bold" color="disable-black">
+															UPDATED DATE:
+														</Text>
+														<Text as="c1" color="simply-blue" ml="mxs">
+															{date && time
+																? format(new Date(getTimestamp({ date, time, timezone }) * 1000), 'dd/MM/yyyy')
+																: ''}
+														</Text>
+													</Box>
+													<Box row>
+														<Text as="c1" fontWeight="bold" color="disable-black">
+															UPDATED TIME:
+														</Text>
+														<Text as="c1" color="simply-blue" ml="mxs">
+															{data && time
+																? format(new Date(getTimestamp({ date, time, timezone }) * 1000), 'OOOOO, pp')
+																: ''}
+														</Text>
+													</Box>
+												</Box>
+											}
+										/>
+									</Box>
+								}
+							/>
 						</Box>
 					}
 					else={getStep(step)}

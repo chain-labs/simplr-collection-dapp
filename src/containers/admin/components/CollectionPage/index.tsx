@@ -86,6 +86,8 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 					}
 				}
 				setCollection(details);
+				console.log({ details });
+
 				return details;
 			} catch (error) {
 				console.log(error);
@@ -159,13 +161,13 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 							admin={collection.adminAddress}
 						/>
 						<If
-							condition={collection.presalePrice !== '-1'}
+							condition={parseInt(collection.reservedTokens) > 0}
 							then={
 								<DashboardCard
 									Icon={ImageSquare}
 									text="Reserved Tokens"
 									data={collection.reservedTokens}
-									editable="number"
+									editable={parseInt(collection.tokensCount) < 1 ? 'number' : null}
 									type="number"
 									setShowModal={setShowModal}
 									showModal={showModal}
@@ -350,7 +352,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 					</Box>
 					<Airdrop />
 					<If
-						condition={!!collection.presalePrice && collection.saleStartTime > Date.now() / 1000}
+						condition={parseFloat(collection.presalePrice) >= 0 && collection.saleStartTime > Date.now() / 1000}
 						then={<Whitelists admin={collection.adminAddress} />}
 					/>
 				</Box>

@@ -95,9 +95,9 @@ const DashboardCard = ({
 				editfield: editfield,
 			};
 			dispatch(setEditDetails(editData));
-			if (editable === 'time') {
-				setIsTimeEditing(true);
-			}
+		}
+		if (editable === 'time') {
+			setIsTimeEditing(true);
 		}
 	};
 

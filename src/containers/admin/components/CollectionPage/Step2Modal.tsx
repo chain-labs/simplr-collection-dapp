@@ -1,8 +1,13 @@
 import React from 'react';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
+import { useAppSelector } from 'src/redux/hooks';
+import { networkSelector } from 'src/redux/user';
+import { getUnitByChainId } from 'src/utils/chains';
 
 const Step2Modal = ({ gas }: { gas?: string }) => {
+	const currentNetwork = useAppSelector(networkSelector);
+
 	return (
 		<Box>
 			<Text as="h4" mb="ms" fontFamily="Switzer">
@@ -16,7 +21,7 @@ const Step2Modal = ({ gas }: { gas?: string }) => {
 			<Text as="c1" color="gray-00" display="flex">
 				GAS COST :{' '}
 				<Text as="c1" color="simply-blue">
-					{gas ? `${gas} ETH` : 'Fetching...'}
+					{gas ? `${gas} ${getUnitByChainId(currentNetwork.chain)}` : 'Fetching...'}
 				</Text>
 			</Text>
 		</Box>
