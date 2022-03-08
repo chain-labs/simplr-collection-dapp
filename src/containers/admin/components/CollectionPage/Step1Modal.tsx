@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
-import DateTime from 'src/components/DateTime';
 import If from 'src/components/If';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
+import { networkSelector } from 'src/redux/user';
+import { getUnitByChainId } from 'src/utils/chains';
 
 const Step1Modal = ({ value, setValue, gas }) => {
 	const modalData = useAppSelector(editSelector);
-	useEffect(() => {
-		console.log(value);
-	}, [value]);
+	const currentNetwork = useAppSelector(networkSelector);
 
 	return (
 		<Box>
@@ -60,7 +58,7 @@ const Step1Modal = ({ value, setValue, gas }) => {
 			<Text as="c1" color="gray-00" display="flex">
 				ESTIMATED GAS COST :{' '}
 				<Text as="c1" color="simply-blue">
-					{gas ? `${gas} ETH` : 'Fetching...'}
+					{gas ? `${gas} ${getUnitByChainId(currentNetwork.chain)}` : 'Fetching...'}
 				</Text>
 			</Text>
 		</Box>

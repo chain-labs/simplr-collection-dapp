@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
 import { networks } from 'src/redux/collection/types';
 import Box from 'src/components/Box';
 import LabelledTextInput from 'src/components/LabelledTextInput';
-import Dropdown from 'src/components/Dropdown';
 import ButtonComp from 'src/components/Button';
 import Text from 'src/components/Text';
 import Dropzone from 'src/components/Dropzone';
 
-const CollectionSummaryPage = ({ modalStep, setModalStep }) => {
+const CollectionSummaryPage = ({ setModalStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
+	const componentRef = useRef(null);
 
 	const collectionName = collectionData.name;
 	const collectionSymbol = collectionData.symbol;
@@ -22,8 +22,13 @@ const CollectionSummaryPage = ({ modalStep, setModalStep }) => {
 	const adminAddress = collectionData.admin;
 	const networkValue = collectionData.type;
 	const network = networks[networkValue]?.name;
+
+	useEffect(() => {
+		componentRef.current.scrollIntoView();
+	}, []);
 	return (
-		<Box overflow="visible" mb="20rem">
+		<Box overflow="visible" mb="mxxl">
+			<Box ref={componentRef} />
 			<LabelledTextInput
 				label="Blockchain"
 				required

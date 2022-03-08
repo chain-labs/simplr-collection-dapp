@@ -76,84 +76,92 @@ const EditModal = ({ visible, setVisible }: props) => {
 		if (step === 1) {
 			setStep(2);
 			if (provider && signer) {
-				if (modalData.editfield === 'reserve tokens') {
-					const transaction = await modalData.contract.connect(signer).reserveTokens(value);
-					transaction
-						.wait()
-						.then(() => {
-							toast.success('Reserve token updated');
-							setStep(3);
-						})
-						.catch(() => {
-							toast.error('An unexpected error occured');
-							setVisible(false);
-						});
-				}
-				if (modalData.editfield === 'wallet address') {
-					const transaction = await modalData.contract.connect(signer).transferOwnership(value);
-					transaction
-						.wait()
-						.then(() => {
-							toast.success('Admin wallet address updated');
-							setStep(3);
-						})
-						.catch(() => {
-							toast.error('An unexpected error occured');
-							setVisible(false);
-						});
-				}
-				if (modalData.editfield === 'Collection URI') {
-					const transaction = await modalData.contract.connect(signer).setProjectURI(value);
-					transaction
-						.wait()
-						.then(() => {
-							toast.success('Collection URI updated');
-							setStep(3);
-						})
-						.catch(() => {
-							toast.error('An unexpected error occured');
-							setVisible(false);
-						});
-				}
-				if (modalData.editable === 'Live') {
-					const transaction = await modalData.contract.connect(signer).pause();
-					transaction
-						.wait()
-						.then(() => {
-							toast.success('Sale Paused');
-							setStep(3);
-						})
-						.catch(() => {
-							toast.error('An unexpected error occured');
-							setVisible(false);
-						});
-				}
-				if (modalData.editable === 'Paused') {
-					const transaction = await modalData.contract.connect(signer).unpause();
-					transaction
-						.wait()
-						.then(() => {
-							toast.success('Sale Unpaused');
-							setStep(3);
-						})
-						.catch(() => {
-							toast.error('An unexpected error occured');
-							setVisible(false);
-						});
-				}
-				if (modalData.editfield === 'Reveal') {
-					const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(modalData.data);
-					transaction
-						.wait()
-						.then(() => {
-							toast.success('Sale Unpaused');
-							setStep(3);
-						})
-						.catch((err) => {
-							console.log(err);
-							toast.error('An unexpected error occured');
-							setVisible(false);
-						});
+				try {
+					if (modalData.editfield === 'reserve tokens') {
+						console.log(modalData.editfield);
+
+						const transaction = await modalData.contract.connect(signer).reserveTokens(value);
+						transaction
+							.wait()
+							.then(() => {
+								toast.success('Reserve token updated');
+								setStep(3);
+							})
+							.catch(() => {
+								toast.error('An unexpected error occured');
+								setVisible(false);
+							});
+					}
+					if (modalData.editfield === 'wallet address') {
+						const transaction = await modalData.contract.connect(signer).transferOwnership(value);
+						transaction
+							.wait()
+							.then(() => {
+								toast.success('Admin wallet address updated');
+								setStep(3);
+							})
+							.catch(() => {
+								toast.error('An unexpected error occured');
+								setVisible(false);
+							});
+					}
+					if (modalData.editfield === 'Collection URI') {
+						const transaction = await modalData.contract.connect(signer).setProjectURI(value);
+						transaction
+							.wait()
+							.then(() => {
+								toast.success('Collection URI updated');
+								setStep(3);
+							})
+							.catch(() => {
+								toast.error('An unexpected error occured');
+								setVisible(false);
+							});
+					}
+					if (modalData.editable === 'Live') {
+						const transaction = await modalData.contract.connect(signer).pause();
+						transaction
+							.wait()
+							.then(() => {
+								toast.success('Sale Paused');
+								setStep(3);
+							})
+							.catch(() => {
+								toast.error('An unexpected error occured');
+								setVisible(false);
+							});
+					}
+					if (modalData.editable === 'Paused') {
+						const transaction = await modalData.contract.connect(signer).unpause();
+						transaction
+							.wait()
+							.then(() => {
+								toast.success('Sale Unpaused');
+								setStep(3);
+							})
+							.catch(() => {
+								toast.error('An unexpected error occured');
+								setVisible(false);
+							});
+					}
+					if (modalData.editfield === 'Reveal') {
+						const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(modalData.data);
+						transaction
+							.wait()
+							.then(() => {
+								toast.success('Sale Unpaused');
+								setStep(3);
+							})
+							.catch((err) => {
+								console.log(err);
+								toast.error('An unexpected error occured');
+								setVisible(false);
+							});
+					}
+				} catch (err) {
+					console.log(err);
+					toast.error('An unexpected error occured');
+					setVisible(false);
 				}
 			}
 		}
