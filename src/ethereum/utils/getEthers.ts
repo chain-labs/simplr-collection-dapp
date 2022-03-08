@@ -13,7 +13,7 @@ const getEthers = (): Promise<IEthers> =>
 	new Promise((resolve, reject) => {
 		try {
 			try {
-				const provider = new ethers.providers.Web3Provider(window.ethereum);
+				const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
 				window.ethereum.enable();
 				resolve({ provider, ethers });
 			} catch (error) {

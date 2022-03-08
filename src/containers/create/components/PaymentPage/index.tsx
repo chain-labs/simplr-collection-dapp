@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { CaretRight, Info, Question, XCircle } from 'phosphor-react';
+import { CaretRight, Info, XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -11,7 +11,6 @@ import TextInput from 'src/components/TextInput';
 import Toggle from 'src/components/Toggle';
 import useContract from 'src/ethereum/useContract';
 import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import { collectionSelector } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import {
@@ -51,7 +50,6 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 		getMaxShares(beneficiaries?.shares, useEarlyPass ? 0 : simplrShares)
 	);
 	const [showTooltip, setShowTooltip] = useState(false);
-	const [simplrAddress, setSimplrAddress] = useState<string>();
 	const Simplr = useContract('CollectionFactoryV2', collection.type, provider);
 	const [initialRender, setInitialRender] = useState(true);
 	const dispatch = useAppDispatch();
@@ -59,11 +57,9 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 	useEffect(() => {
 		const getAddress = async () => {
 			try {
-				const address = await Simplr?.callStatic.simplr();
 				const share = await Simplr?.callStatic.simplrShares();
 				const sharePercentage = ethers.utils.formatUnits(share?.toString());
 				const shareValue = parseFloat(sharePercentage) * 100;
-				setSimplrAddress(address);
 				setSimplrShares(shareValue);
 			} catch (err) {
 				console.log({ err });
@@ -284,7 +280,6 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 									payee={payee}
 									key={index}
 									handleRemove={handleRemove}
-									index={index}
 									maxShare={maxShare}
 								/>
 							))}
@@ -354,7 +349,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 
 export default PaymentPage;
 
-const Payee = ({ percentage, payee, index, maxShare, handleRemove }) => {
+const Payee = ({ percentage, payee, maxShare, handleRemove }) => {
 	const [deleteButton, setDeleteButton] = useState(false);
 	return (
 		<Box

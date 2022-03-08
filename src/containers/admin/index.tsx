@@ -2,7 +2,6 @@ import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import Link from 'next/link';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
 import { getContractDetails } from 'src/ethereum/useCustomContract';
@@ -15,7 +14,7 @@ import { blockExplorer } from 'src/utils/links';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 
-const AdminDashboardComponent = ({ metadata, id }) => {
+const AdminDashboardComponent = ({ metadata, id, ready }) => {
 	const [step, setStep] = useState(0);
 	const [provider] = useEthers();
 	const [contract, setContract] = useState<ethers.Contract>();
@@ -25,19 +24,12 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 	useEffect(() => {
 		if (id && provider) {
 			const abi = getContractDetails('AffiliateCollection');
-			const contract = new ethers.Contract(id, abi, provider);
+			const address = `${id}`.split(':')[1];
+			const contract = new ethers.Contract(address, abi, provider);
 			dispatch(setEditDetails({ contract: contract }));
 			setContract(contract);
 		}
 	}, [id, provider]);
-	const getPage = (step) => {
-		if (step === 0) {
-			return <CollectionPage contract={contract} metadata={metadata} />;
-		}
-		if (step === 1) {
-			return <PaymentsPage contract={contract} metadata={metadata} />;
-		}
-	};
 
 	return (
 		<Box>
@@ -70,7 +62,7 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 					</Text>
 					<Box as="a" href={`${blockExplorer(user.network.chain)}/address/${id}`} target="_blank" rel="noreferrer">
 						<Text as="b1" color="simply-blue">
-							{id}
+							{`${id}`.split(':')[1]}
 						</Text>
 					</Box>
 				</Box>
@@ -97,10 +89,10 @@ const AdminDashboardComponent = ({ metadata, id }) => {
 			</Box>
 			<Box height="0.1rem" width="115.7rem" mx="auto" bg="rgba(220, 220, 229, 0.5)" mt="mm" />
 			<Box display={step === 0 ? 'block' : 'none'}>
-				<CollectionPage contract={contract} metadata={metadata} />
+				<CollectionPage contract={contract} metadata={metadata} ready={ready} />
 			</Box>
 			<Box display={step === 1 ? 'block' : 'none'}>
-				<PaymentsPage contract={contract} metadata={metadata} />
+				<PaymentsPage contract={contract} metadata={metadata} ready={ready} />
 			</Box>
 		</Box>
 	);
