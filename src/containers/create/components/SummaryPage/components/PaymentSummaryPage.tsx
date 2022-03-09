@@ -20,7 +20,7 @@ import { DateType } from 'src/redux/sales/types';
 import ApprovalModal from './ApprovalModal';
 import WhitelistComp from './WhitelistComp';
 
-const PaymentSummaryPage = ({ setModalStep }) => {
+const PaymentSummaryPage = ({ setModalStep, simplrShares }) => {
 	const sales = useAppSelector(saleSelector);
 	const presaleable = useAppSelector(presaleableToggleSelector);
 	const revealable = useAppSelector(revealableToggleSelector);
@@ -172,7 +172,14 @@ const PaymentSummaryPage = ({ setModalStep }) => {
 				<Box row overflow="visible" mb="ms">
 					<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
 					<Box ml="mxs" />
-					<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation fontSize="1.4rem" />
+					<TextInput
+						value={`${simplrShares}%`}
+						type="text"
+						width="21.4rem"
+						disabled
+						disableValidation
+						fontSize="1.4rem"
+					/>
 				</Box>
 				{beneficiaries?.payees?.map((payee, index) => (
 					<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
