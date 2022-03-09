@@ -94,6 +94,9 @@ declare module 'styled-components' {
 			'yellow-90': string;
 			'yellow-00': string;
 
+			'purple-10': string;
+			'purple-50': string;
+
 			'white-00': string;
 			'white-10': string;
 			'white-20': string;

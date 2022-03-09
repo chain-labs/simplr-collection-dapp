@@ -32,7 +32,7 @@ const CreateComp = ({ balance }) => {
 	};
 
 	return (
-		<Box pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
+		<Box mt="16rem" pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
 			<SEATModal
 				isOpen={isModalOpen}
 				setIsOpen={setIsModalOpen}
