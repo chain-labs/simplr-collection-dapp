@@ -265,7 +265,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 															UPDATED DATE:
 														</Text>
 														<Text as="c1" color="simply-blue" ml="mxs">
-															{date && time
+															{step === 3 && date && time
 																? format(new Date(getTimestamp({ date, time, timezone }) * 1000), 'dd/MM/yyyy')
 																: ''}
 														</Text>
@@ -275,7 +275,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 															UPDATED TIME:
 														</Text>
 														<Text as="c1" color="simply-blue" ml="mxs">
-															{data && time
+															{step === 3 && date && time
 																? format(new Date(getTimestamp({ date, time, timezone }) * 1000), 'OOOOO, pp')
 																: ''}
 														</Text>
