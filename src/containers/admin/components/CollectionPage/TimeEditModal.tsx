@@ -241,7 +241,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 										<Box my="mxl">
 											<Box row>
 												<Text as="c1" fontWeight="bold" color="disable-black">
-													CURRENT DATE:
+													PREVIOUS DATE:
 												</Text>
 												<Text as="c1" color="simply-blue" ml="mxs">
 													{oldDate}
@@ -249,7 +249,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 											</Box>
 											<Box row>
 												<Text as="c1" fontWeight="bold" color="disable-black">
-													CURRENT TIME:
+													PREVIOUS TIME:
 												</Text>
 												<Text as="c1" color="simply-blue" ml="mxs">
 													{oldTime}
