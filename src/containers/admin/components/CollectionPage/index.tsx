@@ -296,62 +296,65 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 							}`}
 						/>
 					</Box>
-					<Text as="h3" color="simply-blue" mt="wxl">
-						URI:
-					</Text>
-					<Box row between mt="mxxxl">
-						<Box>
-							<Box row between mb="mxs">
-								<Text as="h6">Collection URI</Text>
-
-								<Text
-									as="h6"
-									color="simply-blue"
-									textDecoration="underline"
-									cursor={collection.adminAddress === user.address ? 'pointer' : 'not-allowed'}
-									onClick={
-										collection.adminAddress === user.address
-											? () => handleAction('Collection URI', 'url', 'https://', collectionUri)
-											: () => setAdminAddress(adminAddress)
-									}
-								>
-									Edit
+					<If
+						condition={collection.revealed !== true}
+						then={
+							<>
+								<Text as="h3" color="simply-blue" mt="wxl">
+									URI:
 								</Text>
-							</Box>
-							<TextInput
-								placeholder="https://gdrive.com/***"
-								value={collection.projectURI}
-								setValue={setCollectionURI}
-								disableValidation
-								width="100%"
-								disabled
-							/>
-							<Text as="b1" mt="mxs" color="gray-00">
-								Collection URI is the URL where your NFT media and metadata are stored.{' '}
-							</Text>
-						</Box>
-						<Box ml="wm" />
-						<If
-							condition={collection.revealed === true}
-							then={
-								<Box flex={1}>
-									<Text as="h6" mb="mxs">
-										Loading Image URI
-									</Text>
-									<TextInput
-										placeholder="https://gdrive.com/somethingurl"
-										value=""
-										disableValidation
-										disabled
-										width="100%"
-									/>
-									<Text as="b1" mt="mxs" color="gray-00">
-										Placeholder image that will be displayed until the set reveal time.
-									</Text>
+								<Box row between mt="mxxxl">
+									<Box>
+										<Box row between mb="mxs">
+											<Text as="h6">Collection URI</Text>
+
+											<Text
+												as="h6"
+												color="simply-blue"
+												textDecoration="underline"
+												cursor={collection.adminAddress === user.address ? 'pointer' : 'not-allowed'}
+												onClick={
+													collection.adminAddress === user.address
+														? () => handleAction('Collection URI', 'url', 'https://', collectionUri)
+														: () => setAdminAddress(adminAddress)
+												}
+											>
+												Edit
+											</Text>
+										</Box>
+										<TextInput
+											placeholder="https://gdrive.com/***"
+											value={collection.projectURI}
+											setValue={setCollectionURI}
+											disableValidation
+											width="100%"
+											disabled
+										/>
+										<Text as="b1" mt="mxs" color="gray-00">
+											Collection URI is the URL where your NFT media and metadata are stored.{' '}
+										</Text>
+									</Box>
+									<Box ml="wm" />
+
+									<Box flex={1}>
+										<Text as="h6" mb="mxs">
+											Loading Image URI
+										</Text>
+										<TextInput
+											placeholder="https://gdrive.com/somethingurl"
+											value=""
+											disableValidation
+											disabled
+											width="100%"
+										/>
+										<Text as="b1" mt="mxs" color="gray-00">
+											Placeholder image that will be displayed until the set reveal time.
+										</Text>
+									</Box>
 								</Box>
-							}
-						/>
-					</Box>
+							</>
+						}
+					/>
 					<Airdrop />
 					<If
 						condition={parseFloat(collection.presalePrice) >= 0 && collection.saleStartTime > Date.now() / 1000}
