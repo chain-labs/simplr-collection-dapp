@@ -77,12 +77,14 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	}, [contract]);
 
 	useEffect(() => {
-		const now = new Date().toString();
-		const timezone = now.split(' ')[5];
-		setTimezone(`${timezone.substring(0, 6)}:${timezone.substr(-2)}`);
-		const oldDate = new Date(parseInt(data) * 1000);
-		setOldDate(format(oldDate, 'dd/MM/yyyy'));
-		setOldTime(format(oldDate, 'OOOOO, pp'));
+		if (!oldDate) {
+			const now = new Date().toString();
+			const timezone = now.split(' ')[5];
+			setTimezone(`${timezone.substring(0, 6)}:${timezone.substr(-2)}`);
+			const oldDate = new Date(parseInt(data) * 1000);
+			setOldDate(format(oldDate, 'dd/MM/yyyy'));
+			setOldTime(format(oldDate, 'OOOOO, pp'));
+		}
 	}, [data]);
 
 	const handleSave = async () => {
