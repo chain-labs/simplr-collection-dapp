@@ -13,9 +13,11 @@ import { ethers } from 'ethers';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 import Dropzone from 'src/components/Dropzone';
+import { userSelector } from 'src/redux/user';
 
 const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
+	const user = useAppSelector(userSelector);
 
 	const dispatch = useAppDispatch();
 
@@ -34,6 +36,11 @@ const CollectionPage = ({ step, setStep }) => {
 	useEffect(() => {
 		setNetworkValue(networkData.indexOf(network));
 	}, [networkData, network]);
+
+	useEffect(() => {
+		setNetworkValue(user.network.chain);
+		setNetwork(networks[user.network.chain]?.name);
+	}, [user]);
 
 	useEffect(() => {
 		const types = Object.keys(networks);

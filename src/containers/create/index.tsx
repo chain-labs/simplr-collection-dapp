@@ -4,10 +4,16 @@ import SalesPage from './components/SalesPage';
 import PaymentPage from './components/PaymentPage';
 import CollectionPage from './components/CollectionPage';
 import SEATModal from './components/SEATModal';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
+import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
 
 const CreateComp = ({ balance }) => {
 	const [step, setStep] = useState(0);
 	const [isModalOpen, setIsModalOpen] = useState(true);
+	const user = useAppSelector(userSelector);
+	const collection = useAppSelector(collectionSelector);
+	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -18,6 +24,10 @@ const CreateComp = ({ balance }) => {
 			setIsModalOpen(true);
 		}, 1000);
 	}, []);
+
+	useEffect(() => {
+		setIsModalOpen(true);
+	}, [user.network, user.address]);
 
 	const getFormPage = (step) => {
 		if (step === 1) {

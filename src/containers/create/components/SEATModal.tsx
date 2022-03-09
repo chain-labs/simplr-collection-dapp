@@ -7,6 +7,7 @@ import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
 import Navbar from 'src/components/Navbar';
 import { SEAT_TOGGLE, toBoolean } from 'src/utils/constants';
+import { useEffect, useState } from 'react';
 
 interface Props {
 	isOpen: boolean;
@@ -16,6 +17,15 @@ interface Props {
 }
 
 const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
+	const [load, setLoad] = useState(true);
+	useEffect(() => {
+		if (isOpen) {
+			setLoad(true);
+			setTimeout(() => {
+				setLoad(false);
+			}, 2000);
+		}
+	}, [isOpen]);
 	if (!isOpen) {
 		return null;
 	} else {
@@ -25,7 +35,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
 				<Box column minHeight="100vh" position="absolute" top="0" zIndex="-1">
 					<Box width="100vw" minHeight="100vh" pt="16rem" bg="simply-white" column center overflowY="auto" mb="0">
 						<If
-							condition={!loading}
+							condition={!loading && !load}
 							then={
 								<>
 									<Box borderRadius="16px" boxShadow="shadow-500" py="wxs" px="mxxxl" maxWidth="43rem" column mb="wxs">
