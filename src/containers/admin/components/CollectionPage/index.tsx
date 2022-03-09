@@ -195,7 +195,9 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 								text="Reveal NFTS"
 								editfield="Reveal"
 								showModal={showModal}
+								type="url"
 								setShowModal={setShowModal}
+								placeholder="https://"
 								data={collection.projectURI}
 							/>
 						) : (

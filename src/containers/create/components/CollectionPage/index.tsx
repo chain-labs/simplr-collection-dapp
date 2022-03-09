@@ -12,12 +12,10 @@ import { Toaster } from 'react-hot-toast';
 import { ethers } from 'ethers';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
-import { networkSelector } from 'src/redux/user';
 import Dropzone from 'src/components/Dropzone';
 
 const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
-	const currentNetwork = useAppSelector(networkSelector);
 
 	const dispatch = useAppDispatch();
 

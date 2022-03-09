@@ -49,7 +49,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 				const gas = await modalData.contract.connect(signer).estimateGas.unpause();
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editfield === 'Reveal') {
-				const gas = await modalData.contract.connect(signer).estimateGas.setProjectURIAndReveal(value);
+				const gas = await modalData.contract.connect(signer).estimateGas.setProjectURIAndReveal(modalData.data);
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			}
 		} catch (err) {
@@ -78,6 +78,8 @@ const EditModal = ({ visible, setVisible }: props) => {
 			if (provider && signer) {
 				try {
 					if (modalData.editfield === 'reserve tokens') {
+						console.log(modalData.editfield);
+
 						const transaction = await modalData.contract.connect(signer).reserveTokens(value);
 						transaction
 							.wait()
@@ -143,11 +145,11 @@ const EditModal = ({ visible, setVisible }: props) => {
 							});
 					}
 					if (modalData.editfield === 'Reveal') {
-						const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(value);
+						const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(modalData.data);
 						transaction
 							.wait()
 							.then(() => {
-								toast.success('Collection Revealed');
+								toast.success('Sale Unpaused');
 								setStep(3);
 							})
 							.catch((err) => {
@@ -167,14 +169,14 @@ const EditModal = ({ visible, setVisible }: props) => {
 			setStep(3);
 		}
 		if (step === 3) {
-			setStep(0);
 			setVisible(false);
 		}
 	};
 
 	const getModalStep = () => {
 		if (step === 0) {
-			if (modalData.editable === 'Live' || modalData.editable === 'Paused') return <StatusModal gas={gas} />;
+			if (modalData.editable === 'Live' || modalData.editable === 'Paused' || modalData.editfield === 'Reveal')
+				return <StatusModal gas={gas} />;
 			else return <Step1Modal value={value} setValue={setValue} gas={gas} />;
 		}
 		if (step === 1) {
@@ -184,7 +186,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 			return <Step3Modal gas={gas} />;
 		}
 		if (step === 3) {
-			return <Step4Modal value={value} />;
+			return <Step4Modal />;
 		}
 	};
 
@@ -223,7 +225,6 @@ const EditModal = ({ visible, setVisible }: props) => {
 							<ButtonComp
 								bg="primary"
 								height="40px"
-								width="100%"
 								onClick={handleAction}
 								mt="mxl"
 								disable={step === 2 ? true : false}
@@ -252,7 +253,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 					<If
 						condition={step === 0 || step === 1}
 						then={
-							<ButtonComp width="100%" bg="secondary" height="40px" onClick={() => setVisible(false)} mt="ml">
+							<ButtonComp bg="secondary" height="40px" onClick={() => setVisible(false)} mt="ml">
 								<Text as="h6" fontFamily="Switzer">
 									Cancel
 								</Text>
