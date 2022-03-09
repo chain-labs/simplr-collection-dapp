@@ -47,7 +47,7 @@ const MyApp = ({ Component, pageProps }) => {
 			</Head>
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>
-					<Navbar />
+					<Navbar banner />
 					<Component {...pageProps} />
 					<div id="portal"></div>
 					<div id="portal-2"></div>

@@ -159,7 +159,12 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 
 	return (
 		<Box overflow="visible">
-			<SummaryPage visible={showSummaryPage} setVisible={setShowSummaryPage} setStep={setStep} />
+			<SummaryPage
+				visible={showSummaryPage}
+				setVisible={setShowSummaryPage}
+				setStep={setStep}
+				simplrShares={simplrShares}
+			/>
 			<Box overflow="visible" mb="10rem">
 				<Text as="h2" center>
 					Create new collection

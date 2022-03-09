@@ -32,7 +32,7 @@ const AdminDashboardComponent = ({ metadata, id, ready }) => {
 	}, [id, provider]);
 
 	return (
-		<Box>
+		<Box mt="15rem">
 			<Toaster position="top-center" />
 			<Box
 				backgroundImage={`url(${metadata?.collectionDetails.bannerImageUrl})`}

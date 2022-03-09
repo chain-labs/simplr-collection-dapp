@@ -10,8 +10,12 @@ import Text from './Text';
 
 import Wordmark from 'public/wordmark.svg';
 import { networks } from 'src/redux/collection/types';
+import If from './If';
+import { CopySimple } from 'phosphor-react';
+import theme from 'src/styleguide/theme';
+import toast from 'react-hot-toast';
 
-const Navbar = () => {
+const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
 
@@ -68,40 +72,81 @@ const Navbar = () => {
 		}
 	}, [signer]);
 
+	const getBg = (chain) => {
+		if (chain === 1) return 'green-50';
+		else if (chain === 137) return 'purple-50';
+		else if (chain === 4 || chain === 80001) return 'yellow-40';
+	};
+
+	const getBannerBg = (chain) => {
+		if (chain === 1 || chain === 137) return 'purple-10';
+		else if (chain === 4 || chain === 80001) return 'yellow-20';
+	};
+
+	const getBannerText = (chain) => {
+		if (chain === 1)
+			return 'You are connected to the Mainnet. Any transactions you make on the Mainnet will cost real ETH. ';
+		else if (chain === 137)
+			return 'You are connected to the Mainnet. Any transactions you make on the Mainnet will cost real MATIC. ';
+		else if (chain === 4 || chain === 80001)
+			return 'You are connected to a test network. Any transactions made here won’t reflect in the Mainnet.';
+	};
+
+	const getBannerTextColor = (chain) => {
+		if (chain === 1 || chain === 137) return 'simply-blue';
+		else if (chain === 4 || chain === 80001) return 'yellow-90';
+	};
+
 	return (
-		<Box bg="#F8F8F8" py="mxxxl">
-			<Container>
-				<Box display="flex" justifyContent="space-between" alignItems="center">
-					<Wordmark />
-					<Box
-						border="1px solid"
-						borderColor="black-10"
-						borderRadius="4px"
-						bg=""
-						py="1rem"
-						px="mxl"
-						onClick={
-							!user.exists
-								? handleConnectWallet
-								: () => {
-										return;
-								  }
-						}
-						cursor="pointer"
-						row
-						center
-					>
-						<Box height="20px" width="20px" borderRadius="50%" bg={user.exists ? 'green-50' : 'red-50'} />
-						<Text as="h5" mx="mxs">
-							{network.name}
-						</Text>
-						<Box height="20px" width="0.1rem" bg="black-10" mr="mxs" />
-						<Text as="h5" mx="mxs" color="simply-blue">
-							{`${user.address.substring(0, 5)}...${user.address.substr(-4)}`}
-						</Text>
+		<Box position="fixed" top="0" left="0" width="100%" zIndex={14}>
+			<Box bg="#F8F8F8">
+				<Container>
+					<Box display="flex" justifyContent="space-between" alignItems="center">
+						<Wordmark />
+						<Box
+							border="1px solid"
+							borderColor="black-10"
+							borderRadius="4px"
+							my="ml"
+							py="mm"
+							px="ms"
+							onClick={
+								!user.exists
+									? handleConnectWallet
+									: () => {
+											navigator.clipboard.writeText(user.address);
+											toast.success('Copied to clipboard');
+									  }
+							}
+							cursor="pointer"
+							row
+							center
+						>
+							<Box height="20px" width="20px" borderRadius="50%" bg={getBg(user.network.chain)} />
+							<Text as="h5" mx="mxs">
+								{network.name}
+							</Text>
+							<Box height="20px" width="0.1rem" bg="black-10" mr="mxs" />
+							<Text as="h5" mx="mxs" color="simply-blue">
+								{`${user.address.substring(0, 5)}...${user.address.substr(-4)}`}
+							</Text>
+							<CopySimple color={theme.colors['simply-blue']} size="20" />
+						</Box>
 					</Box>
-				</Box>
-			</Container>
+				</Container>
+			</Box>
+			<If
+				condition={banner}
+				then={
+					<Box bg={getBannerBg(user.network.chain)}>
+						<Container>
+							<Text as="b1" center py="ml" color={getBannerTextColor(user.network.chain)}>
+								{getBannerText(user.network.chain)}
+							</Text>
+						</Container>
+					</Box>
+				}
+			/>
 		</Box>
 	);
 };
