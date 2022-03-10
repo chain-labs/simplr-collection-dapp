@@ -118,6 +118,9 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 			const transaction = await contract
 				.connect(signer)
 				.setSaleStartTime(getTimestamp({ date, time, timezone }), type !== 'presale');
+			if (transaction) {
+				setInfo({ ...info, cta: 'Processing Transaction' });
+			}
 			const event = (await transaction.wait())?.events;
 			return event;
 		} catch (err) {
