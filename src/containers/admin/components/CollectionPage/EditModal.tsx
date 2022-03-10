@@ -27,6 +27,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 	const [value, setValue] = useState('');
 	const [step, setStep] = useState(0);
 	const [gas, setGas] = useState('');
+	const [fails, setFails] = useState(false);
 
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
@@ -54,6 +55,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 			}
 		} catch (err) {
 			console.log(err);
+			setFails(true);
 		}
 	};
 
@@ -85,7 +87,9 @@ const EditModal = ({ visible, setVisible }: props) => {
 								toast.success('Reserve token updated');
 								setStep(3);
 							})
-							.catch(() => {
+							.catch((err) => {
+								console.error({ err });
+
 								toast.error('An unexpected error occured');
 								setVisible(false);
 							});
@@ -98,7 +102,8 @@ const EditModal = ({ visible, setVisible }: props) => {
 								toast.success('Admin wallet address updated');
 								setStep(3);
 							})
-							.catch(() => {
+							.catch((err) => {
+								console.error({ err });
 								toast.error('An unexpected error occured');
 								setVisible(false);
 							});
@@ -174,11 +179,12 @@ const EditModal = ({ visible, setVisible }: props) => {
 
 	const getModalStep = () => {
 		if (step === 0) {
-			if (modalData.editable === 'Live' || modalData.editable === 'Paused') return <StatusModal gas={gas} />;
+			if (modalData.editable === 'Live' || modalData.editable === 'Paused')
+				return <StatusModal gas={gas} fails={fails} />;
 			else return <Step1Modal value={value} setValue={setValue} gas={gas} />;
 		}
 		if (step === 1) {
-			return <Step2Modal gas={gas} />;
+			return <Step2Modal gas={gas} fails={fails} />;
 		}
 		if (step === 2) {
 			return <Step3Modal gas={gas} />;

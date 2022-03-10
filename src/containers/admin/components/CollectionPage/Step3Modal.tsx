@@ -16,13 +16,6 @@ const Step3Modal = ({ gas }: { gas?: string }) => {
 			<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Switzer">
 				Your changes are making their way through your connected wallet address on METAMASK{' '}
 			</Text>
-
-			<Text as="c1" color="gray-00" display="flex" mt="mm">
-				GAS COST :{' '}
-				<Text as="c1" color="simply-blue">
-					{gas ? `${gas} ${getUnitByChainId(currentNetwork.chain)}` : 'Fetching...'}
-				</Text>
-			</Text>
 		</Box>
 	);
 };

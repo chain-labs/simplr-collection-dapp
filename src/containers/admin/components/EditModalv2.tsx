@@ -12,6 +12,7 @@ import useEthers from 'src/ethereum/useEthers';
 import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
+import { selectAffiliableToggle } from 'src/redux/sales';
 import { networkSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { getUnitByChainId } from 'src/utils/chains';
@@ -84,6 +85,7 @@ const getConfirmInfo = (type: 'whitelist_add' | 'whitelist_remove' | 'airdrop') 
 const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => {
 	const [step, setStep] = useState(0);
 	const [info, setInfo] = useState(getInfo(type));
+	const [fails, setFails] = useState(false);
 
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
@@ -106,18 +108,23 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	useEffect(() => {
 		let interval;
 		const getGasPrice = async () => {
-			const fees = await provider.getGasPrice();
-			if (type === 'whitelist_add') {
-				const gas = await contract.connect(signer).estimateGas.presaleWhitelistBatch(arr);
-				setGas(ethers.utils.formatUnits(gas.mul(fees)));
-			} else if (type === 'whitelist_remove') {
-				const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
-				const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
-				const gas = await contract.connect(signer).estimateGas.removeWhitelist(prev, data[0]);
-				setGas(ethers.utils.formatUnits(gas.mul(fees)));
-			} else if (type === 'airdrop') {
-				const gas = await contract.connect(signer).estimateGas.transferReservedTokens(data);
-				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+			try {
+				const fees = await provider.getGasPrice();
+				if (type === 'whitelist_add') {
+					const gas = await contract.connect(signer).estimateGas.presaleWhitelistBatch(arr);
+					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				} else if (type === 'whitelist_remove') {
+					const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
+					const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
+					const gas = await contract.connect(signer).estimateGas.removeWhitelist(prev, data[0]);
+					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				} else if (type === 'airdrop') {
+					const gas = await contract.connect(signer).estimateGas.transferReservedTokens(data);
+					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				}
+			} catch (err) {
+				console.log(err);
+				setFails(true);
 			}
 		};
 		const getGasDetails = async () => {
@@ -228,24 +235,33 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 										</Text>
 									))
 								) : (
-									<Box row>
-										<Text as="c1" color="simply-gray" mr="mxxs">
-											GAS COST:
-										</Text>
-										<Text as="c1" color="simply-blue">
-											{gas ? `${gas} ${getUnitByChainId(currentNetwork.chain)}` : 'Fetching...'}
-										</Text>
-									</Box>
+									<If
+										condition={fails}
+										then={
+											<Text as="c1" color="red-50" textTransform="uppercase">
+												This transaction is Likely to fail due to constant change in gas prices. proceed at your own
+												risk.
+											</Text>
+										}
+										else={
+											<Text as="c1" color="gray-00" display="flex">
+												ESTIMATED GAS COSTS :{' '}
+												<Text as="c1" color="simply-blue">
+													{gas ? `${gas} ${getUnitByChainId(currentNetwork.chain)}` : 'Fetching...'}
+												</Text>
+											</Text>
+										}
+									/>
 								)}
 							</Box>
 						</>
 					}
-					else={step === 1 ? <Step2Modal gas={gas} /> : <Step3Modal gas={gas} />}
+					else={step === 1 ? <Step2Modal gas={gas} fails={fails} /> : <Step3Modal gas={gas} />}
 				/>
 				<Box mt="mxl">
 					<ButtonComp
 						bg="primary"
-						disable={step === 2 || (step === 1 && !gas)}
+						disable={step === 2 || (step === 1 && !gas && !fails)}
 						height="36px"
 						width="100%"
 						onClick={() => handleYes()}
