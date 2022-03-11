@@ -101,11 +101,11 @@ const SalesPage = ({ step, setStep }) => {
 		e.preventDefault();
 		const date = Date.now() / 1000;
 		const publicSaleTime = getTimestamp(publicSaleLaunchTimestamp);
-
 		if (+publicSaleTime < date) {
 			toast.error('Invalid time');
 			return;
 		}
+
 		if (isPresaleable) {
 			const presaleTime = getTimestamp(presaleStartTime);
 			if (+presaleReservedTokens > +maxTokens) {
@@ -167,7 +167,7 @@ const SalesPage = ({ step, setStep }) => {
 					<LabelledTextInput
 						type="number"
 						min="1"
-						max={maxTokens?.toString()}
+						max={maxHolding?.toString()}
 						label="Maximum NFTs allowed to buy per sale"
 						helperText="Maximum number of NFTs a user can buy at once"
 						required
