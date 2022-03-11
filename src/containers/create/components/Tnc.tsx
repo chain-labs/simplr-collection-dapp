@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 import React, { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -9,12 +10,24 @@ import axios from 'axios';
 import { CircleNotch } from 'phosphor-react';
 import toast, { Toaster } from 'react-hot-toast';
 import Checkbox from 'src/components/Checkbox';
+import Markdown from 'markdown-to-jsx';
+import { PINATA_HASH } from './utils';
 
 const Tnc = ({ setStep }) => {
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
 	const [loading, setLoading] = useState(false);
 	const [checkbox, setCheckbox] = useState(false);
+	const [text, setText] = useState('');
+
+	useEffect(() => {
+		fetch(`https://simplr.mypinata.cloud/ipfs/${process.env.NEXT_PUBLIC_API_KEY}`)
+			.then((response) => response.text())
+			.then((text) => {
+				console.log(text);
+				setText(text);
+			});
+	}, []);
 
 	const handleSignature = async () => {
 		setLoading(true);
@@ -59,26 +72,14 @@ const Tnc = ({ setStep }) => {
 						as="b1"
 						color="#949499"
 						height="33.6rem"
-						width="38.6rem"
+						width="40.6rem"
 						overflowY="scroll"
+						overflowX="hidden"
 						className="tnc-hidden-scrollbar"
 					>
-						1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare massa euismod suscipit mauris, tortor,
-						morbi sed risus. Nec lectus urna ut ut venenatis ac.
-						<br /> 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare massa euismod suscipit mauris,
-						tortor, morbi sed risus. Nec lectus urna ut ut venenatis ac. <br /> 3. Lorem ipsum dolor sit amet,
-						consectetur adipiscing elit. Ornare massa euismod suscipit mauris, tortor, morbi sed risus. Nec lectus urna
-						ut ut venenatis ac.
-						<br /> 4. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare massa euismod suscipit mauris,
-						tortor, morbi sed risus. Nec lectus urna ut ut venenatis ac.
-						<br /> 3. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare massa euismod suscipit mauris,
-						tortor, morbi sed risus. Nec lectus urna ut ut venenatis ac.
-						<br /> 3. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare massa euismod suscipit mauris,
-						tortor, morbi sed risus. Nec lectus urna ut ut venenatis ac.
-						<br /> 3. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare massa euismod suscipit mauris,
-						tortor, morbi sed risus. Nec lectus urna ut ut venenatis ac.
-						<br /> 3. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ornare massa euismod suscipit mauris,
-						tortor, morbi sed risus. Nec lectus urna ut ut venenatis ac.
+						<div>
+							<Markdown children={text} />
+						</div>
 					</Text>
 				</Box>
 				<Box center mb="mm">

@@ -1,4 +1,6 @@
-import { CaretRight, CheckCircle } from 'phosphor-react';
+/* eslint-disable react/no-children-prop */
+import { CaretRight, Check, CheckCircle } from 'phosphor-react';
+import ReactDom from 'react-dom';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
@@ -23,6 +25,7 @@ interface Props {
 const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Props) => {
 	const [address, setAddress] = useState<string>();
 	const userAddress = useAppSelector(userSelector);
+	const [text, setText] = useState('');
 
 	useEffect(() => {
 		setAddress(userAddress.address);
