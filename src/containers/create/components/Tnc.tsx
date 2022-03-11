@@ -21,7 +21,7 @@ const Tnc = ({ setStep }) => {
 	const [text, setText] = useState('');
 
 	useEffect(() => {
-		fetch(`https://simplr.mypinata.cloud/ipfs/${process.env.NEXT_PUBLIC_API_KEY}`)
+		fetch(`https://simplr.mypinata.cloud/ipfs/${process.env.NEXT_PUBLIC_MARKDOWN_HASH}`)
 			.then((response) => response.text())
 			.then((text) => {
 				console.log(text);
