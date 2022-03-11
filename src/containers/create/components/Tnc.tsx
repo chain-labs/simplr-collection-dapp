@@ -68,19 +68,9 @@ const Tnc = ({ setStep }) => {
 					we need to make sure that you go through our Terms & Conditions for using Simplr.
 				</Text>
 				<Box mb="30px" center>
-					<Text
-						as="b1"
-						color="#949499"
-						height="33.6rem"
-						width="40.6rem"
-						overflowY="scroll"
-						overflowX="hidden"
-						className="tnc-hidden-scrollbar"
-					>
-						<div>
-							<Markdown children={text} />
-						</div>
-					</Text>
+					<Box height="33.6rem" width="40.6rem" overflowY="scroll" overflowX="hidden" className="tnc-hidden-scrollbar">
+						<Markdown children={text} />
+					</Box>
 				</Box>
 				<Box center mb="mm">
 					<Checkbox value={checkbox} setValue={setCheckbox} disabled={loading === true} />
