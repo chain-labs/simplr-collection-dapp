@@ -172,7 +172,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 				return <Step2Modal gas={gas} />;
 			}
 			case 2: {
-				return <Step3Modal gas={gas} />;
+				return <Step3Modal />;
 			}
 		}
 	};
