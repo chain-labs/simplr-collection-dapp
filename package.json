@@ -24,6 +24,7 @@
     ]
   },
   "dependencies": {
+    "@mdx-js/react": "^2.0.0",
     "@reduxjs/toolkit": "^1.7.1",
     "@styled-system/prop-types": "^5.1.5",
     "@svgr/webpack": "^6.2.0",
