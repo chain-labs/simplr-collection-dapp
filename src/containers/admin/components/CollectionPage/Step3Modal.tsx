@@ -1,13 +1,8 @@
 import React from 'react';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
-import { useAppSelector } from 'src/redux/hooks';
-import { networkSelector } from 'src/redux/user';
-import { getUnitByChainId } from 'src/utils/chains';
 
-const Step3Modal = ({ gas }: { gas?: string }) => {
-	const currentNetwork = useAppSelector(networkSelector);
-
+const Step3Modal = () => {
 	return (
 		<Box>
 			<Text as="h4" mb="ms" fontFamily="Switzer">

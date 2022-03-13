@@ -144,6 +144,9 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const addWhitelist = async () => {
 		try {
 			const transaction = await contract.connect(signer).presaleWhitelistBatch(arr);
+			if (transaction) {
+				setInfo({ ...info, yes: 'Processing Transaction' });
+			}
 			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistAdded')[0]?.args;
 			return event;
 		} catch (err) {
@@ -158,6 +161,9 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 			const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
 			const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
 			const transaction = await contract.connect(signer).removeWhitelist(prev, data[0]);
+			if (transaction) {
+				setInfo({ ...info, yes: 'Processing Transaction' });
+			}
 			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistRemoved')[0]?.args;
 			return event;
 		} catch (err) {
@@ -170,6 +176,9 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const airdrop = async () => {
 		try {
 			const transaction = await contract.connect(signer).transferReservedTokens(data);
+			if (transaction) {
+				setInfo({ ...info, yes: 'Processing Transaction' });
+			}
 			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'Airdrop')[0]?.args;
 			return event;
 		} catch (err) {
@@ -256,7 +265,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 							</Box>
 						</>
 					}
-					else={step === 1 ? <Step2Modal gas={gas} fails={fails} /> : <Step3Modal gas={gas} />}
+					else={step === 1 ? <Step2Modal gas={gas} fails={fails} /> : <Step3Modal />}
 				/>
 				<Box mt="mxl">
 					<ButtonComp
