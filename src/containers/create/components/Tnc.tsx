@@ -11,9 +11,9 @@ import { CircleNotch } from 'phosphor-react';
 import toast, { Toaster } from 'react-hot-toast';
 import Checkbox from 'src/components/Checkbox';
 import Markdown from 'markdown-to-jsx';
-import { PINATA_HASH } from './utils';
-import { MDXProvider } from '@mdx-js/react';
 import Navbar from 'src/components/Navbar';
+import styled from 'styled-components';
+import BoxShadows from 'pages/styleguide/box-shadows';
 
 const Tnc = ({ setStep }) => {
 	const [provider] = useEthers();
@@ -56,7 +56,7 @@ const Tnc = ({ setStep }) => {
 	return (
 		<Box center minHeight="100vh" right="0" position="absolute" top="0" zIndex="16" backgroundColor="white">
 			<Navbar />
-			<Box width="100vw" minHeight="100vh" pt="16rem" bg="simply-white" column center overflowY="auto" mb="0">
+			<Box width="100vw" minHeight="100vh" pt="10rem" bg="simply-white" column center overflowY="auto" mb="0">
 				<Box top="12px">
 					<Toaster
 						position="top-center"
@@ -64,23 +64,21 @@ const Tnc = ({ setStep }) => {
 							duration: 5000,
 						}}
 					/>
-					<Box width="45.9rem" top="80px">
-						<Text as="h2" pb="mm" textAlign="center" color="simply-blue">
-							Welcome to Simplr!
-						</Text>
-						<Text as="b2" mb="mm" textAlign="center" color="#52575C">
-							We know you’re excited about getting started with your first ever project on simplr and we are too. For
-							that we need to make sure that you go through our Terms & Conditions for using Simplr.
-						</Text>
-						<Box mb="30px" center>
-							<Box
-								height="33.6rem"
-								width="40.6rem"
-								overflowY="scroll"
-								overflowX="hidden"
-								className="tnc-hidden-scrollbar"
-							>
-								<Markdown>{text}</Markdown>
+					<Box width="45.9rem" top="80px" center column>
+						<Box>
+							<Text as="h2" pb="mm" textAlign="center" color="simply-blue">
+								Welcome to Simplr!
+							</Text>
+							<Text as="b2" mb="mm" textAlign="center" color="#52575C">
+								We know you’re excited about getting started with your first ever project on simplr and we are too. For
+								that we need to make sure that you go through our Terms & Conditions for using Simplr.
+							</Text>
+						</Box>
+						<Box width="40.6rem" overflowY="scroll" overflowX="hidden" className="tnc-hidden-scrollbar" mb="mxxl">
+							<Box px="wm" maxHeight="33.6rem">
+								<Box>
+									<Markdown>{text}</Markdown>
+								</Box>
 							</Box>
 						</Box>
 						<Box center mb="mm">
@@ -97,6 +95,7 @@ const Tnc = ({ setStep }) => {
 								onClick={handleSignature}
 								disable={checkbox === false || loading === true}
 								center
+								px="mxxl"
 							>
 								<Box center ml="mxs" className="spin" display={loading === true ? 'flex' : 'none'}>
 									<CircleNotch size="24" />

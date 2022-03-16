@@ -61,6 +61,7 @@ svg {
 	margin-right: 2px;
 	border-radius: 16px;
 }
+
 .tnc-hidden-scrollbar::-webkit-scrollbar {
 	background: transparent;
 	width: 4px;
