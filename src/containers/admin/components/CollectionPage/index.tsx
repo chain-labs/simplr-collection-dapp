@@ -195,7 +195,9 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 								text="Reveal NFTS"
 								editfield="Reveal"
 								showModal={showModal}
+								type="url"
 								setShowModal={setShowModal}
+								placeholder="https://"
 								data={collection.projectURI}
 							/>
 						) : (
@@ -294,6 +296,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 							}`}
 						/>
 					</Box>
+
 					<Text as="h3" color="simply-blue" mt="wxl">
 						URI:
 					</Text>
@@ -330,7 +333,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 						</Box>
 						<Box ml="wm" />
 						<If
-							condition={collection.revealed === true}
+							condition={!collection.revealed}
 							then={
 								<Box flex={1}>
 									<Text as="h6" mb="mxs">

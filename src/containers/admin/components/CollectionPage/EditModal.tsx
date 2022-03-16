@@ -27,6 +27,8 @@ const EditModal = ({ visible, setVisible }: props) => {
 	const [value, setValue] = useState('');
 	const [step, setStep] = useState(0);
 	const [gas, setGas] = useState('');
+	const [fails, setFails] = useState(false);
+	const [buttonText, setButtonText] = useState('Proceed');
 
 	const [provider] = useEthers();
 	const [signer] = useSigner(provider);
@@ -49,11 +51,12 @@ const EditModal = ({ visible, setVisible }: props) => {
 				const gas = await modalData.contract.connect(signer).estimateGas.unpause();
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editfield === 'Reveal') {
-				const gas = await modalData.contract.connect(signer).estimateGas.setProjectURIAndReveal(modalData.data);
+				const gas = await modalData.contract.connect(signer).estimateGas.setProjectURIAndReveal(value);
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			}
 		} catch (err) {
 			console.log(err);
+			setFails(true);
 		}
 	};
 
@@ -72,44 +75,58 @@ const EditModal = ({ visible, setVisible }: props) => {
 	const handleAction = async () => {
 		if (step === 0) {
 			setStep(1);
+			setButtonText('Commit Change');
 		}
 		if (step === 1) {
 			setStep(2);
+			setButtonText('Opening Metamask');
 			if (provider && signer) {
 				try {
 					if (modalData.editfield === 'reserve tokens') {
-						console.log(modalData.editfield);
-
 						const transaction = await modalData.contract.connect(signer).reserveTokens(value);
+						if (transaction) {
+							setButtonText('Processing Transaction');
+						}
 						transaction
 							.wait()
 							.then(() => {
 								toast.success('Reserve token updated');
+								setButtonText('Return to Dashboard');
 								setStep(3);
 							})
-							.catch(() => {
+							.catch((err) => {
+								console.error({ err });
 								toast.error('An unexpected error occured');
 								setVisible(false);
 							});
 					}
 					if (modalData.editfield === 'wallet address') {
 						const transaction = await modalData.contract.connect(signer).transferOwnership(value);
+						if (transaction) {
+							setButtonText('Processing Transaction');
+						}
 						transaction
 							.wait()
 							.then(() => {
 								toast.success('Admin wallet address updated');
+								setButtonText('Return to Dashboard');
 								setStep(3);
 							})
-							.catch(() => {
+							.catch((err) => {
+								console.error({ err });
 								toast.error('An unexpected error occured');
 								setVisible(false);
 							});
 					}
 					if (modalData.editfield === 'Collection URI') {
 						const transaction = await modalData.contract.connect(signer).setProjectURI(value);
+						if (transaction) {
+							setButtonText('Processing Transaction');
+						}
 						transaction
 							.wait()
 							.then(() => {
+								setButtonText('Return to Dashboard');
 								toast.success('Collection URI updated');
 								setStep(3);
 							})
@@ -120,9 +137,13 @@ const EditModal = ({ visible, setVisible }: props) => {
 					}
 					if (modalData.editable === 'Live') {
 						const transaction = await modalData.contract.connect(signer).pause();
+						if (transaction) {
+							setButtonText('Processing Transaction');
+						}
 						transaction
 							.wait()
 							.then(() => {
+								setButtonText('Return to Dashboard');
 								toast.success('Sale Paused');
 								setStep(3);
 							})
@@ -133,10 +154,14 @@ const EditModal = ({ visible, setVisible }: props) => {
 					}
 					if (modalData.editable === 'Paused') {
 						const transaction = await modalData.contract.connect(signer).unpause();
+						if (transaction) {
+							setButtonText('Processing Transaction');
+						}
 						transaction
 							.wait()
 							.then(() => {
 								toast.success('Sale Unpaused');
+								setButtonText('Return to Dashboard');
 								setStep(3);
 							})
 							.catch(() => {
@@ -145,11 +170,15 @@ const EditModal = ({ visible, setVisible }: props) => {
 							});
 					}
 					if (modalData.editfield === 'Reveal') {
-						const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(modalData.data);
+						const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(value);
+						if (transaction) {
+							setButtonText('Processing Transaction');
+						}
 						transaction
 							.wait()
 							.then(() => {
-								toast.success('Sale Unpaused');
+								toast.success('Collection Revealed');
+								setButtonText('Return to Dashboard');
 								setStep(3);
 							})
 							.catch((err) => {
@@ -169,24 +198,25 @@ const EditModal = ({ visible, setVisible }: props) => {
 			setStep(3);
 		}
 		if (step === 3) {
+			setStep(0);
 			setVisible(false);
 		}
 	};
 
 	const getModalStep = () => {
 		if (step === 0) {
-			if (modalData.editable === 'Live' || modalData.editable === 'Paused' || modalData.editfield === 'Reveal')
-				return <StatusModal gas={gas} />;
+			if (modalData.editable === 'Live' || modalData.editable === 'Paused')
+				return <StatusModal gas={gas} fails={fails} />;
 			else return <Step1Modal value={value} setValue={setValue} gas={gas} />;
 		}
 		if (step === 1) {
-			return <Step2Modal gas={gas} />;
+			return <Step2Modal gas={gas} fails={fails} />;
 		}
 		if (step === 2) {
-			return <Step3Modal gas={gas} />;
+			return <Step3Modal />;
 		}
 		if (step === 3) {
-			return <Step4Modal />;
+			return <Step4Modal value={value} />;
 		}
 	};
 
@@ -225,19 +255,14 @@ const EditModal = ({ visible, setVisible }: props) => {
 							<ButtonComp
 								bg="primary"
 								height="40px"
+								width="100%"
 								onClick={handleAction}
 								mt="mxl"
 								disable={step === 2 ? true : false}
 								center
 							>
 								<Text as="h6" fontFamily="Switzer">
-									{step === 0
-										? 'Proceed'
-										: step === 1
-										? 'Commit Change'
-										: step === 2
-										? 'Opening Metamask'
-										: 'Return to Dashboard'}
+									{buttonText}
 								</Text>
 								{step === 2 ? (
 									<Box center className="spin" ml="mxs">
@@ -253,7 +278,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 					<If
 						condition={step === 0 || step === 1}
 						then={
-							<ButtonComp bg="secondary" height="40px" onClick={() => setVisible(false)} mt="ml">
+							<ButtonComp width="100%" bg="secondary" height="40px" onClick={() => setVisible(false)} mt="ml">
 								<Text as="h6" fontFamily="Switzer">
 									Cancel
 								</Text>

@@ -60,7 +60,12 @@ const AdminDashboardComponent = ({ metadata, id, ready }) => {
 					<Text as="b1" mr="mxxs">
 						Contract Address:
 					</Text>
-					<Box as="a" href={`${blockExplorer(user.network.chain)}/address/${id}`} target="_blank" rel="noreferrer">
+					<Box
+						as="a"
+						href={`${blockExplorer(user.network.chain)}/address/${`${id}`.split(':')[1]}`}
+						target="_blank"
+						rel="noreferrer"
+					>
 						<Text as="b1" color="simply-blue">
 							{`${id}`.split(':')[1]}
 						</Text>

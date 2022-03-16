@@ -44,6 +44,9 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 	};
 
 	const approvePass = async () => {
+		if (!payments.useEarlyPass) {
+			return true;
+		}
 		const walletAddress = user.address;
 
 		const operator = await CollectionFactory.address;
