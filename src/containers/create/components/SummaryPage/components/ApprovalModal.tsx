@@ -10,8 +10,6 @@ import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import useContract from 'src/ethereum/useContract';
 import { getContractDetails } from 'src/ethereum/useCustomContract';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
 import { paymentSelector } from 'src/redux/payment';
@@ -23,8 +21,6 @@ import DeployedModal from './DeployedModal';
 
 const ApprovalModal = ({ isOpen, setIsOpen }) => {
 	const payments = useAppSelector(paymentSelector);
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
 	const [SEATInstance, setSEATInstance] = useState(null);
 	const [step, setStep] = useState(payments.useEarlyPass ? 0 : 1);
 	const network = useAppSelector(networkSelector);
@@ -34,12 +30,12 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 	const [error, setError] = useState([false, false, false]);
 	const [finish, setFinish] = useState<string>(null);
 
-	const CollectionFactory = useContract('CollectionFactoryV2', network.chain, provider);
+	const CollectionFactory = useContract('CollectionFactoryV2', network.chain, user.provider);
 
 	const getSEATDetails = async () => {
 		const abi = getContractDetails('AffiliateCollection');
 		const seatAddress = await CollectionFactory.callStatic.freePass();
-		const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, provider);
+		const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, user.provider);
 		setSEATInstance(SEATInstance);
 	};
 
@@ -53,7 +49,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 		const allowance = await SEATInstance.isApprovedForAll(walletAddress, operator);
 
 		if (!allowance) {
-			const transaction = await SEATInstance.connect(signer).setApprovalForAll(operator, true);
+			const transaction = await SEATInstance.connect(user.signer).setApprovalForAll(operator, true);
 			const event = (await transaction.wait()).events?.filter((event) => event.event === 'ApprovalForAll');
 			return event;
 		} else {
@@ -69,7 +65,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 				uploadToIPFS(collection, sales, payments, address)
 					.then(async (res) => {
 						setStep(2);
-						createCollection(CollectionFactory, res.metadata, collection, sales, payments, signer)
+						createCollection(CollectionFactory, res.metadata, collection, sales, payments, user.signer)
 							.then((res) => {
 								setStep(3);
 								setFinish(res?.event?.collection);

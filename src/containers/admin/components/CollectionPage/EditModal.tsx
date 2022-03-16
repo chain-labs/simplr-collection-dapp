@@ -7,10 +7,9 @@ import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 import StatusModal from './StatusModal';
 import Step1Modal from './Step1Modal';
 import Step2Modal from './Step2Modal';
@@ -29,29 +28,28 @@ const EditModal = ({ visible, setVisible }: props) => {
 	const [gas, setGas] = useState('');
 	const [fails, setFails] = useState(false);
 	const [buttonText, setButtonText] = useState('Proceed');
+	const user = useAppSelector(userSelector);
 
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
 	const getGasPrice = async () => {
-		const fees = await provider?.getGasPrice();
+		const fees = await user.provider?.getGasPrice();
 		try {
 			if (modalData.editfield === 'reserve tokens') {
-				const gas = await modalData.contract.connect(signer).estimateGas.reserveTokens(value);
+				const gas = await modalData.contract.connect(user.signer).estimateGas.reserveTokens(value);
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editfield === 'wallet address') {
-				const gas = await modalData.contract.connect(signer).estimateGas.transferOwnership(value);
+				const gas = await modalData.contract.connect(user.signer).estimateGas.transferOwnership(value);
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editfield === 'Collection URI') {
-				const gas = await modalData.contract.connect(signer).estimateGas.setProjectURI(value);
+				const gas = await modalData.contract.connect(user.signer).estimateGas.setProjectURI(value);
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editable === 'Live') {
-				const gas = await modalData.contract.connect(signer).estimateGas.pause();
+				const gas = await modalData.contract.connect(user.signer).estimateGas.pause();
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editable === 'Paused') {
-				const gas = await modalData.contract.connect(signer).estimateGas.unpause();
+				const gas = await modalData.contract.connect(user.signer).estimateGas.unpause();
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editfield === 'Reveal') {
-				const gas = await modalData.contract.connect(signer).estimateGas.setProjectURIAndReveal(value);
+				const gas = await modalData.contract.connect(user.signer).estimateGas.setProjectURIAndReveal(value);
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			}
 		} catch (err) {
@@ -61,12 +59,12 @@ const EditModal = ({ visible, setVisible }: props) => {
 	};
 
 	useEffect(() => {
-		if (provider && signer && step < 2) getGasPrice();
+		if (user.provider && user.signer && step < 2) getGasPrice();
 	}, [step]);
 
 	useEffect(() => {
 		setTimeout(() => {
-			if (step < 2 && signer) {
+			if (step < 2 && user.signer) {
 				getGasPrice();
 			}
 		}, 4000);
@@ -80,10 +78,10 @@ const EditModal = ({ visible, setVisible }: props) => {
 		if (step === 1) {
 			setStep(2);
 			setButtonText('Opening Metamask');
-			if (provider && signer) {
+			if (user.provider && user.signer) {
 				try {
 					if (modalData.editfield === 'reserve tokens') {
-						const transaction = await modalData.contract.connect(signer).reserveTokens(value);
+						const transaction = await modalData.contract.connect(user.signer).reserveTokens(value);
 						if (transaction) {
 							setButtonText('Processing Transaction');
 						}
@@ -101,7 +99,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 							});
 					}
 					if (modalData.editfield === 'wallet address') {
-						const transaction = await modalData.contract.connect(signer).transferOwnership(value);
+						const transaction = await modalData.contract.connect(user.signer).transferOwnership(value);
 						if (transaction) {
 							setButtonText('Processing Transaction');
 						}
@@ -119,7 +117,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 							});
 					}
 					if (modalData.editfield === 'Collection URI') {
-						const transaction = await modalData.contract.connect(signer).setProjectURI(value);
+						const transaction = await modalData.contract.connect(user.signer).setProjectURI(value);
 						if (transaction) {
 							setButtonText('Processing Transaction');
 						}
@@ -136,7 +134,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 							});
 					}
 					if (modalData.editable === 'Live') {
-						const transaction = await modalData.contract.connect(signer).pause();
+						const transaction = await modalData.contract.connect(user.signer).pause();
 						if (transaction) {
 							setButtonText('Processing Transaction');
 						}
@@ -153,7 +151,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 							});
 					}
 					if (modalData.editable === 'Paused') {
-						const transaction = await modalData.contract.connect(signer).unpause();
+						const transaction = await modalData.contract.connect(user.signer).unpause();
 						if (transaction) {
 							setButtonText('Processing Transaction');
 						}
@@ -170,7 +168,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 							});
 					}
 					if (modalData.editfield === 'Reveal') {
-						const transaction = await modalData.contract.connect(signer).setProjectURIAndReveal(value);
+						const transaction = await modalData.contract.connect(user.signer).setProjectURIAndReveal(value);
 						if (transaction) {
 							setButtonText('Processing Transaction');
 						}

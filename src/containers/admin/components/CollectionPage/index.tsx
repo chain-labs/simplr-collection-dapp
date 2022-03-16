@@ -86,8 +86,6 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 					}
 				}
 				setCollection(details);
-				console.log({ details });
-
 				return details;
 			} catch (error) {
 				console.log(error);
