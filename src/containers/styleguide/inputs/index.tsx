@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Box from 'src/components/Box';
-import DateTime from 'src/components/DateTime';
 import Dropdown from 'src/components/Dropdown';
 import InputSlider from 'src/components/InputSlider';
 import LabelledTextInput from 'src/components/LabelledTextInput';
@@ -19,7 +18,6 @@ const InputComponents = () => {
 	const [date, setDate] = useState('');
 	const [price, setPrice] = useState<number>(0);
 	const [search, setSearch] = useState('');
-	const [timestamp, setTimestamp] = useState<number>(null);
 
 	const unit = 'ETH';
 

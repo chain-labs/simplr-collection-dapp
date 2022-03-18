@@ -1,16 +1,34 @@
 import styled from 'styled-components';
 import Box from './Box';
 
-const TextArea = ({ value, setValue }: { value: string; setValue: (string) => void }) => {
-	return <TextAreaElement as="textarea" value={value} onChange={(e) => setValue(e.target.value)} />;
+const TextArea = ({
+	value,
+	setValue,
+	width,
+	height,
+}: {
+	value: string;
+	setValue: (string) => void;
+	width?: string;
+	height?: string;
+}) => {
+	return (
+		<TextAreaElement
+			as="textarea"
+			value={value}
+			width={width}
+			height={height}
+			onChange={(e) => setValue(e.target.value)}
+		/>
+	);
 };
 
 export default TextArea;
 
 const TextAreaElement = styled(Box)(
 	(props) => `
-        width: 320px;
-        height: 90px;
+        width: ${props.width ?? '320px'};
+        height: ${props.height ?? '90px'};
         background: ${props.theme.colors['blue-00']};
         box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1);
         border-radius: 8px;

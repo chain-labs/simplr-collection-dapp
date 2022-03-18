@@ -6,8 +6,6 @@ import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import { getUnitByChainId } from 'src/utils/chains';
@@ -23,9 +21,6 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 	const [totalFunds, setTotalFunds] = useState('');
 	const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(0);
 	const [admin, setAdmin] = useState('');
-
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
 
 	const user = useAppSelector(userSelector);
 
@@ -44,8 +39,8 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 			try {
 				if (metadata) {
 					const getPayment = async (share) => {
-						if (provider) {
-							const balance = await provider?.getBalance(contract.address);
+						if (user.provider) {
+							const balance = await user.provider?.getBalance(contract.address);
 							const totalReleased = await contract.callStatic['totalReleased()']();
 							const totalFunds = balance.add(totalReleased);
 							const totalShares = await contract.callStatic.totalShares();
@@ -78,7 +73,7 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 			}
 		};
 		if (isWithdrawModalOpen === 0 && ready) hydrate();
-	}, [metadata, user, provider, isWithdrawModalOpen]);
+	}, [metadata, user, user.provider, isWithdrawModalOpen]);
 
 	const withdraw = async () => {
 		toast.loading('Transaction is processing!', {
@@ -86,7 +81,7 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 		});
 
 		const transaction = await contract
-			.connect(signer)
+			.connect(user.signer)
 			['release(address)'](user.address)
 			.catch(() => setIsWithdrawModalOpen(2));
 		const getEvent = async (transaction) => {
@@ -200,7 +195,7 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 					</Box>
 				</Box>
 			</Box>
-			<Royalties {...{ contract, admin, signer, ready }} />
+			<Royalties {...{ contract, admin, signer: user.signer, ready }} />
 		</Box>
 	);
 };

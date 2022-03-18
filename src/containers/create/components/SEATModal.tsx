@@ -48,7 +48,6 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Prop
 				}
 			);
 	};
-
 	if (!isOpen) {
 		return null;
 	} else {
@@ -58,7 +57,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Prop
 				<Box column minHeight="100vh" position="absolute" top="0" zIndex="-1">
 					<Box width="100vw" minHeight="100vh" pt="16rem" bg="simply-white" column center overflowY="auto" mb="0">
 						<If
-							condition={!loading}
+							condition={!loading && !load}
 							then={
 								<>
 									<Box borderRadius="16px" boxShadow="shadow-500" py="wxs" px="mxxxl" maxWidth="43rem" column mb="wxs">

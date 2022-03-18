@@ -16,8 +16,6 @@ const useCustomContract = (contractName: string, contractAddress: string, provid
 		if (providers.Provider.isProvider(provider) && contractAddress) {
 			try {
 				const abi = getContractDetails(contractName);
-				console.log({ abi, contractAddress });
-
 				setContract(new ethers.Contract(contractAddress, abi, provider));
 			} catch (error) {
 				setContract(undefined);
