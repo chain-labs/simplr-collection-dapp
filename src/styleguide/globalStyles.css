@@ -62,6 +62,17 @@ svg {
 	border-radius: 16px;
 }
 
+.tnc-hidden-scrollbar::-webkit-scrollbar {
+	background: transparent;
+	width: 4px;
+	margin-left: 16px;
+}
+
+.tnc-hidden-scrollbar::-webkit-scrollbar-thumb {
+	background: #DCDCE5;
+	border-radius: 16px;
+}
+
 .absolute-center {
 	position: absolute;
 	top: 50%;

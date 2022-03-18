@@ -4,13 +4,13 @@ import SalesPage from './components/SalesPage';
 import PaymentPage from './components/PaymentPage';
 import CollectionPage from './components/CollectionPage';
 import SEATModal from './components/SEATModal';
-import { useAppSelector } from 'src/redux/hooks';
-import { userSelector } from 'src/redux/user';
+import Tnc from './components/Tnc';
+import If from 'src/components/If';
 
 const CreateComp = ({ balance }) => {
-	const [step, setStep] = useState(0);
+	const [step, setStep] = useState<number>();
 	const [isModalOpen, setIsModalOpen] = useState(true);
-	const user = useAppSelector(userSelector);
+	const [tncStatus, setTncStatus] = useState('');
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -23,10 +23,14 @@ const CreateComp = ({ balance }) => {
 	}, []);
 
 	useEffect(() => {
-		setIsModalOpen(true);
-	}, [user.network, user.address]);
+		if (tncStatus === 'unsigned') setStep(-1);
+		if (tncStatus === 'signed') setStep(0);
+	}, [tncStatus]);
 
-	const getFormPage = (step) => {
+	const getFormPage = () => {
+		if (step === -1) {
+			return <Tnc setStep={setStep} />;
+		}
 		if (step === 1) {
 			return <SalesPage setStep={setStep} step={step} />;
 		}
@@ -45,8 +49,9 @@ const CreateComp = ({ balance }) => {
 				setIsOpen={setIsModalOpen}
 				earlyPass={balance.value > 0}
 				loading={balance.loading}
+				setTncStatus={setTncStatus}
 			/>
-			{getFormPage(step)}
+			{getFormPage()}
 		</Box>
 	);
 };
