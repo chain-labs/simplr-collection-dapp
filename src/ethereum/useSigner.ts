@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
-import { ProviderProps, SignerProps, UseSignerResult } from './types';
+import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
+import { SignerProps, UseSignerResult } from './types';
 
-const useSigner = (provider: ProviderProps): UseSignerResult => {
+const useSigner = (): UseSignerResult => {
 	const [signer, setSigner] = useState<SignerProps>(null);
 
+	const user = useAppSelector(userSelector);
+
 	useEffect(() => {
-		if (provider?.provider) {
-			setSigner(provider?.getSigner());
+		if (user.provider?.provider) {
+			setSigner(user.provider?.getSigner());
 		}
-	}, [provider]);
+	}, [user.provider]);
 
 	return [signer, setSigner];
 };

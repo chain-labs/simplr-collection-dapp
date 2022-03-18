@@ -13,10 +13,9 @@ import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { getTimestamp } from 'src/containers/create/components/SalesPage';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { timezones } from 'src/utils/timezones';
 import Step2Modal from './Step2Modal';
@@ -57,11 +56,10 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	const [step, setStep] = useState(0);
 	const [gas, setGas] = useState('');
 	const { contract } = useAppSelector(editSelector);
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
 	const [saleTime, setSaleTime] = useState(null);
 	const [presaleTime, setPresaleTime] = useState(null);
 	const [error, setError] = useState(false);
+	const user = useAppSelector(userSelector);
 
 	const getContractDetails = async () => {
 		const saleTime = await contract.callStatic.publicSaleStartTime();
@@ -116,7 +114,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	const setNewTime = async () => {
 		try {
 			const transaction = await contract
-				.connect(signer)
+				.connect(user.signer)
 				.setSaleStartTime(getTimestamp({ date, time, timezone }), type !== 'presale');
 			if (transaction) {
 				setInfo({ ...info, cta: 'Processing Transaction' });
@@ -135,9 +133,9 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	};
 
 	const getGas = async () => {
-		const fees = await provider?.getGasPrice();
+		const fees = await user.provider?.getGasPrice();
 		const gas = await contract
-			.connect(signer)
+			.connect(user.signer)
 			.estimateGas.setSaleStartTime(getTimestamp({ date, time, timezone }), type === 'sale');
 		setGas(ethers.utils.formatUnits(gas.mul(fees)));
 	};

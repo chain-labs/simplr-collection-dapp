@@ -1,58 +1,90 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
-import useEthers, { requestAccount } from 'src/ethereum/useEthers';
 import useListeners from 'src/ethereum/useListeners';
 import useSigner from 'src/ethereum/useSigner';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { networkSelector, setNetwork, setUser, userSelector } from 'src/redux/user';
+import { networkSelector, setNetwork, userSelector, setProvider, setUser, removeUser } from 'src/redux/user';
 import Container from './Container';
 import Text from './Text';
 
-import Wordmark from 'public/wordmark.svg';
 import { networks } from 'src/redux/collection/types';
 import If from './If';
-import { CopySimple } from 'phosphor-react';
+import { CopySimple, WarningCircle } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 import toast from 'react-hot-toast';
+import ButtonComp from './Button';
+import { ProviderProps } from 'src/ethereum/types';
+import { ethers } from 'ethers';
 
 const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
+	const [wrongNetwork, setWrongNetwork] = useState(false);
 
 	const network = useAppSelector(networkSelector);
+	const [signer, setSigner] = useSigner();
 
-	const [provider, setProvider] = useEthers();
-	const [signer, setSigner] = useSigner(provider);
-	useListeners(provider, setProvider, setSigner);
+	const setAppProviders = (provider: ProviderProps) => {
+		dispatch(setProvider({ provider }));
+	};
+	useListeners(user.provider, setAppProviders, setSigner);
+
+	// useEffect(() => {
+	// 	if (process.browser) {
+	// 		window.ethereum.enable();
+	// 		const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+	// 		dispatch(setProvider({ provider }));
+	// 	}
+	// }, []);
 
 	useEffect(() => {
 		const getChain = async () => {
-			const network = await provider.getNetwork();
+			const network = await user.provider.getNetwork();
 			const chainId = network.chainId;
-			dispatch(setNetwork({ chain: chainId, name: networks[chainId].name, id: networks[chainId].id }));
+			if (networks[chainId]) {
+				dispatch(setNetwork({ chain: chainId, name: networks[chainId].name, id: networks[chainId].id }));
+			} else {
+				setWrongNetwork(true);
+				dispatch(removeUser());
+			}
 		};
-		if (provider) {
+		if (user.provider) {
 			getChain();
 		}
-	}, [provider, signer]);
+	}, [user.provider, signer]);
 
 	useEffect(() => {
 		if (process.browser) {
 			// @ts-expect-error ethereum in window is not defined
 			window?.ethereum.on('chainChanged', (chainId) => {
 				const chain = parseInt(chainId, 16);
-				const network = {
-					chain: chain,
-					name: networks?.[chain]?.name,
-					id: networks?.[chain]?.id,
-				};
-				if (chain !== network.chain) dispatch(setNetwork(network));
+				if (networks[chain]) {
+					const network = {
+						chain: chain,
+						name: networks?.[chain]?.name,
+						id: networks?.[chain]?.id,
+					};
+
+					dispatch(setNetwork(network));
+				} else {
+					setWrongNetwork(true);
+					dispatch(removeUser());
+				}
 			});
 		}
 	}, []);
 
 	const handleConnectWallet = () => {
-		requestAccount();
+		if (process.browser) {
+			const getProvider = async () => {
+				// @ts-expect-error ethereum in window is not defined
+				const provider = await new ethers.providers.Web3Provider(window.ethereum, 'any');
+				// @ts-expect-error ethereum in window is not defined
+				window.ethereum.enable();
+				dispatch(setProvider({ provider }));
+			};
+			getProvider();
+		}
 	};
 
 	useEffect(() => {
@@ -99,39 +131,83 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 
 	return (
 		<Box position="fixed" top="0" left="0" width="100%" zIndex={14}>
-			<Box bg="#F8F8F8">
+			<Box bg="#F8F8F8" py={!user.exists ? 'wxxs' : '0'}>
 				<Container>
 					<Box display="flex" justifyContent="space-between" alignItems="center">
-						<Wordmark />
-						<Box
-							border="1px solid"
-							borderColor="black-10"
-							borderRadius="4px"
-							my="ml"
-							py="mm"
-							px="ms"
-							onClick={
-								!user.exists
-									? handleConnectWallet
-									: () => {
-											navigator.clipboard.writeText(user.address);
-											toast.success('Copied to clipboard');
-									  }
+						<Box as="img" src="/static/images/png/logo.png" />
+						<If
+							condition={user.exists}
+							then={
+								<Box
+									border="1px solid"
+									borderColor="black-10"
+									borderRadius="4px"
+									my="ml"
+									py="mm"
+									px="ms"
+									onClick={
+										!user.exists
+											? handleConnectWallet
+											: () => {
+													navigator.clipboard.writeText(user.address);
+													toast.success('Copied to clipboard');
+											  }
+									}
+									cursor="pointer"
+									row
+									center
+								>
+									<Box height="20px" width="20px" borderRadius="50%" bg={getBg(user.network.chain)} />
+									<Text as="h5" mx="mxs">
+										{network.name}
+									</Text>
+									<Box height="20px" width="0.1rem" bg="black-10" mr="mxs" />
+									<Text as="h5" mx="mxs" color="simply-blue">
+										{`${user.address.substring(0, 5)}...${user.address.substr(-4)}`}
+									</Text>
+									<CopySimple color={theme.colors['simply-blue']} size="20" />
+								</Box>
 							}
-							cursor="pointer"
-							row
-							center
-						>
-							<Box height="20px" width="20px" borderRadius="50%" bg={getBg(user.network.chain)} />
-							<Text as="h5" mx="mxs">
-								{network.name}
-							</Text>
-							<Box height="20px" width="0.1rem" bg="black-10" mr="mxs" />
-							<Text as="h5" mx="mxs" color="simply-blue">
-								{`${user.address.substring(0, 5)}...${user.address.substr(-4)}`}
-							</Text>
-							<CopySimple color={theme.colors['simply-blue']} size="20" />
-						</Box>
+							else={
+								<Box position="absolute" zIndex={-1} top="0" left="0" height="100vh" width="100vw" bg="simply-white">
+									<Box mx="auto" width="80%" row between height="100%">
+										<Box maxWidth="40rem">
+											<Text as="h2" color="simply-blue" mb="ms">
+												Create and manage cost effective NFT Collections.
+											</Text>
+											<Text as="b2" mb="mxl">
+												Simplr is an easy to use, no-code platform to create NFT smart contracts and launch your NFT
+												projects without any hassle.
+											</Text>
+											<ButtonComp
+												bg="primary"
+												height="56px"
+												py="mm"
+												width="100%"
+												onClick={() => {
+													handleConnectWallet();
+												}}
+											>
+												<Text as="h4">Connect Metamask</Text>
+											</ButtonComp>
+											<If
+												condition={wrongNetwork}
+												then={
+													<Box row mt="mm">
+														<WarningCircle weight="fill" color={theme.colors['red-50']} size="24" />
+														<Text as="c3" color="red-50" ml="mxs">
+															We currently only support Ethereum and Polygon. Please switch your network to either of
+															those and try again.
+														</Text>
+													</Box>
+												}
+											/>
+										</Box>
+										<Box as="img" src="/static/images/png/hero_image.png"></Box>
+									</Box>
+								</Box>
+							}
+						/>
 					</Box>
 				</Container>
 			</Box>
