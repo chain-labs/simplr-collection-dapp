@@ -1,6 +1,5 @@
 /* eslint-disable react/no-children-prop */
-import { CaretRight, Check, CheckCircle } from 'phosphor-react';
-import ReactDom from 'react-dom';
+import { CaretRight, CheckCircle } from 'phosphor-react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
@@ -25,7 +24,6 @@ interface Props {
 const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Props) => {
 	const [address, setAddress] = useState<string>();
 	const userAddress = useAppSelector(userSelector);
-	const [text, setText] = useState('');
 
 	useEffect(() => {
 		setAddress(userAddress.address);
@@ -57,7 +55,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Prop
 				<Box column minHeight="100vh" position="absolute" top="0" zIndex="-1">
 					<Box width="100vw" minHeight="100vh" pt="16rem" bg="simply-white" column center overflowY="auto" mb="0">
 						<If
-							condition={!loading && !load}
+							condition={!loading}
 							then={
 								<>
 									<Box borderRadius="16px" boxShadow="shadow-500" py="wxs" px="mxxxl" maxWidth="43rem" column mb="wxs">

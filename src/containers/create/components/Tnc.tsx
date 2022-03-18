@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import Text from 'src/components/Text';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import { signString } from './signDoc';
 import axios from 'axios';
 import { CircleNotch } from 'phosphor-react';
@@ -12,12 +10,11 @@ import toast, { Toaster } from 'react-hot-toast';
 import Checkbox from 'src/components/Checkbox';
 import Markdown from 'markdown-to-jsx';
 import Navbar from 'src/components/Navbar';
-import styled from 'styled-components';
-import BoxShadows from 'pages/styleguide/box-shadows';
+import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 
 const Tnc = ({ setStep }) => {
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
+	const user = useAppSelector(userSelector);
 	const [loading, setLoading] = useState(false);
 	const [checkbox, setCheckbox] = useState(false);
 	const [text, setText] = useState('');
@@ -34,7 +31,7 @@ const Tnc = ({ setStep }) => {
 	const handleSignature = async () => {
 		setLoading(true);
 		const date = new Date();
-		const signature = await signString(signer, date);
+		const signature = await signString(user.signer, date);
 		await axios
 			.post('https://simplr-tnc-microservice.herokuapp.com/signDoc', {
 				signer: signature.signer,
