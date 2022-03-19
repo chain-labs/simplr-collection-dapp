@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import Text from 'src/components/Text';
-import { signString } from './signDoc';
 import axios from 'axios';
 import { CircleNotch } from 'phosphor-react';
 import toast, { Toaster } from 'react-hot-toast';
@@ -12,6 +11,7 @@ import Markdown from 'markdown-to-jsx';
 import Navbar from 'src/components/Navbar';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
+import { signString } from './signDoc';
 
 const Tnc = ({ setStep }) => {
 	const user = useAppSelector(userSelector);
@@ -23,7 +23,6 @@ const Tnc = ({ setStep }) => {
 		fetch(`https://simplr.mypinata.cloud/ipfs/${process.env.NEXT_PUBLIC_MARKDOWN_HASH}`)
 			.then((response) => response.text())
 			.then((text) => {
-				console.log(text);
 				setText(text);
 			});
 	}, []);
@@ -31,23 +30,30 @@ const Tnc = ({ setStep }) => {
 	const handleSignature = async () => {
 		setLoading(true);
 		const date = new Date();
-		const signature = await signString(user.signer, date);
-		await axios
-			.post('https://simplr-tnc-microservice.herokuapp.com/signDoc', {
-				signer: signature.signer,
-				signature: signature.signature,
-				message: signature.message,
+		signString(user.signer, date)
+			.then((signature) => {
+				axios
+					.post('https://simplr-tnc-microservice.herokuapp.com/signDoc', {
+						signer: signature.signer,
+						signature: signature.signature,
+						message: signature.message,
+					})
+					.then(
+						(response) => {
+							toast.success('Signed successfully');
+							setStep(0);
+							setLoading(false);
+						},
+						(error) => {
+							toast.error('Something went wrong');
+							setLoading(false);
+						}
+					);
 			})
-			.then(
-				(response) => {
-					toast.success('Signed successfully');
-				},
-				(error) => {
-					toast.error('Something went wrong');
-				}
-			);
-		setStep(0);
-		setLoading(false);
+			.catch((error) => {
+				toast.error('Something went wrong');
+				setLoading(false);
+			});
 	};
 
 	return (
