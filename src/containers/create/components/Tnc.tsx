@@ -71,7 +71,14 @@ const Tnc = ({ setStep }) => {
 								that we need to make sure that you go through our Terms & Conditions for using Simplr.
 							</Text>
 						</Box>
-						<Box width="48.6rem" overflowY="scroll" className="tnc-hidden-scrollbar" mb="mxxl" color="#949499">
+						<Box
+							width="48.6rem"
+							overflowY="scroll"
+							overflowX="hidden"
+							className="tnc-hidden-scrollbar"
+							mb="mxxl"
+							color="#949499"
+						>
 							<Box px="wm" maxHeight="35.6rem">
 								<Box>
 									<Markdown>{text}</Markdown>
