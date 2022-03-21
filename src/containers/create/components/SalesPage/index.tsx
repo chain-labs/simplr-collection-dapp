@@ -34,7 +34,8 @@ export const getUnit = (network) => {
 export const getTimestamp = (timeObject: DateType) => {
 	const { date, time, timezone } = timeObject;
 	const label = timezone?.split(' ')[0];
-	const timestamp = Date.parse(`${date} ${time} ${label ?? `GMT${new Date().toString().split('GMT')[1]}`}`) / 1000;
+	const newDate = date.replace(/-/g, '/');
+	const timestamp = Date.parse(`${newDate} ${time} ${label ?? `GMT${new Date().toString().split('GMT')[1]}`}`) / 1000;
 	return timestamp;
 };
 
