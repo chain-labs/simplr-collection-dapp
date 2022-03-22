@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { networkSelector, setNetwork, userSelector, setProvider, setUser, removeUser, setSigner } from 'src/redux/user';
 import Container from './Container';
 import Text from './Text';
+import contracts from 'src/contracts/contracts.json';
 
 import { networks } from 'src/redux/collection/types';
 import If from './If';
@@ -42,7 +43,8 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 		const getChain = async () => {
 			const network = await user.provider.getNetwork();
 			const chainId = network.chainId;
-			if (networks[chainId]) {
+			const contractArtefact = contracts?.[chainId];
+			if (contractArtefact[Object.keys(contractArtefact)[0]]?.contracts?.['CollectionFactoryV2']) {
 				dispatch(setNetwork({ chain: chainId, name: networks[chainId].name, id: networks[chainId].id }));
 			} else {
 				setWrongNetwork(true);
@@ -59,7 +61,9 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 			// @ts-expect-error ethereum in window is not defined
 			window?.ethereum.on('chainChanged', (chainId) => {
 				const chain = parseInt(chainId, 16);
-				if (networks[chain]) {
+				const contractArtefact = contracts?.[chain];
+
+				if (contractArtefact[Object.keys(contractArtefact)[0]]?.contracts?.['CollectionFactoryV2']) {
 					const network = {
 						chain: chain,
 						name: networks?.[chain]?.name,
@@ -189,7 +193,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 													handleConnectWallet();
 												}}
 											>
-												<Text as="h4">Connect Metamask</Text>
+												<Text as="h4">Connect Wallet</Text>
 											</ButtonComp>
 											<If
 												condition={wrongNetwork}
