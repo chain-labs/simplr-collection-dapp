@@ -1,3 +1,5 @@
+import { Question } from 'phosphor-react';
+import { useState } from 'react';
 import Box from 'src/components/Box';
 import If from 'src/components/If';
 import Text from 'src/components/Text';
@@ -10,12 +12,53 @@ import { getUnitByChainId } from 'src/utils/chains';
 const Step1Modal = ({ value, setValue, gas }) => {
 	const modalData = useAppSelector(editSelector);
 	const currentNetwork = useAppSelector(networkSelector);
+	const [showTooltip, setShowTooltip] = useState(false);
 
 	return (
 		<Box>
-			<Text as="b3" fontWeight="medium" mb="ms" fontFamily="Switzer">
-				Enter new {modalData.label.toLocaleLowerCase()}
-			</Text>
+			<If
+				condition={modalData.editfield === 'Reveal'}
+				then={
+					<Text as="b3" fontWeight="medium" mb="ms" fontFamily="Switzer" row alignItems="center">
+						Enter Collection URI
+						<Box
+							onMouseEnter={() => setShowTooltip(true)}
+							onMouseLeave={() => setShowTooltip(false)}
+							ml="mxs"
+							center
+							cursor="pointer"
+							width="30px"
+						>
+							<Question color="simply-black" weight="fill" />
+						</Box>
+						<If
+							condition={showTooltip}
+							then={
+								<Box
+									overflow="visible"
+									position="absolute"
+									width="31rem"
+									backgroundColor="#F6F6FF"
+									padding="16px"
+									borderRadius="12px"
+									zIndex={25}
+									mt="-10rem"
+									ml="17rem"
+									boxShadow="shadow-100"
+									border="1px solid rgba(171, 171, 178, 0.3)"
+								>
+									<Text as="c1">Collection URI is the URL where your NFT media and metadata are stored.</Text>
+								</Box>
+							}
+						/>
+					</Text>
+				}
+				else={
+					<Text as="b3" fontWeight="medium" mb="ms" fontFamily="Switzer">
+						Enter new {modalData.label.toLocaleLowerCase()}
+					</Text>
+				}
+			/>
 			<If
 				condition={modalData.type === 'number'}
 				then={
@@ -52,15 +95,15 @@ const Step1Modal = ({ value, setValue, gas }) => {
 			/>
 
 			<Box mt="mxxl" />
-			<Text as="c1" color="gray-00">
-				OLD DATA : {modalData.data}
-			</Text>
-			<Text as="c1" color="gray-00" display="flex">
-				ESTIMATED GAS COST :{' '}
-				<Text as="c1" color="simply-blue">
-					{gas ? `${gas} ${getUnitByChainId(currentNetwork.chain)}` : 'Fetching...'}
-				</Text>
-			</Text>
+			<If
+				condition={modalData.editfield !== 'Reveal'}
+				then={
+					<Text as="c1" color="gray-00">
+						OLD DATA : {modalData.data}
+					</Text>
+				}
+				else={<Text as="h6">Every change in the smart contract costs gas. Do you want to commit these changes?</Text>}
+			/>
 		</Box>
 	);
 };

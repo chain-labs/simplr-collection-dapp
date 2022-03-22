@@ -34,7 +34,8 @@ export const getUnit = (network) => {
 export const getTimestamp = (timeObject: DateType) => {
 	const { date, time, timezone } = timeObject;
 	const label = timezone?.split(' ')[0];
-	const timestamp = Date.parse(`${date} ${time} ${label ?? `GMT${new Date().toString().split('GMT')[1]}`}`) / 1000;
+	const newDate = date.replace(/-/g, '/');
+	const timestamp = Date.parse(`${newDate} ${time} ${label ?? `GMT${new Date().toString().split('GMT')[1]}`}`) / 1000;
 	return timestamp;
 };
 
@@ -101,11 +102,11 @@ const SalesPage = ({ step, setStep }) => {
 		e.preventDefault();
 		const date = Date.now() / 1000;
 		const publicSaleTime = getTimestamp(publicSaleLaunchTimestamp);
-
 		if (+publicSaleTime < date) {
 			toast.error('Invalid time');
 			return;
 		}
+
 		if (isPresaleable) {
 			const presaleTime = getTimestamp(presaleStartTime);
 			if (+presaleReservedTokens > +maxTokens) {
@@ -167,7 +168,7 @@ const SalesPage = ({ step, setStep }) => {
 					<LabelledTextInput
 						type="number"
 						min="1"
-						max={maxTokens?.toString()}
+						max={maxHolding?.toString()}
 						label="Maximum NFTs allowed to buy per sale"
 						helperText="Maximum number of NFTs a user can buy at once"
 						required

@@ -13,10 +13,9 @@ import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { getTimestamp } from 'src/containers/create/components/SalesPage';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { timezones } from 'src/utils/timezones';
 import Step2Modal from './Step2Modal';
@@ -57,11 +56,10 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	const [step, setStep] = useState(0);
 	const [gas, setGas] = useState('');
 	const { contract } = useAppSelector(editSelector);
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
 	const [saleTime, setSaleTime] = useState(null);
 	const [presaleTime, setPresaleTime] = useState(null);
 	const [error, setError] = useState(false);
+	const user = useAppSelector(userSelector);
 
 	const getContractDetails = async () => {
 		const saleTime = await contract.callStatic.publicSaleStartTime();
@@ -77,12 +75,14 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	}, [contract]);
 
 	useEffect(() => {
-		const now = new Date().toString();
-		const timezone = now.split(' ')[5];
-		setTimezone(`${timezone.substring(0, 6)}:${timezone.substr(-2)}`);
-		const oldDate = new Date(parseInt(data) * 1000);
-		setOldDate(format(oldDate, 'dd/MM/yyyy'));
-		setOldTime(format(oldDate, 'OOOOO, pp'));
+		if (!oldDate) {
+			const now = new Date().toString();
+			const timezone = now.split(' ')[5];
+			setTimezone(`${timezone.substring(0, 6)}:${timezone.substr(-2)}`);
+			const oldDate = new Date(parseInt(data) * 1000);
+			setOldDate(format(oldDate, 'dd/MM/yyyy'));
+			setOldTime(format(oldDate, 'OOOOO, pp'));
+		}
 	}, [data]);
 
 	const handleSave = async () => {
@@ -114,8 +114,11 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	const setNewTime = async () => {
 		try {
 			const transaction = await contract
-				.connect(signer)
+				.connect(user.signer)
 				.setSaleStartTime(getTimestamp({ date, time, timezone }), type !== 'presale');
+			if (transaction) {
+				setInfo({ ...info, cta: 'Processing Transaction' });
+			}
 			const event = (await transaction.wait())?.events;
 			return event;
 		} catch (err) {
@@ -130,9 +133,9 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	};
 
 	const getGas = async () => {
-		const fees = await provider?.getGasPrice();
+		const fees = await user.provider?.getGasPrice();
 		const gas = await contract
-			.connect(signer)
+			.connect(user.signer)
 			.estimateGas.setSaleStartTime(getTimestamp({ date, time, timezone }), type === 'sale');
 		setGas(ethers.utils.formatUnits(gas.mul(fees)));
 	};
@@ -167,7 +170,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 				return <Step2Modal gas={gas} />;
 			}
 			case 2: {
-				return <Step3Modal gas={gas} />;
+				return <Step3Modal />;
 			}
 		}
 	};
@@ -239,7 +242,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 										<Box my="mxl">
 											<Box row>
 												<Text as="c1" fontWeight="bold" color="disable-black">
-													CURRENT DATE:
+													PREVIOUS DATE:
 												</Text>
 												<Text as="c1" color="simply-blue" ml="mxs">
 													{oldDate}
@@ -247,7 +250,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 											</Box>
 											<Box row>
 												<Text as="c1" fontWeight="bold" color="disable-black">
-													CURRENT TIME:
+													PREVIOUS TIME:
 												</Text>
 												<Text as="c1" color="simply-blue" ml="mxs">
 													{oldTime}
@@ -263,7 +266,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 															UPDATED DATE:
 														</Text>
 														<Text as="c1" color="simply-blue" ml="mxs">
-															{date && time
+															{step === 3 && date && time
 																? format(new Date(getTimestamp({ date, time, timezone }) * 1000), 'dd/MM/yyyy')
 																: ''}
 														</Text>
@@ -273,7 +276,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 															UPDATED TIME:
 														</Text>
 														<Text as="c1" color="simply-blue" ml="mxs">
-															{data && time
+															{step === 3 && date && time
 																? format(new Date(getTimestamp({ date, time, timezone }) * 1000), 'OOOOO, pp')
 																: ''}
 														</Text>

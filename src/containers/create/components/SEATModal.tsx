@@ -1,3 +1,4 @@
+/* eslint-disable react/no-children-prop */
 import { CaretRight, CheckCircle } from 'phosphor-react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -7,15 +8,44 @@ import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
 import Navbar from 'src/components/Navbar';
 import { SEAT_TOGGLE, toBoolean } from 'src/utils/constants';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 
 interface Props {
 	isOpen: boolean;
 	setIsOpen: (boolean) => void;
 	earlyPass?: boolean;
 	loading?: boolean;
+	setTncStatus?: (any) => void;
 }
 
-const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
+const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Props) => {
+	const [address, setAddress] = useState<string>();
+	const userAddress = useAppSelector(userSelector);
+
+	useEffect(() => {
+		setAddress(userAddress.address);
+	}, [userAddress]);
+
+	const handleSeat = async () => {
+		setIsOpen(false);
+		axios
+			.post('https://simplr-tnc-microservice.herokuapp.com/getUserBySigner', {
+				signer: address,
+			})
+			.then(
+				(response) => {
+					if (response.data.status === 'true') {
+						setTncStatus('signed');
+					} else setTncStatus('unsigned');
+				},
+				(error) => {
+					console.log(error);
+				}
+			);
+	};
 	if (!isOpen) {
 		return null;
 	} else {
@@ -46,12 +76,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
 											<Box mt="ms" />
 											<Benefit title="Skip Waitlist" />
 										</Box>
-										<ButtonComp
-											bg="primary"
-											height="48px"
-											width="100%"
-											onClick={earlyPass ? () => setIsOpen(false) : null}
-										>
+										<ButtonComp bg="primary" height="48px" width="100%" onClick={earlyPass ? () => handleSeat() : null}>
 											<Text as="h5">{earlyPass ? "Let's Go!" : 'Get a SEAT!'}</Text>
 										</ButtonComp>
 										<If
@@ -64,7 +89,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading }: Props) => {
 													center
 													row
 													cursor="pointer"
-													onClick={() => setIsOpen(false)}
+													onClick={() => handleSeat()}
 												>
 													Continue without SEAT
 													<CaretRight size="16" color={theme.colors['simply-blue']} />

@@ -5,6 +5,7 @@ import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
+import TextArea from 'src/components/TextArea';
 import EditModalv2 from '../EditModalv2';
 
 const Airdrop = () => {
@@ -16,7 +17,7 @@ const Airdrop = () => {
 		const addressList = airdropAddress.replace(/\s+/g, '');
 		const addresses = addressList.split(',');
 		let err = false;
-		addresses.every((address, index) => {
+		addresses.every((address) => {
 			if (!ethers.utils.isAddress(address)) {
 				toast.error('One of the Addresses is invalid');
 				err = true;
@@ -37,14 +38,13 @@ const Airdrop = () => {
 			</Text>
 			<Box mt="mxl" width="55.2rem">
 				<LabelledTextInput
-					value={airdropAddress}
-					setValue={setAirdropAddress}
 					placeholder="Enter a valid wallet address"
 					label="Airdrop NFTs:"
-					helperText="Airdrop an NFT from your reserve to any wallet address."
+					helperText="Airdrop an NFT from your reserve to any wallet address. You can enter multiple addresses seperated by a comma ( , )."
 					disableValidation
-					width="100%"
-				/>
+				>
+					<TextArea value={airdropAddress} setValue={setAirdropAddress} width="45rem" />
+				</LabelledTextInput>
 				<Box row justifyContent="flex-end" mt="mxl" mb="wm">
 					<ButtonComp
 						bg="tertiary"

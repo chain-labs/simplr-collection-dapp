@@ -51,7 +51,7 @@ const charSpacing = {
 	h6: '0px',
 	b3: '0.1px',
 	b2: '-0.1px',
-	b1: '-0.1px',
+	b1: '0.1px',
 	c1: '0.4px',
 	c2: '0.4px',
 	c3: '0.4px',
@@ -73,6 +73,7 @@ const lineHeights = (as) => {
 		case 'b2':
 			return '24px';
 		case 'b1':
+			return '26px';
 		case 'c1':
 			return '21px';
 		case 'c2':
