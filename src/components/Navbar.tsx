@@ -3,7 +3,7 @@ import Box from 'src/components/Box';
 import useListeners from 'src/ethereum/useListeners';
 import useSigner from 'src/ethereum/useSigner';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { networkSelector, setNetwork, userSelector, setProvider, setUser, removeUser } from 'src/redux/user';
+import { networkSelector, setNetwork, userSelector, setProvider, setUser, removeUser, setSigner } from 'src/redux/user';
 import Container from './Container';
 import Text from './Text';
 
@@ -13,29 +13,30 @@ import { CopySimple, WarningCircle } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 import toast from 'react-hot-toast';
 import ButtonComp from './Button';
-import { ProviderProps } from 'src/ethereum/types';
+import { ProviderProps, SignerProps } from 'src/ethereum/types';
 import { ethers } from 'ethers';
 
 const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
+	const [signer] = useSigner();
 	const [wrongNetwork, setWrongNetwork] = useState(false);
 
 	const network = useAppSelector(networkSelector);
-	const [signer, setSigner] = useSigner();
 
 	const setAppProviders = (provider: ProviderProps) => {
 		dispatch(setProvider({ provider }));
 	};
-	useListeners(user.provider, setAppProviders, setSigner);
+	const setAppSigners = (signer: SignerProps) => {
+		dispatch(setSigner({ signer }));
+	};
+	useListeners(user.provider, setAppProviders, setAppSigners);
 
-	// useEffect(() => {
-	// 	if (process.browser) {
-	// 		window.ethereum.enable();
-	// 		const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
-	// 		dispatch(setProvider({ provider }));
-	// 	}
-	// }, []);
+	useEffect(() => {
+		if (signer) {
+			setAppSigners(signer);
+		}
+	}, [signer]);
 
 	useEffect(() => {
 		const getChain = async () => {
@@ -51,7 +52,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 		if (user.provider) {
 			getChain();
 		}
-	}, [user.provider, signer]);
+	}, [user.provider, user.signer]);
 
 	useEffect(() => {
 		if (process.browser) {
@@ -88,9 +89,9 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 	};
 
 	useEffect(() => {
-		if (signer) {
+		if (user.signer) {
 			try {
-				signer
+				user.signer
 					.getAddress()
 					.then((address) => {
 						dispatch(setUser(address));
@@ -102,7 +103,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 				console.log(err);
 			}
 		}
-	}, [signer]);
+	}, [user.signer]);
 
 	const getBg = (chain) => {
 		if (chain === 1) return 'green-50';

@@ -123,7 +123,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 		return null;
 	} else {
 		return ReactDom.createPortal(
-			<Modal visible={isOpen} bg="#f6f6ffe0">
+			<Modal visible={isOpen} bg="simply-white">
 				<Box
 					width="53rem"
 					opacity="0"
@@ -131,7 +131,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 					py="mm"
 					bg="simply-white"
 					borderRadius="8px"
-					boxShadow="shadow-100"
+					boxShadow="shadow-400"
 					row
 					center
 					position="absolute"
@@ -148,7 +148,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 				<Box
 					bg="simply-white"
 					borderRadius="16px"
-					boxShadow="shadow-100"
+					boxShadow="shadow-500"
 					border={`1px solid ${theme.colors['simply-black']}18`}
 					className="absolute-center"
 					p="wxs"

@@ -31,7 +31,7 @@ const SEATModal = ({ isOpen, setIsOpen, earlyPass, loading, setTncStatus }: Prop
 
 	const handleSeat = async () => {
 		setIsOpen(false);
-		await axios
+		axios
 			.post('https://simplr-tnc-microservice.herokuapp.com/getUserBySigner', {
 				signer: address,
 			})
