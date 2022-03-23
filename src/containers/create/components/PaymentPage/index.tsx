@@ -61,7 +61,6 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 
 				const sharePercentage = ethers.utils.formatUnits(share?.toString());
 				const shareValue = parseFloat(sharePercentage) * 100;
-				console.log({ share, sharePercentage, shareValue });
 				setSimplrShares(shareValue);
 			} catch (err) {
 				console.log({ err });

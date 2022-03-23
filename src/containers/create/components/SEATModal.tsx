@@ -46,8 +46,6 @@ const SEATModal = ({ isOpen, setIsOpen, balance, loading, setTncStatus }: Props)
 				.then(
 					(response) => {
 						if (response.data.status === 'true') {
-							console.log({ response, userAddress });
-
 							setTncStatus('signed');
 						} else setTncStatus('unsigned');
 					},
