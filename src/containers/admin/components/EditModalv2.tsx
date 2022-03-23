@@ -90,6 +90,13 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const currentNetwork = useAppSelector(networkSelector);
 
 	useEffect(() => {
+		if (!visible) {
+			setStep(0);
+			setFails(false);
+		}
+	}, [visible]);
+
+	useEffect(() => {
 		if (step === 0) {
 			setInfo(getInfo(type));
 		} else if (step === 1) {
@@ -149,6 +156,9 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 			console.log(err);
 			toast.error('An unexpected error occured.');
 			setVisible(false);
+			setStep(0);
+			setGas(null);
+			setFails(false);
 		}
 	};
 
@@ -166,6 +176,9 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 			console.log(err);
 			toast.error('An unexpected error occured.');
 			setVisible(false);
+			setStep(0);
+			setGas(null);
+			setFails(false);
 		}
 	};
 
@@ -180,6 +193,9 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 		} catch (err) {
 			console.log(err);
 			toast.error('An unexpected error occured.');
+			setStep(0);
+			setGas(null);
+			setFails(false);
 			setVisible(false);
 		}
 	};
