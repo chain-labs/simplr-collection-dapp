@@ -15,6 +15,7 @@ import toast from 'react-hot-toast';
 import ButtonComp from './Button';
 import { ProviderProps, SignerProps } from 'src/ethereum/types';
 import { ethers } from 'ethers';
+import { testNetworks } from 'src/utils/constants';
 
 const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
