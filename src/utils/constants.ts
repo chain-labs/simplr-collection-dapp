@@ -7,3 +7,7 @@ export const toBoolean = (value: string): boolean => {
 		return false;
 	}
 };
+
+export const TEST_NETWORK = toBoolean(process.env.NEXT_PUBLIC_TEST_NETWORK);
+
+export const testNetworks = [3, 4, 5, 42, 80001];
