@@ -35,6 +35,10 @@ const CreateComp = ({ balance }) => {
 		if (tncStatus === 'signed') setStep(0);
 	}, [tncStatus]);
 
+	useEffect(() => {
+		setIsModalOpen(true);
+	}, [user]);
+
 	const getFormPage = () => {
 		if (step === -1) {
 			return <Tnc setStep={setStep} />;
@@ -52,14 +56,14 @@ const CreateComp = ({ balance }) => {
 
 	return (
 		<Box mt="16rem" pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
+			{getFormPage()}
 			<SEATModal
 				isOpen={isModalOpen && !isTestNetwork}
 				setIsOpen={setIsModalOpen}
-				earlyPass={balance.value > 0}
+				balance={balance.value}
 				loading={balance.loading}
 				setTncStatus={setTncStatus}
 			/>
-			{getFormPage()}
 		</Box>
 	);
 };
