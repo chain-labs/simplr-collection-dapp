@@ -57,7 +57,7 @@ const Tnc = ({ setStep }) => {
 	};
 
 	return (
-		<Box center minHeight="100vh" right="0" position="absolute" top="0" zIndex="16" backgroundColor="white">
+		<Box center minHeight="100vh" right="0" position="absolute" top="0" zIndex="10" backgroundColor="white">
 			<Navbar />
 			<Box width="100vw" minHeight="100vh" pt="10rem" bg="simply-white" column center overflowY="auto" mb="0">
 				<Box top="12px">
