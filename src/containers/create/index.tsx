@@ -5,12 +5,20 @@ import PaymentPage from './components/PaymentPage';
 import CollectionPage from './components/CollectionPage';
 import SEATModal from './components/SEATModal';
 import Tnc from './components/Tnc';
-import If from 'src/components/If';
+import { testNetworks } from 'src/utils/constants';
+import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 
 const CreateComp = ({ balance }) => {
-	const [step, setStep] = useState<number>();
+	const [step, setStep] = useState<number>(0);
 	const [isModalOpen, setIsModalOpen] = useState(true);
 	const [tncStatus, setTncStatus] = useState('');
+	const user = useAppSelector(userSelector);
+	const [isTestNetwork, setIsTestNetwork] = useState(testNetworks.includes(user.network.chain));
+
+	useEffect(() => {
+		setIsTestNetwork(testNetworks.includes(user.network.chain));
+	}, [user.network]);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -26,6 +34,10 @@ const CreateComp = ({ balance }) => {
 		if (tncStatus === 'unsigned') setStep(-1);
 		if (tncStatus === 'signed') setStep(0);
 	}, [tncStatus]);
+
+	useEffect(() => {
+		setIsModalOpen(true);
+	}, [user]);
 
 	const getFormPage = () => {
 		if (step === -1) {
@@ -44,14 +56,14 @@ const CreateComp = ({ balance }) => {
 
 	return (
 		<Box mt="16rem" pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
+			{getFormPage()}
 			<SEATModal
-				isOpen={isModalOpen}
+				isOpen={isModalOpen && !isTestNetwork}
 				setIsOpen={setIsModalOpen}
-				earlyPass={balance.value > 0}
+				balance={balance.value}
 				loading={balance.loading}
 				setTncStatus={setTncStatus}
 			/>
-			{getFormPage()}
 		</Box>
 	);
 };

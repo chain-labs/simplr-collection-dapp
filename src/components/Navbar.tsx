@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { networkSelector, setNetwork, userSelector, setProvider, setUser, removeUser, setSigner } from 'src/redux/user';
 import Container from './Container';
 import Text from './Text';
+import contracts from 'src/contracts/contracts.json';
 
 import { networks } from 'src/redux/collection/types';
 import If from './If';
@@ -15,6 +16,7 @@ import toast from 'react-hot-toast';
 import ButtonComp from './Button';
 import { ProviderProps, SignerProps } from 'src/ethereum/types';
 import { ethers } from 'ethers';
+import { testNetworks, TEST_NETWORK } from 'src/utils/constants';
 
 const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
@@ -42,8 +44,20 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 		const getChain = async () => {
 			const network = await user.provider.getNetwork();
 			const chainId = network.chainId;
-			if (networks[chainId]) {
-				dispatch(setNetwork({ chain: chainId, name: networks[chainId].name, id: networks[chainId].id }));
+			const contractArtefact = contracts?.[chainId];
+			if (contractArtefact?.[Object?.keys(contractArtefact)?.[0]]?.contracts?.['CollectionFactoryV2']) {
+				if (TEST_NETWORK) {
+					if (testNetworks.includes(chainId)) {
+						setWrongNetwork(false);
+						dispatch(setNetwork({ chain: chainId, name: networks?.[chainId]?.name, id: networks?.[chainId]?.id }));
+					} else {
+						setWrongNetwork(true);
+						dispatch(removeUser());
+					}
+				} else {
+					setWrongNetwork(false);
+					dispatch(setNetwork({ chain: chainId, name: networks?.[chainId]?.name, id: networks?.[chainId]?.id }));
+				}
 			} else {
 				setWrongNetwork(true);
 				dispatch(removeUser());
@@ -59,14 +73,21 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 			// @ts-expect-error ethereum in window is not defined
 			window?.ethereum.on('chainChanged', (chainId) => {
 				const chain = parseInt(chainId, 16);
-				if (networks[chain]) {
-					const network = {
-						chain: chain,
-						name: networks?.[chain]?.name,
-						id: networks?.[chain]?.id,
-					};
+				const contractArtefact = contracts?.[chain];
 
-					dispatch(setNetwork(network));
+				if (contractArtefact?.[Object?.keys(contractArtefact)?.[0]]?.contracts?.['CollectionFactoryV2']) {
+					if (TEST_NETWORK) {
+						if (testNetworks.includes(chain)) {
+							setWrongNetwork(false);
+							dispatch(setNetwork({ chain: chainId, name: networks?.[chainId]?.name, id: networks?.[chainId]?.id }));
+						} else {
+							setWrongNetwork(true);
+							dispatch(removeUser());
+						}
+					} else {
+						setWrongNetwork(false);
+						dispatch(setNetwork({ chain: chainId, name: networks?.[chainId]?.name, id: networks?.[chainId]?.id }));
+					}
 				} else {
 					setWrongNetwork(true);
 					dispatch(removeUser());
@@ -132,7 +153,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 
 	return (
 		<Box position="fixed" top="0" left="0" width="100%" zIndex={14}>
-			<Box bg="#F8F8F8" py={!user.exists ? 'wxxs' : '0'}>
+			<Box bg="#F8F8F8" py={!user.exists ? 'ml' : '0'}>
 				<Container>
 					<Box display="flex" justifyContent="space-between" alignItems="center">
 						<Box as="img" src="/static/images/png/logo.png" />
@@ -170,43 +191,45 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 								</Box>
 							}
 							else={
-								<Box position="absolute" zIndex={-1} top="0" left="0" height="100vh" width="100vw" bg="simply-white">
-									<Box mx="auto" width="80%" row between height="100%">
-										<Box maxWidth="40rem">
-											<Text as="h2" color="simply-blue" mb="ms">
-												Create and manage cost effective NFT Collections.
-											</Text>
-											<Text as="b2" mb="mxl">
-												Simplr is an easy to use, no-code platform to create NFT smart contracts and launch your NFT
-												projects without any hassle.
-											</Text>
-											<ButtonComp
-												bg="primary"
-												height="56px"
-												py="mm"
-												width="100%"
-												onClick={() => {
-													handleConnectWallet();
-												}}
-											>
-												<Text as="h4">Connect Metamask</Text>
-											</ButtonComp>
-											<If
-												condition={wrongNetwork}
-												then={
-													<Box row mt="mm">
-														<WarningCircle weight="fill" color={theme.colors['red-50']} size="24" />
-														<Text as="c3" color="red-50" ml="mxs">
-															We currently only support Ethereum and Polygon. Please switch your network to either of
-															those and try again.
-														</Text>
-													</Box>
-												}
-											/>
+								<>
+									<ButtonComp
+										bg="primary"
+										height="56px"
+										py="mm"
+										px="ml"
+										onClick={() => {
+											handleConnectWallet();
+										}}
+									>
+										<Text as="h4">Connect Wallet</Text>
+									</ButtonComp>
+									<Box position="absolute" zIndex={-1} top="0" left="0" height="100vh" width="100vw" bg="simply-white">
+										<Box mx="auto" width="80%" row between height="100%">
+											<Box maxWidth="40rem">
+												<Text as="h2" color="simply-blue" mb="ms">
+													Create and manage cost effective NFT Collections.
+												</Text>
+												<Text as="b2" mb="mxl">
+													Simplr is an easy to use, no-code platform to create NFT smart contracts and launch your NFT
+													projects without any hassle.
+												</Text>
+												<If
+													condition={wrongNetwork}
+													then={
+														<Box row mt="mm">
+															<WarningCircle weight="fill" color={theme.colors['red-50']} size="24" />
+															<Text as="c3" color="red-50" ml="mxs">
+																We currently only support Ethereum and Polygon. Please switch your network to either of
+																those and try again.
+															</Text>
+														</Box>
+													}
+												/>
+											</Box>
+											<Box as="img" src="/static/images/png/hero_image.png"></Box>
 										</Box>
-										<Box as="img" src="/static/images/png/hero_image.png"></Box>
 									</Box>
-								</Box>
+								</>
 							}
 						/>
 					</Box>

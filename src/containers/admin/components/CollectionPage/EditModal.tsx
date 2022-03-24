@@ -34,14 +34,20 @@ const EditModal = ({ visible, setVisible }: props) => {
 		const fees = await user.provider?.getGasPrice();
 		try {
 			if (modalData.editfield === 'reserve tokens') {
-				const gas = await modalData.contract.connect(user.signer).estimateGas.reserveTokens(value);
-				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				if (value) {
+					const gas = await modalData.contract.connect(user.signer).estimateGas.reserveTokens(value);
+					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				}
 			} else if (modalData.editfield === 'wallet address') {
-				const gas = await modalData.contract.connect(user.signer).estimateGas.transferOwnership(value);
-				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				if (value) {
+					const gas = await modalData.contract.connect(user.signer).estimateGas.transferOwnership(value);
+					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				}
 			} else if (modalData.editfield === 'Collection URI') {
-				const gas = await modalData.contract.connect(user.signer).estimateGas.setProjectURI(value);
-				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				if (value) {
+					const gas = await modalData.contract.connect(user.signer).estimateGas.setProjectURI(value);
+					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				}
 			} else if (modalData.editable === 'Live') {
 				const gas = await modalData.contract.connect(user.signer).estimateGas.pause();
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
@@ -49,8 +55,10 @@ const EditModal = ({ visible, setVisible }: props) => {
 				const gas = await modalData.contract.connect(user.signer).estimateGas.unpause();
 				setGas(ethers.utils.formatUnits(gas.mul(fees)));
 			} else if (modalData.editfield === 'Reveal') {
-				const gas = await modalData.contract.connect(user.signer).estimateGas.setProjectURIAndReveal(value);
-				setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				if (value) {
+					const gas = await modalData.contract.connect(user.signer).estimateGas.setProjectURIAndReveal(value);
+					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+				}
 			}
 		} catch (err) {
 			console.log(err);

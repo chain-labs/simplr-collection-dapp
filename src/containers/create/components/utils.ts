@@ -137,7 +137,8 @@ export const createCollection = async (
 	const simplrShares = await contract.simplrShares(); // simplrShares should be dynamic and be fetched from the smart contract
 
 	// create params
-	const type = 1; // by default
+	const type = parseInt(process.env.NEXT_PUBLIC_COLLECTION_TYPE);
+	// by default
 
 	const baseCollection = {
 		name: collection.name, // Name of the collection
