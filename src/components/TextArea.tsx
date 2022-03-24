@@ -29,7 +29,7 @@ const TextAreaElement = styled(Box)(
 	(props) => `
         width: ${props.width ?? '320px'};
         height: ${props.height ?? '90px'};
-        background: ${props.theme.colors['blue-00']};
+        background: ${props.theme.colors['white-00']};
         box-shadow: inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1);
         border-radius: 8px;
         border: none;

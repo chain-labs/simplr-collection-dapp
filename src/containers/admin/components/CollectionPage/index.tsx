@@ -298,7 +298,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 					<Text as="h3" color="simply-blue" mt="wxl">
 						URI:
 					</Text>
-					<Box row between mt="mxxxl">
+					<Box row between mt="mxxxl" mb="wxl">
 						<Box>
 							<Box row between mb="mxs">
 								<Text as="h6">Collection URI</Text>
@@ -351,7 +351,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 							}
 						/>
 					</Box>
-					<Airdrop />
+					<If condition={user.address === collection.adminAddress} then={<Airdrop />} />
 					<If
 						condition={parseFloat(collection.presalePrice) >= 0 && collection.saleStartTime > Date.now() / 1000}
 						then={<Whitelists admin={collection.adminAddress} />}

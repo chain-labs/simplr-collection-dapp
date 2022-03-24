@@ -44,7 +44,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 	const [beneficiary, setBeneficiary] = useState<string>();
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState('');
 	const [showSummaryPage, setShowSummaryPage] = useState<boolean>();
-	const [simplrShares, setSimplrShares] = useState<number>(10);
+	const [simplrShares, setSimplrShares] = useState<number>(null);
 	const [useEarlyPass, setUseEarlyPass] = useState<boolean>(payments.useEarlyPass && earlyPass);
 	const [maxShare, setMaxShare] = useState<number>(
 		getMaxShares(beneficiaries?.shares, useEarlyPass ? 0 : simplrShares)
@@ -58,6 +58,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 		const getAddress = async () => {
 			try {
 				const share = await Simplr?.callStatic.simplrShares();
+
 				const sharePercentage = ethers.utils.formatUnits(share?.toString());
 				const shareValue = parseFloat(sharePercentage) * 100;
 				setSimplrShares(shareValue);
@@ -67,6 +68,10 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 		};
 		getAddress();
 	}, [Simplr]);
+
+	useEffect(() => {
+		setMaxShare(getMaxShares(beneficiaries?.shares, useEarlyPass ? 0 : simplrShares));
+	}, [simplrShares]);
 
 	const addData = (Step) => {
 		const data = getData();

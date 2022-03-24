@@ -11,7 +11,6 @@ import theme from 'src/styleguide/theme';
 
 const AirdropModal = ({ addresses, isOpen, setIsOpen, adminAddress, contract, signer, setAirdropAddress }) => {
 	const user = useAppSelector(userSelector);
-	const [transfer, setTransfer] = useState(false);
 
 	const handleConfirm = () => {
 		const addressList = addresses.split(',');
