@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { networkSelector, setNetwork, userSelector, setProvider, setUser, removeUser, setSigner } from 'src/redux/user';
 import Container from './Container';
 import Text from './Text';
+import contracts from 'src/contracts/contracts.json';
 
 import { networks } from 'src/redux/collection/types';
 import If from './If';
@@ -15,6 +16,7 @@ import toast from 'react-hot-toast';
 import ButtonComp from './Button';
 import { ProviderProps, SignerProps } from 'src/ethereum/types';
 import { ethers } from 'ethers';
+import { testNetworks, TEST_NETWORK } from 'src/utils/constants';
 
 const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
@@ -42,8 +44,20 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 		const getChain = async () => {
 			const network = await user.provider.getNetwork();
 			const chainId = network.chainId;
-			if (networks[chainId]) {
-				dispatch(setNetwork({ chain: chainId, name: networks[chainId].name, id: networks[chainId].id }));
+			const contractArtefact = contracts?.[chainId];
+			if (contractArtefact?.[Object?.keys(contractArtefact)?.[0]]?.contracts?.['CollectionFactoryV2']) {
+				if (TEST_NETWORK) {
+					if (testNetworks.includes(chainId)) {
+						setWrongNetwork(false);
+						dispatch(setNetwork({ chain: chainId, name: networks?.[chainId]?.name, id: networks?.[chainId]?.id }));
+					} else {
+						setWrongNetwork(true);
+						dispatch(removeUser());
+					}
+				} else {
+					setWrongNetwork(false);
+					dispatch(setNetwork({ chain: chainId, name: networks?.[chainId]?.name, id: networks?.[chainId]?.id }));
+				}
 			} else {
 				setWrongNetwork(true);
 				dispatch(removeUser());
@@ -59,14 +73,21 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 			// @ts-expect-error ethereum in window is not defined
 			window?.ethereum.on('chainChanged', (chainId) => {
 				const chain = parseInt(chainId, 16);
-				if (networks[chain]) {
-					const network = {
-						chain: chain,
-						name: networks?.[chain]?.name,
-						id: networks?.[chain]?.id,
-					};
+				const contractArtefact = contracts?.[chain];
 
-					dispatch(setNetwork(network));
+				if (contractArtefact?.[Object?.keys(contractArtefact)?.[0]]?.contracts?.['CollectionFactoryV2']) {
+					if (TEST_NETWORK) {
+						if (testNetworks.includes(chain)) {
+							setWrongNetwork(false);
+							dispatch(setNetwork({ chain: chainId, name: networks?.[chainId]?.name, id: networks?.[chainId]?.id }));
+						} else {
+							setWrongNetwork(true);
+							dispatch(removeUser());
+						}
+					} else {
+						setWrongNetwork(false);
+						dispatch(setNetwork({ chain: chainId, name: networks?.[chainId]?.name, id: networks?.[chainId]?.id }));
+					}
 				} else {
 					setWrongNetwork(true);
 					dispatch(removeUser());
@@ -189,7 +210,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 													handleConnectWallet();
 												}}
 											>
-												<Text as="h4">Connect Metamask</Text>
+												<Text as="h4">Connect Wallet</Text>
 											</ButtonComp>
 											<If
 												condition={wrongNetwork}

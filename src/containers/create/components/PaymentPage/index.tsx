@@ -192,21 +192,18 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 								}}
 							/>
 						</Box>
-						<If
-							condition={earlyPass}
-							then={
-								<Box>
-									<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
-										Use early pass benefits
-										<Box ml="mxxxl" />
-										<Toggle value={useEarlyPass} setValue={setUseEarlyPass} mobile />
-									</Text>
-									<Text as="b1" color="simply-gray" mt="mm" mb="4.4rem">
-										Turning this off would add Simplr as a beneificiary.
-									</Text>
-								</Box>
-							}
-						/>
+
+						<Box>
+							<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
+								Use early pass benefits
+								<Box ml="mxxxl" />
+								<Toggle value={useEarlyPass} setValue={setUseEarlyPass} mobile disabled={!earlyPass} />
+							</Text>
+							<Text as="b1" color="simply-gray" mt="mm" mb="4.4rem">
+								Turning this off would add Simplr as a beneificiary.
+							</Text>
+						</Box>
+
 						<LabelledTextInput label="Royalties" helperText="Maximum 10%">
 							<Box row overflow="visible">
 								<TextInput
