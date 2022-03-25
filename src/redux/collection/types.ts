@@ -30,6 +30,25 @@ export const networks = {
 	},
 };
 
+export const test_networks = {
+	4: {
+		name: 'Rinkeby Testnet',
+		id: 'rinkeby',
+	},
+	80001: {
+		name: 'Polygon Testnet',
+		id: 'mumbai',
+	},
+};
+
+export const getNetworkList = (test) => {
+	console.log({ test });
+
+	if (test) {
+		return test_networks;
+	} else return networks;
+};
+
 export const rpc_urls = {
 	137: 'https://polygon-rpc.com',
 	80001: 'https://rpc-mumbai.matic.today',
