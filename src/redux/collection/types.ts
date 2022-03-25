@@ -42,8 +42,6 @@ export const test_networks = {
 };
 
 export const getNetworkList = (test) => {
-	console.log({ test });
-
 	if (test) {
 		return test_networks;
 	} else return networks;
