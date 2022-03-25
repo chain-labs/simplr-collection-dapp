@@ -3,7 +3,7 @@ import Box from 'src/components/Box';
 import Dropdown from 'src/components/Dropdown';
 import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { networks, rpc_urls } from 'src/redux/collection/types';
+import { getNetworkList, rpc_urls } from 'src/redux/collection/types';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import ButtonComp from 'src/components/Button';
@@ -14,6 +14,7 @@ import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 import Dropzone from 'src/components/Dropzone';
 import { userSelector } from 'src/redux/user';
+import { TEST_NETWORK } from 'src/utils/constants';
 
 const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
@@ -31,7 +32,7 @@ const CollectionPage = ({ step, setStep }) => {
 	const [adminAddress, setAdminAddress] = useState<string>(collectionData.admin);
 	const [networkData, setNetworkData] = useState([]);
 	const [networkValue, setNetworkValue] = useState<number>(collectionData.type);
-	const [network, setNetwork] = useState(networks[networkValue]?.name);
+	const [network, setNetwork] = useState(getNetworkList(TEST_NETWORK)[networkValue]?.name);
 
 	useEffect(() => {
 		setNetworkValue(networkData.indexOf(network));
@@ -39,14 +40,14 @@ const CollectionPage = ({ step, setStep }) => {
 
 	useEffect(() => {
 		setNetworkValue(user.network.chain);
-		setNetwork(networks[user.network.chain]?.name);
+		setNetwork(getNetworkList(TEST_NETWORK)[user.network.chain]?.name);
 	}, [user]);
 
 	useEffect(() => {
-		const types = Object.keys(networks);
+		const types = Object.keys(getNetworkList(TEST_NETWORK));
 		const data = [];
 		types.map((type) => {
-			data[type] = networks[type].name;
+			data[type] = getNetworkList(TEST_NETWORK)[type].name;
 		});
 		setNetworkData(data);
 	}, []);
