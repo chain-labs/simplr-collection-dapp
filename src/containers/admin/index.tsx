@@ -23,7 +23,7 @@ const AdminDashboardComponent = ({ metadata, id, ready }) => {
 
 	useEffect(() => {
 		if (id && provider) {
-			const abi = getContractDetails('AffiliateCollection');
+			const abi = getContractDetails('Collection');
 			const address = `${id}`.split(':')[1];
 			const contract = new ethers.Contract(address, abi, provider);
 			dispatch(setEditDetails({ contract: contract }));

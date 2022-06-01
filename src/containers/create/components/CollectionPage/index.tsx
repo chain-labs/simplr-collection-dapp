@@ -190,11 +190,11 @@ const CollectionPage = ({ step, setStep }) => {
 						required
 					/>
 					<Box mt="mxxxl" />
-					<LabelledTextInput label="Collection Logo URL" required>
+					<LabelledTextInput label="Collection Logo" required>
 						<Dropzone image={collectionLogoURL} setImage={setCollectionLogoURL} />
 					</LabelledTextInput>
 					<Box mt="mxxxl" />
-					<LabelledTextInput label="Collection Banner URL" required>
+					<LabelledTextInput label="Collection Banner" required>
 						<Dropzone image={collectionBannerURL} setImage={setCollectionBannerURL} />
 					</LabelledTextInput>
 					<Box mt="mxxxl" />

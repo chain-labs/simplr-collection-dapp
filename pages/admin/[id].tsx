@@ -21,7 +21,7 @@ const AdminDashboardPage = () => {
 	const [ready, setReady] = useState(false);
 
 	const getMetadata = async () => {
-		const abi = getContractDetails('AffiliateCollection');
+		const abi = getContractDetails('Collection');
 		const address = `${id}`.split(':')[1];
 		const contract = new ethers.Contract(`${address}`, abi, provider);
 		const qid = await contract.callStatic.metadata();
