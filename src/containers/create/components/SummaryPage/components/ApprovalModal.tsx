@@ -33,7 +33,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 	const CollectionFactory = useContract('CollectionFactoryV2', network.chain, user.provider);
 
 	const getSEATDetails = async () => {
-		const abi = getContractDetails('AffiliateCollection');
+		const abi = getContractDetails('Collection');
 		const seatAddress = await CollectionFactory.callStatic.freePass();
 		const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, user.provider);
 		setSEATInstance(SEATInstance);
