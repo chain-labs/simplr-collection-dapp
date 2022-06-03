@@ -137,7 +137,15 @@ const Presale = ({
 								disableValidation
 							/>
 							<Box mt="mm" alignSelf="flex-end">
-								<ButtonComp bg="tertiary" height="40px" px="ml" onClick={() => setShowWhitelistModal(true)}>
+								<ButtonComp
+									bg="tertiary"
+									height="40px"
+									px="ml"
+									onClick={(e) => {
+										e.preventDefault();
+										setShowWhitelistModal(true);
+									}}
+								>
 									View Whitelist
 								</ButtonComp>
 								<ButtonComp bg="primary" height="40px" px="ml" ml="mm" disable={!whitelist} onClick={handleAdd}>

@@ -33,8 +33,8 @@ const PaymentSummaryPage = ({ setModalStep, simplrShares, balance }) => {
 	const payments = useAppSelector(paymentSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 
-	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
-	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
+	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.receiver);
+	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.royaltyFraction);
 
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
 	const [cta, setCta] = useState('Create Collection');

@@ -39,8 +39,8 @@ const PaymentPage = ({ step, setStep, balance }) => {
 	const payments = useAppSelector(paymentSelector);
 	const sales = useAppSelector(saleSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
-	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
-	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
+	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.receiver);
+	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.royaltyFraction);
 	const [beneficiary, setBeneficiary] = useState<string>();
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState('');
 	const [showSummaryPage, setShowSummaryPage] = useState<boolean>();
@@ -83,8 +83,8 @@ const PaymentPage = ({ step, setStep, balance }) => {
 		const data = {
 			useEarlyPass,
 			royalties: {
-				account: royaltyAddress,
-				value: royaltyPercentage,
+				receiver: royaltyAddress,
+				royaltyFraction: royaltyPercentage,
 			},
 		};
 		return data;

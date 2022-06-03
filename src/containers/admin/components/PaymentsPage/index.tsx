@@ -16,9 +16,9 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 	const [payees, setPayees] = useState<string[]>([]);
 	const [shares, setShares] = useState<number[]>([]);
 	const [simplrShares, setSimplrShares] = useState<number>(0);
-	const [userShare, setUserShare] = useState('');
-	const [pendingPayment, setPendingPayment] = useState('');
-	const [totalFunds, setTotalFunds] = useState('');
+	const [userShare, setUserShare] = useState('0');
+	const [pendingPayment, setPendingPayment] = useState('0.0');
+	const [totalFunds, setTotalFunds] = useState('0.0');
 	const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(0);
 	const [admin, setAdmin] = useState('');
 
@@ -61,11 +61,14 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 					const index = payees.findIndex((payee) => payee === user.address);
 					if (index !== -1) {
 						const share = shares[index];
-
 						setUserShare(share.toString());
 						if (contract) {
 							getPayment(share);
 						}
+					} else {
+						setUserShare('0');
+						setPendingPayment('0.0');
+						setTotalFunds('0.0');
 					}
 				}
 			} catch (err) {
@@ -208,8 +211,8 @@ const Royalties = ({ admin, contract, signer, ready }) => {
 	const [address, setAddress] = useState('');
 	const [percentage, setPercentage] = useState(0);
 	const [royalty, setRoyalty] = useState({
-		account: '',
-		value: 0,
+		receiver: '',
+		royaltyFraction: 0,
 	});
 	const [isRoyaltyModalOpen, setIsRoyaltyModalOpen] = useState(false);
 
@@ -218,10 +221,10 @@ const Royalties = ({ admin, contract, signer, ready }) => {
 			toast.error('Invalid Address');
 		} else if (percentage > 10) {
 			toast.error('Value must be max upto 10%');
-		} else if (royalty.account !== address || royalty.value !== percentage) {
+		} else if (royalty.receiver !== address || royalty.royaltyFraction !== percentage) {
 			contract
 				.connect(signer)
-				.setRoyalties({ account: address, value: percentage * 100 })
+				.setRoyalties({ reciever: address, royaltyFraction: percentage * 100 })
 				.then(() => {
 					toast.success('Updated');
 					setEdit(false);
@@ -238,10 +241,11 @@ const Royalties = ({ admin, contract, signer, ready }) => {
 
 	useEffect(() => {
 		const getRoyalty = async () => {
-			const r = await contract.callStatic.royalties();
-			setRoyalty({ account: r[0], value: parseInt(r[1].toString()) / 100 });
-			setAddress(royalty.account);
-			setPercentage(royalty.value / 100);
+			const r = await contract.queryFilter('DefaultRoyaltyUpdated');
+			console.log({ r: r[0].args[1] });
+			setRoyalty({ receiver: r[0].args[0], royaltyFraction: parseInt(r[0].args[1].toString()) / 100 });
+			setAddress(royalty.receiver);
+			setPercentage(royalty.royaltyFraction / 100);
 		};
 		if (contract && ready) {
 			getRoyalty();
@@ -270,7 +274,7 @@ const Royalties = ({ admin, contract, signer, ready }) => {
 				then={
 					<Box row overflow="visible" mb="ms">
 						<TextInput
-							value={royalty.account}
+							value={royalty.receiver}
 							type="text"
 							width="45.2rem"
 							disableValidation
@@ -279,7 +283,7 @@ const Royalties = ({ admin, contract, signer, ready }) => {
 						/>
 						<Box ml="mxs" />
 						<TextInput
-							value={`${royalty.value}%`}
+							value={`${royalty.royaltyFraction}%`}
 							type="text"
 							width="9.2rem"
 							disabled

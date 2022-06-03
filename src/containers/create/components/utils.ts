@@ -214,8 +214,8 @@ export const createCollection = async (
 	};
 
 	const royalties = {
-		account: payments.royalties.account ?? collection.admin, //account that will receive royalties for secondary sale
-		value: payments.royalties.value ? payments.royalties.value * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
+		receiver: payments.royalties.receiver ?? collection.admin, //account that will receive royalties for secondary sale
+		royaltyFraction: payments.royalties.royaltyFraction ? payments.royalties.royaltyFraction * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
 	}; // should be according to LibPart.Part or Royalties struct
 
 	const reserveTokens = sales.reserveTokens; // should be default, this will not activate reservable module
