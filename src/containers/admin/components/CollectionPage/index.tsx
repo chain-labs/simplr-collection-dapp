@@ -50,7 +50,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 				const adminAddress = await contract.callStatic.owner();
 				const reservedTokens = await contract.callStatic.reservedTokens();
 				const price = await contract.callStatic.price();
-				const totalSupply = await contract.callStatic.totalSupply();
+				// const totalSupply = await contract.callStatic.totalSupply();
 				const balance = await provider?.getBalance(contract.address);
 				const totalReleased = await contract.callStatic['totalReleased()']();
 				const totalFunds = balance.add(totalReleased);
@@ -65,7 +65,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 					reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
 					price: ethers.utils.formatUnits(price, 18),
 					presalePrice: '-1',
-					totalSupply,
+					// totalSupply,
 					totalFunds: ethers.utils.formatUnits(totalFunds),
 					tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
 					saleStartTime,
