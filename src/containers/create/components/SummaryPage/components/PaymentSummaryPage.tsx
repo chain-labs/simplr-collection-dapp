@@ -20,7 +20,7 @@ import { DateType } from 'src/redux/sales/types';
 import ApprovalModal from './ApprovalModal';
 import WhitelistComp from './WhitelistComp';
 
-const PaymentSummaryPage = ({ setModalStep, simplrShares }) => {
+const PaymentSummaryPage = ({ setModalStep, simplrShares, balance }) => {
 	const sales = useAppSelector(saleSelector);
 	const presaleable = useAppSelector(presaleableToggleSelector);
 	const revealable = useAppSelector(revealableToggleSelector);
@@ -64,7 +64,7 @@ const PaymentSummaryPage = ({ setModalStep, simplrShares }) => {
 	return (
 		<Box overflow="visible" mb="mxxl" ref={componentRef}>
 			<Box ref={componentRef} />
-			<ApprovalModal isOpen={showApprovalModal} setIsOpen={setShowApprovalModal} />
+			<ApprovalModal isOpen={showApprovalModal} setIsOpen={setShowApprovalModal} balance={balance} />
 			<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 				Pre-sale
 				<Box ml="mxxxl" />

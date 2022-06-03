@@ -50,7 +50,7 @@ const CreateComp = ({ balance }) => {
 			return <CollectionPage setStep={setStep} step={step} />;
 		}
 		if (step === 2) {
-			return <PaymentPage setStep={setStep} step={step} earlyPass={balance.value > 0} />;
+			return <PaymentPage setStep={setStep} step={step} balance={balance.value} />;
 		}
 	};
 
@@ -58,7 +58,7 @@ const CreateComp = ({ balance }) => {
 		<Box mt="16rem" pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
 			{getFormPage()}
 			<SEATModal
-				isOpen={isModalOpen && !isTestNetwork}
+				isOpen={isModalOpen && isTestNetwork}
 				setIsOpen={setIsModalOpen}
 				balance={balance.value}
 				loading={balance.loading}

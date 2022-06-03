@@ -7,13 +7,14 @@ import { getContractDetails } from 'src/ethereum/useCustomContract';
 import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
 import { networkSelector, userSelector } from 'src/redux/user';
+import tokensOfOwner from 'src/utils/tokenOwnership';
 
 const CreatePage = () => {
 	// const [provider] = useEthers();
 	const collection = useAppSelector(collectionSelector);
 	const network = useAppSelector(networkSelector);
 	const user = useAppSelector(userSelector);
-	const [balance, setBalance] = useState({ value: 0, loading: true });
+	const [tokens, setTokens] = useState({ value: [], loading: true });
 
 	const CollectionFactory = useContract('CollectionFactoryV2', collection.type ?? network.chain, user.provider);
 
@@ -28,8 +29,9 @@ const CreatePage = () => {
 			const abi = getContractDetails('Collection');
 			const seatAddress = await CollectionFactory.callStatic.freePass();
 			const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, user.provider);
-			const balance = await SEATInstance.callStatic['balanceOf(address)'](user.address);
-			setBalance({ value: parseInt(balance.toString()), loading: false });
+			const tokens = await tokensOfOwner(SEATInstance, user.address);
+			setTokens({ value: tokens, loading: false });
+			console.log({ tokens });
 		} catch (err) {
 			console.error(err);
 		}
@@ -40,7 +42,7 @@ const CreatePage = () => {
 			<Head>
 				<title>Simplr | Create Collection</title>
 			</Head>
-			<CreateComp balance={balance} />;
+			<CreateComp balance={tokens} />;
 		</>
 	);
 };
