@@ -31,7 +31,6 @@ const CreatePage = () => {
 			const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, user.provider);
 			const tokens = await tokensOfOwner(SEATInstance, user.address);
 			setTokens({ value: tokens, loading: false });
-			console.log({ tokens });
 		} catch (err) {
 			console.error(err);
 		}

@@ -162,10 +162,6 @@ export const createCollection = async (
 	};
 
 	const { root, whitelistManager } = getWhitelistObject(sales.presaleable.presaleWhitelist);
-	if (sales.presaleable.enabled) {
-		const whitelistCID = await whitelistManager.getCid(collection.name);
-		console.log({ whitelistCID });
-	}
 
 	const presaleable = sales.presaleable.enabled
 		? {
@@ -188,8 +184,6 @@ export const createCollection = async (
 					cid: '',
 				}, // can be empty array
 		  }; // should be according to PresaleableStruct
-
-	console.log({ presaleable });
 
 	const shares = [...payments.paymentSplitter.shares];
 	const payeeShares = [];
@@ -221,8 +215,6 @@ export const createCollection = async (
 	const reserveTokens = sales.reserveTokens; // should be default, this will not activate reservable module
 	const isAffiliable = sales.isAffiliable; // true if user wants affiliable to be active
 
-	console.log({ isAffiliable });
-
 	if (payments.useEarlyPass) {
 		const transaction = await contract
 			.connect(signer)
@@ -240,8 +232,6 @@ export const createCollection = async (
 				parseInt(balance[0])
 			);
 		const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
-
-		console.log({ event });
 		return { transaction, event };
 	} else {
 		const transaction = await contract

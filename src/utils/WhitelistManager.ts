@@ -35,8 +35,6 @@ class WhitelistManagement {
 	};
 
 	getCid = async (name) => {
-		console.log({ name });
-
 		const res = await axios.post(
 			`${PINATA_URL}pinning/pinJSONToIPFS`,
 			{
@@ -54,9 +52,7 @@ class WhitelistManagement {
 				},
 			}
 		);
-		console.log({ res });
 		const hash = res?.data?.IpfsHash;
-		console.log({ hash });
 		this.whitelist.cid = hash;
 		return hash;
 	};
