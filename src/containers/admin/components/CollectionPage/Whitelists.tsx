@@ -100,7 +100,7 @@ const Whitelists = ({ admin }) => {
 					<EditModalv2
 						visible={addModal}
 						setVisible={setAddModal}
-						data={[...whitelistArray, ...presaleWhitelist]}
+						data={[...whitelistArray]}
 						type="whitelist_add"
 						clearInput={() => setWhitelist('')}
 					/>

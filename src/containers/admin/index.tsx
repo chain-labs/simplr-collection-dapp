@@ -13,6 +13,7 @@ import PaymentsPage from './components/PaymentsPage';
 import { blockExplorer } from 'src/utils/links';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
+import { setCollectionDetails } from 'src/redux/collection';
 
 const AdminDashboardComponent = ({ metadata, id, ready }) => {
 	const [step, setStep] = useState(0);

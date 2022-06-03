@@ -8,11 +8,14 @@ import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
+import { collectionSelector } from 'src/redux/collection';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
+import { presaleWhitelistSelector } from 'src/redux/sales';
 import { networkSelector, userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { getUnitByChainId } from 'src/utils/chains';
+import WhitelistManagement from 'src/utils/WhitelistManager';
 import Step2Modal from './CollectionPage/Step2Modal';
 import Step3Modal from './CollectionPage/Step3Modal';
 
@@ -88,6 +91,8 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const { contract, data: arr } = useAppSelector(editSelector);
 	const [gas, setGas] = useState('');
 	const currentNetwork = useAppSelector(networkSelector);
+	const collection = useAppSelector(collectionSelector);
+	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
 
 	useEffect(() => {
 		if (!visible) {
@@ -114,7 +119,15 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 			try {
 				const fees = await user.provider.getGasPrice();
 				if (type === 'whitelist_add') {
-					const gas = await contract.connect(user.signer).estimateGas.presaleWhitelistBatch(arr);
+					console.log({ data });
+
+					const whitelistManager = new WhitelistManagement(presaleWhitelist);
+					whitelistManager.addWhitelist(data);
+					const newPresaleWhitelistConfig = {
+						root: whitelistManager.getRoot(),
+						cid: await whitelistManager.getCid(collection.name),
+					};
+					const gas = await contract.connect(user.signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
 					setGas(ethers.utils.formatUnits(gas.mul(fees)));
 				} else if (type === 'whitelist_remove') {
 					const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
@@ -146,7 +159,13 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 
 	const addWhitelist = async () => {
 		try {
-			const transaction = await contract.connect(user.signer).presaleWhitelistBatch(arr);
+			const whitelistManager = new WhitelistManagement(presaleWhitelist);
+			whitelistManager.addWhitelist(data);
+			const newPresaleWhitelistConfig = {
+				root: whitelistManager.getRoot(),
+				cid: await whitelistManager.getCid(collection.name),
+			};
+			const transaction = await contract.connect(user.signer).updateWhitelist(newPresaleWhitelistConfig);
 			if (transaction) {
 				setInfo({ ...info, yes: 'Processing Transaction' });
 			}

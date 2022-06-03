@@ -15,6 +15,7 @@ import Whitelists from './Whitelists';
 import Airdrop from './Airdrop';
 import { getUnitByChainId } from 'src/utils/chains';
 import axios from 'axios';
+import { setCollectionDetails } from 'src/redux/collection';
 
 const CollectionPage = ({ contract, metadata, ready }) => {
 	const [provider] = useEthers();
@@ -88,6 +89,8 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 					}
 				}
 				setCollection(details);
+
+				dispatch(setCollectionDetails({ name: metadata?.collectionDetails?.name }));
 				return details;
 			} catch (error) {
 				console.log(error);
