@@ -33,7 +33,7 @@ const getMaxShares = (shares, simplrShares) => {
 	return total;
 };
 
-const PaymentPage = ({ step, setStep, earlyPass }) => {
+const PaymentPage = ({ step, setStep, balance }) => {
 	const [provider] = useEthers();
 	const collection = useAppSelector(collectionSelector);
 	const payments = useAppSelector(paymentSelector);
@@ -45,7 +45,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState('');
 	const [showSummaryPage, setShowSummaryPage] = useState<boolean>();
 	const [simplrShares, setSimplrShares] = useState<number>(null);
-	const [useEarlyPass, setUseEarlyPass] = useState<boolean>(payments.useEarlyPass && earlyPass);
+	const [useEarlyPass, setUseEarlyPass] = useState<boolean>(payments.useEarlyPass && balance.length > 0);
 	const [maxShare, setMaxShare] = useState<number>(
 		getMaxShares(beneficiaries?.shares, useEarlyPass ? 0 : simplrShares)
 	);
@@ -169,6 +169,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 				setVisible={setShowSummaryPage}
 				setStep={setStep}
 				simplrShares={simplrShares}
+				balance={balance}
 			/>
 			<Box overflow="visible" mb="10rem">
 				<Text as="h2" center>
@@ -202,7 +203,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 							<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 								Use early pass benefits
 								<Box ml="mxxxl" />
-								<Toggle value={useEarlyPass} setValue={setUseEarlyPass} mobile disabled={!earlyPass} />
+								<Toggle value={useEarlyPass} setValue={setUseEarlyPass} mobile disabled={!balance.length} />
 							</Text>
 							<Text as="b1" color="simply-gray" mt="mm" mb="4.4rem">
 								Turning this off would add Simplr as a beneificiary.
