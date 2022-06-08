@@ -35,26 +35,30 @@ class WhitelistManagement {
 	};
 
 	getCid = async (name) => {
-		const res = await axios.post(
-			`${PINATA_URL}pinning/pinJSONToIPFS`,
-			{
-				pinataMetadata: {
-					name: `${name.replace(' ', '_')}_whitelist`,
+		if (!this.whitelist.cid) {
+			const res = await axios.post(
+				`${PINATA_URL}pinning/pinJSONToIPFS`,
+				{
+					pinataMetadata: {
+						name: `${name.replace(' ', '_')}_whitelist`,
+					},
+					pinataContent: {
+						addresses: this.whitelist.addresses,
+					},
 				},
-				pinataContent: {
-					addresses: this.whitelist.addresses,
-				},
-			},
-			{
-				headers: {
-					pinata_api_key: PINATA_KEY,
-					pinata_secret_api_key: PINATA_KEY_SECRET,
-				},
-			}
-		);
-		const hash = res?.data?.IpfsHash;
-		this.whitelist.cid = hash;
-		return hash;
+				{
+					headers: {
+						pinata_api_key: PINATA_KEY,
+						pinata_secret_api_key: PINATA_KEY_SECRET,
+					},
+				}
+			);
+			const hash = res?.data?.IpfsHash;
+			this.whitelist.cid = hash;
+			return hash;
+		} else {
+			return this.whitelist.cid;
+		}
 	};
 
 	getProof = (address) => {
@@ -69,7 +73,7 @@ class WhitelistManagement {
 			tree,
 			root: getRootFromTree(tree),
 			addresses: addresses,
-			cid: getRootFromTree(tree).toString(), // this is only for now, should be replace with correct IPFS hash
+			cid: null, // this is only for now, should be replace with correct IPFS hash
 		};
 	};
 }

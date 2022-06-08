@@ -8,10 +8,10 @@ import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
-import { collectionSelector } from 'src/redux/collection';
+import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
 import { editSelector } from 'src/redux/edit';
-import { useAppSelector } from 'src/redux/hooks';
-import { presaleWhitelistSelector } from 'src/redux/sales';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
 import { networkSelector, userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { getUnitByChainId } from 'src/utils/chains';
@@ -87,6 +87,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const [info, setInfo] = useState(getInfo(type));
 	const [fails, setFails] = useState(false);
 	const user = useAppSelector(userSelector);
+	const dispatch = useAppDispatch();
 
 	const { contract, data: arr } = useAppSelector(editSelector);
 	const [gas, setGas] = useState('');
@@ -114,13 +115,15 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	}, [step]);
 
 	useEffect(() => {
+		setInfo(getInfo(type));
+	}, [type]);
+
+	useEffect(() => {
 		let interval;
 		const getGasPrice = async () => {
 			try {
 				const fees = await user.provider.getGasPrice();
 				if (type === 'whitelist_add') {
-					console.log({ data });
-
 					const whitelistManager = new WhitelistManagement(presaleWhitelist);
 					whitelistManager.addWhitelist(data);
 					const newPresaleWhitelistConfig = {
@@ -130,9 +133,13 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 					const gas = await contract.connect(user.signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
 					setGas(ethers.utils.formatUnits(gas.mul(fees)));
 				} else if (type === 'whitelist_remove') {
-					const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
-					const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
-					const gas = await contract.connect(user.signer).estimateGas.removeWhitelist(prev, data[0]);
+					const whitelistManager = new WhitelistManagement(presaleWhitelist);
+					whitelistManager.removeWhitelist(data);
+					const newPresaleWhitelistConfig = {
+						root: whitelistManager.getRoot(),
+						cid: await whitelistManager.getCid(collection.name),
+					};
+					const gas = await contract.connect(user.signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
 					setGas(ethers.utils.formatUnits(gas.mul(fees)));
 				} else if (type === 'airdrop') {
 					const gas = await contract.connect(user.signer).estimateGas.transferReservedTokens(data);
@@ -169,7 +176,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 			if (transaction) {
 				setInfo({ ...info, yes: 'Processing Transaction' });
 			}
-			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistAdded')[0]?.args;
+			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistUpdated')[0]?.args;
 			return event;
 		} catch (err) {
 			console.log(err);
@@ -183,13 +190,17 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 
 	const removeWhitelist = async () => {
 		try {
-			const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
-			const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
-			const transaction = await contract.connect(user.signer).removeWhitelist(prev, data[0]);
+			const whitelistManager = new WhitelistManagement(presaleWhitelist);
+			whitelistManager.removeWhitelist(data);
+			const newPresaleWhitelistConfig = {
+				root: whitelistManager.getRoot(),
+				cid: await whitelistManager.getCid(collection.name),
+			};
+			const transaction = await contract.connect(user.signer).updateWhitelist(newPresaleWhitelistConfig);
 			if (transaction) {
 				setInfo({ ...info, yes: 'Processing Transaction' });
 			}
-			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistRemoved')[0]?.args;
+			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistUpdated')[0]?.args;
 			return event;
 		} catch (err) {
 			console.log(err);
@@ -225,11 +236,15 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 		} else if (step === 1) {
 			if (type === 'whitelist_add') {
 				addWhitelist().then(() => {
+					const arr = [...presaleWhitelist, ...data];
+					dispatch(setSaleDetails({ presaleable: { presaleWhitelist: arr } }));
 					setStep(3);
 					clearInput();
 				});
 			} else if (type === 'whitelist_remove') {
 				removeWhitelist().then(() => {
+					const arr = [...presaleWhitelist].filter((item) => !data.includes(item));
+					dispatch(setSaleDetails({ presaleable: { presaleWhitelist: arr } }));
 					setStep(3);
 					clearInput();
 				});
