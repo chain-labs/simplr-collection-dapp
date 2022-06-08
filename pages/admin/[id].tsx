@@ -26,8 +26,6 @@ const AdminDashboardPage = () => {
 		const contract = new ethers.Contract(`${address}`, abi, provider);
 		const qid = await contract.callStatic.metadata();
 		const res = await axios.get(`https://simplr.mypinata.cloud/ipfs/${qid}`);
-		console.log({ met: res.data });
-
 		setMetadata(res.data);
 		dispatch(setEditDetails({ metadata: res.data }));
 	};

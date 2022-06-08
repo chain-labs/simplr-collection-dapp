@@ -58,7 +58,7 @@ const CreateComp = ({ balance }) => {
 		<Box mt="16rem" pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
 			{getFormPage()}
 			<SEATModal
-				isOpen={isModalOpen && isTestNetwork}
+				isOpen={isModalOpen && !isTestNetwork}
 				setIsOpen={setIsModalOpen}
 				balance={balance.value}
 				loading={balance.loading}
