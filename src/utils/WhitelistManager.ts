@@ -1,6 +1,8 @@
+import axios from 'axios';
 import { ethers } from 'ethers';
 import { keccak256 } from 'ethers/lib/utils';
 import MerkleTree from 'merkletreejs';
+import { PINATA_KEY, PINATA_KEY_SECRET, PINATA_URL } from 'src/containers/create/components/utils';
 
 interface IWhitelistManager {
 	addresses: string[];
@@ -32,8 +34,31 @@ class WhitelistManagement {
 		return this.whitelist.root;
 	};
 
-	getCid = () => {
-		return this.whitelist.cid;
+	getCid = async (name) => {
+		if (!this.whitelist.cid) {
+			const res = await axios.post(
+				`${PINATA_URL}pinning/pinJSONToIPFS`,
+				{
+					pinataMetadata: {
+						name: `${name.replace(' ', '_')}_whitelist`,
+					},
+					pinataContent: {
+						addresses: this.whitelist.addresses,
+					},
+				},
+				{
+					headers: {
+						pinata_api_key: PINATA_KEY,
+						pinata_secret_api_key: PINATA_KEY_SECRET,
+					},
+				}
+			);
+			const hash = res?.data?.IpfsHash;
+			this.whitelist.cid = hash;
+			return hash;
+		} else {
+			return this.whitelist.cid;
+		}
 	};
 
 	getProof = (address) => {
@@ -48,9 +73,9 @@ class WhitelistManagement {
 			tree,
 			root: getRootFromTree(tree),
 			addresses: addresses,
-			cid: getRootFromTree(tree).toString(), // this is only for now, should be replace with correct IPFS hash
+			cid: null, // this is only for now, should be replace with correct IPFS hash
 		};
 	};
 }
 
-module.exports = WhitelistManagement;
+export default WhitelistManagement;

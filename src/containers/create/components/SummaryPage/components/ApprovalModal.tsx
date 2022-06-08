@@ -19,7 +19,7 @@ import theme from 'src/styleguide/theme';
 import { createCollection, uploadToIPFS } from '../../utils';
 import DeployedModal from './DeployedModal';
 
-const ApprovalModal = ({ isOpen, setIsOpen }) => {
+const ApprovalModal = ({ isOpen, setIsOpen, balance }) => {
 	const payments = useAppSelector(paymentSelector);
 	const [SEATInstance, setSEATInstance] = useState(null);
 	const [step, setStep] = useState(payments.useEarlyPass ? 0 : 1);
@@ -65,7 +65,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 				uploadToIPFS(collection, sales, payments, address)
 					.then(async (res) => {
 						setStep(2);
-						createCollection(CollectionFactory, res.metadata, collection, sales, payments, user.signer)
+						createCollection(CollectionFactory, res.metadata, collection, sales, payments, user.signer, balance)
 							.then((res) => {
 								setStep(3);
 								setFinish(res?.event?.collection);

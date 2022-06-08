@@ -14,6 +14,8 @@ import DashboardCard from './DashboardCard';
 import Whitelists from './Whitelists';
 import Airdrop from './Airdrop';
 import { getUnitByChainId } from 'src/utils/chains';
+import axios from 'axios';
+import { setCollectionDetails } from 'src/redux/collection';
 
 const CollectionPage = ({ contract, metadata, ready }) => {
 	const [provider] = useEthers();
@@ -81,11 +83,14 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 					details.presaleStartTime = presaleStartTime;
 					const isWhitelisted = await contract.callStatic.isPresaleWhitelisted();
 					if (isWhitelisted) {
-						const whitelist = await contract.callStatic.getPresaleWhitelists();
-						dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist } }));
+						const whitelistInfo = await contract.callStatic.getPresaleWhitelists();
+						const whitelist = await axios.get('https://simplr.mypinata.cloud/ipfs/' + whitelistInfo.cid);
+						dispatch(setSaleDetails({ presaleable: { presaleWhitelist: whitelist.data.addresses } }));
 					}
 				}
 				setCollection(details);
+
+				dispatch(setCollectionDetails({ name: metadata?.collectionDetails?.name }));
 				return details;
 			} catch (error) {
 				console.log(error);

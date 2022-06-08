@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
-import toast from 'react-hot-toast';
+import WhitelistManagement from 'src/utils/WhitelistManager';
 import { SignerProps } from 'src/ethereum/types';
 import { CollectionState, networks } from 'src/redux/collection/types';
 import { PaymentState } from 'src/redux/payment/types';
 import { SaleState } from 'src/redux/sales/types';
 import { getTimestamp } from './SalesPage';
+import tokensOfOwner from 'src/utils/tokenOwnership';
 
 export const PINATA_KEY = process.env.NEXT_PUBLIC_IPFS_API_PINATA_KEY;
 export const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_IPFS_PINATA_API_SECRET;
@@ -123,13 +124,21 @@ export const uploadToIPFS = async (
 	};
 };
 
+const getWhitelistObject = (addresses) => {
+	const whitelistManager = new WhitelistManagement(addresses);
+	const root = whitelistManager.getRoot();
+
+	return { root, whitelistManager };
+};
+
 export const createCollection = async (
 	contract,
 	metadata: string,
 	collection: CollectionState,
 	sales: SaleState,
 	payments: PaymentState,
-	signer: SignerProps
+	signer: SignerProps,
+	balance: string[]
 ) => {
 	const upfrontFee = await contract.upfrontFee(); // it works without callStatic too // upfront fee should be fetched from smart contract
 
@@ -152,20 +161,28 @@ export const createCollection = async (
 		projectURI: sales.revealable.enabled ? sales.revealable.loadingImageUrl : collection.project_uri, // placeholder or collection uri depending upon what they choose for reveal
 	};
 
+	const { root, whitelistManager } = getWhitelistObject(sales.presaleable.presaleWhitelist);
+
 	const presaleable = sales.presaleable.enabled
 		? {
 				presaleReservedTokens: sales.presaleable.presaleReservedTokens, // tokens that will be sold under presale, should be less than maximum tokens
 				presalePrice: ethers.utils.parseUnits(sales.presaleable.presalePrice?.toString(), 18), // 0.008 ETH  // price per token during presale // expect wei value
 				presaleStartTime: getTimestamp(sales.presaleable.presaleStartTime), // timestamp when presale starts, it should less than timestamp when public sale starts
 				presaleMaxHolding: sales.presaleable.presaleMaxHolding, // maximum tokens that a wallet can hold during presale
-				presaleWhitelist: sales.presaleable.presaleWhitelist ?? [], // list of addresses that needs to be whiteliste // can be an empty array
+				presaleWhitelist: {
+					root,
+					cid: await whitelistManager.getCid(collection.name),
+				}, // list of addresses that needs to be whiteliste // can be an empty array
 		  }
 		: {
 				presaleReservedTokens: 0, // it can be anything, but better to pass zero
 				presalePrice: 0, // it can be anything, but better to pass zero
 				presaleStartTime: 0, // this needs to be zero, to make sure presale doesn't get activated
 				presaleMaxHolding: 0, // it can be anything, but better to pass zero
-				presaleWhitelist: [], // can be empty array
+				presaleWhitelist: {
+					root: ethers.constants.HashZero,
+					cid: '',
+				}, // can be empty array
 		  }; // should be according to PresaleableStruct
 
 	const shares = [...payments.paymentSplitter.shares];
@@ -191,8 +208,8 @@ export const createCollection = async (
 	};
 
 	const royalties = {
-		account: payments.royalties.account ?? collection.admin, //account that will receive royalties for secondary sale
-		value: payments.royalties.value ? payments.royalties.value * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
+		receiver: payments.royalties.receiver ?? collection.admin, //account that will receive royalties for secondary sale
+		royaltyFraction: payments.royalties.royaltyFraction ? payments.royalties.royaltyFraction * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
 	}; // should be according to LibPart.Part or Royalties struct
 
 	const reserveTokens = sales.reserveTokens; // should be default, this will not activate reservable module
@@ -211,10 +228,10 @@ export const createCollection = async (
 				reserveTokens,
 				metadata,
 				isAffiliable,
-				true
+				true,
+				parseInt(balance[0])
 			);
 		const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
-
 		return { transaction, event };
 	} else {
 		const transaction = await contract
@@ -230,6 +247,7 @@ export const createCollection = async (
 				metadata,
 				isAffiliable,
 				false,
+				0,
 				{ value: upfrontFee }
 			);
 		const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;

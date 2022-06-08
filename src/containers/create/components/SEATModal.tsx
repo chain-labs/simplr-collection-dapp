@@ -16,7 +16,7 @@ import { userSelector } from 'src/redux/user';
 interface Props {
 	isOpen: boolean;
 	setIsOpen: (boolean) => void;
-	balance?: number;
+	balance?: string[];
 	loading?: boolean;
 	setTncStatus?: (any) => void;
 }
@@ -27,7 +27,7 @@ const SEATModal = ({ isOpen, setIsOpen, balance, loading, setTncStatus }: Props)
 	const [earlyPass, setEarlyPass] = useState<boolean>(false);
 
 	useEffect(() => {
-		setEarlyPass(balance > 0);
+		setEarlyPass(balance.length > 0);
 	}, [balance]);
 
 	useEffect(() => {
