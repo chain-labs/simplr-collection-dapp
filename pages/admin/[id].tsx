@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
+import { setCollectionDetails } from 'src/redux/collection';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
 import { networkSelector } from 'src/redux/user';
@@ -19,12 +20,16 @@ const AdminDashboardPage = () => {
 	const dispatch = useDispatch();
 	const currentNetwork = useAppSelector(networkSelector);
 	const [ready, setReady] = useState(false);
+	const [contractName, setContractName] = useState();
 
 	const getMetadata = async () => {
 		const abi = getContractDetails('Collection');
 		const address = `${id}`.split(':')[1];
 		const contract = new ethers.Contract(`${address}`, abi, provider);
 		const qid = await contract.callStatic.metadata();
+		const CONTRACT_NAME = await contract.callStatic.CONTRACT_NAME();
+		setContractName(CONTRACT_NAME);
+
 		const res = await axios.get(`https://simplr.mypinata.cloud/ipfs/${qid}`);
 		setMetadata(res.data);
 		dispatch(setEditDetails({ metadata: res.data }));
@@ -85,7 +90,7 @@ const AdminDashboardPage = () => {
 		}
 	}, [ready]);
 
-	return <AdminDashboardComponent metadata={metadata} id={id} ready={ready} />;
+	return <AdminDashboardComponent metadata={metadata} id={id} ready={ready} contractName={contractName} />;
 };
 
 export default AdminDashboardPage;

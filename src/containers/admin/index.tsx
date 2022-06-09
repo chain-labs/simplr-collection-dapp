@@ -13,9 +13,8 @@ import PaymentsPage from './components/PaymentsPage';
 import { blockExplorer } from 'src/utils/links';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
-import { setCollectionDetails } from 'src/redux/collection';
 
-const AdminDashboardComponent = ({ metadata, id, ready }) => {
+const AdminDashboardComponent = ({ metadata, id, ready, contractName }) => {
 	const [step, setStep] = useState(0);
 	const [provider] = useEthers();
 	const [contract, setContract] = useState<ethers.Contract>();
@@ -23,14 +22,14 @@ const AdminDashboardComponent = ({ metadata, id, ready }) => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (id && provider) {
-			const abi = getContractDetails('Collection');
+		if (id && provider && contractName) {
+			const abi = getContractDetails(contractName);
 			const address = `${id}`.split(':')[1];
 			const contract = new ethers.Contract(address, abi, provider);
 			dispatch(setEditDetails({ contract: contract }));
 			setContract(contract);
 		}
-	}, [id, provider]);
+	}, [id, provider, contractName]);
 
 	return (
 		<Box mt="15rem">

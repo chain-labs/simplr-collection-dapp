@@ -242,7 +242,7 @@ const Royalties = ({ admin, contract, signer, ready }) => {
 	useEffect(() => {
 		const getRoyalty = async () => {
 			const r = await contract.queryFilter('DefaultRoyaltyUpdated');
-			setRoyalty({ receiver: r[0].args[0], royaltyFraction: parseInt(r[0].args[1].toString()) / 100 });
+			setRoyalty({ receiver: r[0]?.args[0], royaltyFraction: parseInt(r[0]?.args[1]?.toString()) / 100 });
 			setAddress(royalty.receiver);
 			setPercentage(royalty.royaltyFraction / 100);
 		};
