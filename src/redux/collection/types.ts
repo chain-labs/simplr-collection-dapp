@@ -1,4 +1,5 @@
 export interface CollectionState {
+	contract?: 1 | 2;
 	type?: 1 | 4 | 137 | 80001;
 	name?: string;
 	symbol?: string;
@@ -50,4 +51,9 @@ export const getNetworkList = (test) => {
 export const rpc_urls = {
 	137: 'https://polygon-rpc.com',
 	80001: 'https://rpc-mumbai.matic.today',
+};
+
+export const contractType = {
+	ERC721: 1,
+	ERC721A: 2,
 };

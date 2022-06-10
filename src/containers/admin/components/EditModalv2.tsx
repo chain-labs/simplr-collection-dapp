@@ -15,6 +15,7 @@ import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
 import { networkSelector, userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { getUnitByChainId } from 'src/utils/chains';
+import tokensOfOwner from 'src/utils/tokenOwnership';
 import WhitelistManagement from 'src/utils/WhitelistManager';
 import Step2Modal from './CollectionPage/Step2Modal';
 import Step3Modal from './CollectionPage/Step3Modal';
@@ -122,6 +123,8 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 		let interval;
 		const getGasPrice = async () => {
 			try {
+				const CONTRACT_NAME = await contract.callStatic.CONTRACT_NAME();
+				const isERC721 = CONTRACT_NAME === 'Collection';
 				const fees = await user.provider.getGasPrice();
 				if (type === 'whitelist_add') {
 					const whitelistManager = new WhitelistManagement(presaleWhitelist);
@@ -142,8 +145,16 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 					const gas = await contract.connect(user.signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
 					setGas(ethers.utils.formatUnits(gas.mul(fees)));
 				} else if (type === 'airdrop') {
-					const gas = await contract.connect(user.signer).estimateGas.transferReservedTokens(data);
-					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					if (isERC721) {
+						const gas = await contract.connect(user.signer).estimateGas.transferReservedTokens(data);
+						setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					} else {
+						const tokenIds = await tokensOfOwner(contract, user.address);
+						const gas = await contract
+							.connect(user.signer)
+							.estimateGas['safeTransferFrom(address,address,uint256)'](user.address, data[0], parseInt(tokenIds[0]));
+						setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					}
 				}
 			} catch (err) {
 				console.log(err);
@@ -214,12 +225,26 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 
 	const airdrop = async () => {
 		try {
-			const transaction = await contract.connect(user.signer).transferReservedTokens(data);
-			if (transaction) {
-				setInfo({ ...info, yes: 'Processing Transaction' });
+			const CONTRACT_NAME = await contract.callStatic.CONTRACT_NAME();
+			const isERC721 = CONTRACT_NAME === 'Collection';
+			if (isERC721) {
+				const transaction = await contract.connect(user.signer).transferReservedTokens(data);
+				if (transaction) {
+					setInfo({ ...info, yes: 'Processing Transaction' });
+				}
+				const event = (await transaction.wait())?.events?.filter((event) => event.event === 'Airdrop')[0]?.args;
+				return event;
+			} else {
+				const tokenIds = await tokensOfOwner(contract, user.address);
+				const transaction = await contract
+					.connect(user.signer)
+					['safeTransferFrom(address,address,uint256)'](user.address, data[0], parseInt(tokenIds[0]));
+				if (transaction) {
+					setInfo({ ...info, yes: 'Processing Transaction' });
+				}
+				const event = (await transaction.wait())?.events?.filter((event) => event.event === 'Airdrop')[0]?.args;
+				return event;
 			}
-			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'Airdrop')[0]?.args;
-			return event;
 		} catch (err) {
 			console.log(err);
 			toast.error('An unexpected error occured.');

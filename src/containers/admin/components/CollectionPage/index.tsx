@@ -16,6 +16,8 @@ import Airdrop from './Airdrop';
 import { getUnitByChainId } from 'src/utils/chains';
 import axios from 'axios';
 import { setCollectionDetails } from 'src/redux/collection';
+import tokensOfOwner from 'src/utils/tokenOwnership';
+import WhitelistManagement from 'src/utils/WhitelistManager';
 
 const CollectionPage = ({ contract, metadata, ready }) => {
 	const [provider] = useEthers();
@@ -28,9 +30,11 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
 	const [collection, setCollection] = useState({
+		collectionName: '',
 		maxTokens: '',
 		adminAddress: '',
 		reservedTokens: '',
+		reservedTokensCount: [],
 		price: '',
 		presalePrice: '',
 		totalSupply: 0,
@@ -46,28 +50,39 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 	useEffect(() => {
 		const getDetails = async () => {
 			try {
+				const COLLECTION_NAME = await contract.callStatic.CONTRACT_NAME();
 				const maxTokens = await contract.callStatic.maximumTokens();
 				const adminAddress = await contract.callStatic.owner();
 				const reservedTokens = await contract.callStatic.reservedTokens();
+				const reservedTokensCount =
+					COLLECTION_NAME === 'CollectionA'
+						? await tokensOfOwner(contract, adminAddress)
+						: new Array(reservedTokens - (await contract.callStatic.reserveTokenCounter()));
 				const price = await contract.callStatic.price();
-				const totalSupply = await contract.callStatic.totalSupply();
 				const balance = await provider?.getBalance(contract.address);
 				const totalReleased = await contract.callStatic['totalReleased()']();
 				const totalFunds = balance.add(totalReleased);
-				const tokensCount = await contract.callStatic.tokensCount();
+				let tokensCount;
+				if (COLLECTION_NAME === 'Collection') {
+					tokensCount = await contract.callStatic.tokensCount();
+				} else {
+					tokensCount = await contract.callStatic.totalSupply();
+				}
 				const saleStartTime = await contract.callStatic.publicSaleStartTime();
 				const paused = await contract.callStatic.paused();
 				const projectURI = await contract.callStatic.projectURI();
 				const revealed = await contract.callStatic.isRevealed();
 				const details = {
+					collectionName: COLLECTION_NAME,
 					maxTokens: ethers.utils.formatUnits(maxTokens, 0),
 					adminAddress,
 					reservedTokens: ethers.utils.formatUnits(reservedTokens, 0),
+					reservedTokensCount,
 					price: ethers.utils.formatUnits(price, 18),
 					presalePrice: '-1',
-					totalSupply,
+					totalSupply: tokensCount,
 					totalFunds: ethers.utils.formatUnits(totalFunds),
-					tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount, 0))}`,
+					tokensCount: `${parseInt(ethers.utils.formatUnits(tokensCount ?? '0', 0))}`,
 					saleStartTime,
 					presaleStartTime: 0,
 					paused,
@@ -89,7 +104,6 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 					}
 				}
 				setCollection(details);
-
 				dispatch(setCollectionDetails({ name: metadata?.collectionDetails?.name }));
 				return details;
 			} catch (error) {
@@ -280,11 +294,23 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 								/>
 							}
 						/>
-						<DashboardCard Icon={ImageSquare} text="NFTs sold" data={collection.tokensCount} />
+						<DashboardCard
+							Icon={ImageSquare}
+							text="NFTs sold"
+							data={
+								collection.collectionName === 'CollectionA'
+									? `${collection.totalSupply - parseInt(collection.reservedTokens)}`
+									: `${collection.totalSupply}`
+							}
+						/>
 						<DashboardCard
 							Icon={ImageSquare}
 							text="NFTs remaining"
-							data={`${parseInt(collection.maxTokens) - collection.totalSupply}`}
+							data={
+								collection.collectionName === 'CollectionA'
+									? `${parseInt(collection.maxTokens) - collection.totalSupply}`
+									: `${parseInt(collection.maxTokens) - collection.totalSupply - parseInt(collection.reservedTokens)}`
+							}
 						/>
 						<DashboardCard
 							Icon={CurrencyEth}
@@ -294,9 +320,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 						<DashboardCard
 							Icon={ImageSquare}
 							text="Reserved Tokens remaining"
-							data={`${
-								parseInt(collection.reservedTokens) - collection.totalSupply + parseInt(collection.tokensCount)
-							}`}
+							data={`${collection.reservedTokensCount.length}`}
 						/>
 					</Box>
 
@@ -356,7 +380,10 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 							}
 						/>
 					</Box>
-					<If condition={user.address === collection.adminAddress} then={<Airdrop />} />
+					<If
+						condition={user.address === collection.adminAddress}
+						then={<Airdrop contractName={collection.collectionName} />}
+					/>
 					<If
 						condition={parseFloat(collection.presalePrice) >= 0 && collection.saleStartTime > Date.now() / 1000}
 						then={<Whitelists admin={collection.adminAddress} />}

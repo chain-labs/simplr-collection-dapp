@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -10,15 +10,28 @@ import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import EditModalv2 from '../EditModalv2';
 
-const Airdrop = () => {
+const Airdrop = ({ contractName }) => {
 	const [airdropAddress, setAirdropAddress] = useState('');
 	const [addressList, setAddressList] = useState([]);
 	const [isAirdropModalOpen, setIsAirdropModalOpen] = useState(false);
+	const [isERC721, setIsERC721] = useState(true);
+
+	useEffect(() => {
+		if (contractName === 'CollectionA') {
+			setIsERC721(false);
+		} else setIsERC721(true);
+	}, [contractName]);
 
 	const handleAirdrop = async () => {
+		let err = false;
 		const addressList = airdropAddress.replace(/\s+/g, '');
 		const addresses = addressList.split(',');
-		let err = false;
+		if (!isERC721) {
+			if (addresses.length > 1) {
+				toast.error('Only one address can be airdropped at a time.');
+				err = true;
+			}
+		}
 		addresses.every((address) => {
 			if (!ethers.utils.isAddress(address)) {
 				toast.error('One of the Addresses is invalid');
@@ -42,7 +55,11 @@ const Airdrop = () => {
 				<LabelledTextInput
 					placeholder="Enter a valid wallet address"
 					label="Airdrop NFTs:"
-					helperText="Airdrop an NFT from your reserve to any wallet address. You can enter multiple addresses seperated by a comma ( , )."
+					helperText={`Airdrop an NFT from your reserve to any wallet address. ${
+						contractName === 'Collection'
+							? 'You can enter multiple addresses seperated by a comma ( , ).'
+							: 'Enter only one address.'
+					}`}
 					disableValidation
 				>
 					<TextArea value={airdropAddress} setValue={setAirdropAddress} width="45rem" />
