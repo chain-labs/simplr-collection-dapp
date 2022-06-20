@@ -348,7 +348,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 							</Box>
 							<TextInput
 								placeholder="https://gdrive.com/***"
-								value={collection.projectURI}
+								value={''}
 								setValue={setCollectionURI}
 								disableValidation
 								width="100%"
@@ -368,7 +368,7 @@ const CollectionPage = ({ contract, metadata, ready }) => {
 									</Text>
 									<TextInput
 										placeholder="https://gdrive.com/somethingurl"
-										value=""
+										value={collection.projectURI}
 										disableValidation
 										disabled
 										width="100%"
