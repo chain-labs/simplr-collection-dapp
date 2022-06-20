@@ -23,6 +23,7 @@ import {
 } from 'src/redux/payment';
 import { saleSelector } from 'src/redux/sales';
 import theme from 'src/styleguide/theme';
+import { SEAT_DISABLE } from 'src/utils/constants';
 import SummaryPage from '../SummaryPage';
 
 const getMaxShares = (shares, simplrShares) => {
@@ -60,7 +61,7 @@ const PaymentPage = ({ step, setStep, balance }) => {
 				const share = await Simplr?.callStatic.simplrShares();
 
 				const sharePercentage = ethers.utils.formatUnits(share?.toString());
-				const shareValue = parseFloat(sharePercentage) * 100;
+				const shareValue = Math.floor(parseFloat(sharePercentage) * 100);
 				setSimplrShares(shareValue);
 			} catch (err) {
 				console.log({ err });
@@ -198,17 +199,21 @@ const PaymentPage = ({ step, setStep, balance }) => {
 								}}
 							/>
 						</Box>
-
-						<Box>
-							<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
-								Use early pass benefits
-								<Box ml="mxxxl" />
-								<Toggle value={useEarlyPass} setValue={setUseEarlyPass} mobile disabled={!balance.length} />
-							</Text>
-							<Text as="b1" color="simply-gray" mt="mm" mb="4.4rem">
-								Turning this off would add Simplr as a beneificiary.
-							</Text>
-						</Box>
+						<If
+							condition={!SEAT_DISABLE}
+							then={
+								<Box>
+									<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
+										Use early pass benefits
+										<Box ml="mxxxl" />
+										<Toggle value={useEarlyPass} setValue={setUseEarlyPass} mobile disabled={!balance.length} />
+									</Text>
+									<Text as="b1" color="simply-gray" mt="mm" mb="4.4rem">
+										Turning this off would add Simplr as a beneificiary.
+									</Text>
+								</Box>
+							}
+						/>
 
 						<LabelledTextInput label="Royalties" helperText="Maximum 10%">
 							<Box row overflow="visible">

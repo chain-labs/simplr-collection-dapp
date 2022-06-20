@@ -7,6 +7,7 @@ import { getContractDetails } from 'src/ethereum/useCustomContract';
 import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
 import { networkSelector, userSelector } from 'src/redux/user';
+import { SEAT_DISABLE } from 'src/utils/constants';
 import tokensOfOwner from 'src/utils/tokenOwnership';
 
 const CreatePage = () => {
@@ -19,8 +20,10 @@ const CreatePage = () => {
 	const CollectionFactory = useContract('CollectionFactoryV2', collection.type ?? network.chain, user.provider);
 
 	useEffect(() => {
-		if (CollectionFactory && user.address) {
+		if (CollectionFactory && user.address && !SEAT_DISABLE) {
 			getSEATDetails();
+		} else {
+			setTokens({ value: [], loading: false });
 		}
 	}, [CollectionFactory, user.address]);
 
@@ -32,7 +35,7 @@ const CreatePage = () => {
 			const tokens = await tokensOfOwner(SEATInstance, user.address);
 			setTokens({ value: tokens, loading: false });
 		} catch (err) {
-			console.error(err);
+			console.log(err);
 		}
 	};
 
