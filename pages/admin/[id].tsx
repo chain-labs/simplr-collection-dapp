@@ -40,7 +40,7 @@ const AdminDashboardPage = () => {
 			if (process.browser) {
 				const shortName = `${id}`.split(':')[0];
 				const network = getNetworkByShortName(shortName);
-				const chainId = `0x${network.chainId.toString(16)}`;
+				const chainId = `${network.chainId.toString(16)}`;
 				if (network.chainId !== currentNetwork.chain) {
 					if (network.chainId === 137 || network.chainId === 80001) {
 						// @ts-expect-error ethereum in window

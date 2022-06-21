@@ -94,6 +94,8 @@ const CollectionPage = ({ step, setStep }) => {
 	useEffect(() => {
 		if (networkValue > 0 && process.browser) {
 			const chainId = `0x${networkValue.toString(16)}`;
+			console.log({ chainId });
+
 			const rpc = rpc_urls[networkValue];
 			const name = networkData[networkValue];
 
