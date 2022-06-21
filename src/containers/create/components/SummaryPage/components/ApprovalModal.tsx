@@ -65,6 +65,15 @@ const ApprovalModal = ({ isOpen, setIsOpen, balance }) => {
 				uploadToIPFS(collection, sales, payments, address)
 					.then(async (res) => {
 						setStep(2);
+						console.log({
+							CollectionFactory,
+							metadata: res.metadata,
+							collection,
+							sales,
+							payments,
+							signer: user.signer,
+							balance,
+						});
 						createCollection(CollectionFactory, res.metadata, collection, sales, payments, user.signer, balance)
 							.then((res) => {
 								setStep(3);

@@ -16,7 +16,16 @@ const getRootFromTree = (tree) => '0x' + tree.getRoot().toString('hex');
 class WhitelistManagement {
 	whitelist: IWhitelistManager;
 	constructor(addresses) {
-		this.setWhitelist(addresses);
+		if (addresses.length > 0) {
+			this.setWhitelist(addresses);
+		} else {
+			this.whitelist = {
+				tree: null,
+				root: ethers.constants.HashZero,
+				addresses: addresses,
+				cid: null, // this is only for now, should be replace with correct IPFS hash
+			};
+		}
 	}
 
 	addWhitelist = (addresses) => {
