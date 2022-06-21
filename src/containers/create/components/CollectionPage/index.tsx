@@ -93,9 +93,13 @@ const CollectionPage = ({ step, setStep }) => {
 
 	useEffect(() => {
 		if (networkValue > 0 && process.browser) {
-			const chainId = `0x${networkValue.toString(16)}`;
-			console.log({ chainId });
-
+			const chainIdInHex = `${networkValue.toString(16)}`;
+			let chainId;
+			if (chainIdInHex.includes('0x')) {
+				chainId = chainIdInHex;
+			} else {
+				chainId = `0x${chainIdInHex}`;
+			}
 			const rpc = rpc_urls[networkValue];
 			const name = networkData[networkValue];
 
