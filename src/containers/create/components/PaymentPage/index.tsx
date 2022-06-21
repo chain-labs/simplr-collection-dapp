@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ethers } from 'ethers';
 import { CaretRight, Info, XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
@@ -374,10 +375,10 @@ const Payee = ({ percentage, payee, maxShare, handleRemove }) => {
 			onMouseOut={() => setDeleteButton(false)}
 			width="105%"
 		>
-			<TextInput value={null} placeholder={payee} type="text" width="41.7rem" fontSize="1.4rem" disableValidation />
+			<TextInput value="" placeholder={payee} type="text" width="41.7rem" fontSize="1.4rem" disableValidation />
 			<Box ml="mxs" />
 			<TextInput
-				value={null}
+				value={undefined}
 				placeholder={`${percentage}%`}
 				max={`${maxShare}`}
 				type="number"

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -131,7 +132,7 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 					{payees.slice(0, payees.length - 1).map((payee, index) => (
 						<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
 							<TextInput
-								value={null}
+								value=""
 								placeholder={payee}
 								type="text"
 								width="45.2rem"
@@ -141,7 +142,7 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 							/>
 							<Box ml="mxs" />
 							<TextInput
-								value={null}
+								value={undefined}
 								placeholder={`${shares[index]}%`}
 								type="number"
 								width="9.2rem"

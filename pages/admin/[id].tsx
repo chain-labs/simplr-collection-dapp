@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import axios from 'axios';
 import AdminDashboardComponent from 'containers/admin';
 import { ethers } from 'ethers';
@@ -6,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
-import { setCollectionDetails } from 'src/redux/collection';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
 import { networkSelector } from 'src/redux/user';
@@ -40,7 +40,7 @@ const AdminDashboardPage = () => {
 			if (process.browser) {
 				const shortName = `${id}`.split(':')[0];
 				const network = getNetworkByShortName(shortName);
-				const chainId = `${network.chainId.toString(16)}`;
+				const chainId = `0x${network.chainId.toString(16)}`;
 				if (network.chainId !== currentNetwork.chain) {
 					if (network.chainId === 137 || network.chainId === 80001) {
 						// @ts-expect-error ethereum in window

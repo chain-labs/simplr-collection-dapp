@@ -184,7 +184,7 @@ const PaymentSummaryPage = ({ setModalStep, simplrShares, balance }) => {
 				{beneficiaries?.payees?.map((payee, index) => (
 					<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
 						<TextInput
-							value={null}
+							value=""
 							placeholder={payee}
 							type="text"
 							width="41.7rem"
@@ -194,7 +194,7 @@ const PaymentSummaryPage = ({ setModalStep, simplrShares, balance }) => {
 						/>
 						<Box ml="mxs" />
 						<TextInput
-							value={null}
+							value={undefined}
 							placeholder={`${beneficiaries?.shares[index]}%`}
 							type="number"
 							width="21.4rem"

@@ -6,7 +6,6 @@ import { CollectionState, networks } from 'src/redux/collection/types';
 import { PaymentState } from 'src/redux/payment/types';
 import { SaleState } from 'src/redux/sales/types';
 import { getTimestamp } from './SalesPage';
-import tokensOfOwner from 'src/utils/tokenOwnership';
 
 export const PINATA_KEY = process.env.NEXT_PUBLIC_IPFS_API_PINATA_KEY;
 export const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_IPFS_PINATA_API_SECRET;

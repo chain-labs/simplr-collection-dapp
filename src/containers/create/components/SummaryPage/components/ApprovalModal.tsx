@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ethers } from 'ethers';
 import { gsap } from 'gsap';
 import { Check, CircleNotch, Warning, X } from 'phosphor-react';
