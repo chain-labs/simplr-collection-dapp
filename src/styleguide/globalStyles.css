@@ -61,3 +61,37 @@ svg {
 	margin-right: 2px;
 	border-radius: 16px;
 }
+
+.tnc-hidden-scrollbar::-webkit-scrollbar {
+	background: transparent;
+	width: 4px;
+	margin-left: 16px;
+}
+
+.tnc-hidden-scrollbar::-webkit-scrollbar-thumb {
+	background: #DCDCE5;
+	border-radius: 16px;
+}
+
+.absolute-center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.spin {	
+	animation: spin 1.5s linear infinite;
+}
+
+a:hover {
+	text-decoration: underline;
+}

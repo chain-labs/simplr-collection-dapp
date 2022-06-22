@@ -3,7 +3,7 @@ import Box from 'src/components/Box';
 import Dropdown from 'src/components/Dropdown';
 import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { networks, rpc_urls } from 'src/redux/collection/types';
+import { contractType, getNetworkList, rpc_urls } from 'src/redux/collection/types';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import ButtonComp from 'src/components/Button';
@@ -12,35 +12,43 @@ import { Toaster } from 'react-hot-toast';
 import { ethers } from 'ethers';
 import { CaretRight } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
-import { networkSelector } from 'src/redux/user';
+import Dropzone from 'src/components/Dropzone';
+import { userSelector } from 'src/redux/user';
+import { TEST_NETWORK } from 'src/utils/constants';
 
 const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
-	const currentNetwork = useAppSelector(networkSelector);
+	const user = useAppSelector(userSelector);
 
 	const dispatch = useAppDispatch();
 
 	const [collectionName, setCollectionName] = useState<string>(collectionData.name);
+	const [collectionType, setCollectionType] = useState<string>('ERC721');
 	const [collectionSymbol, setCollectionSymbol] = useState<string>(collectionData.symbol);
 	const [collectionURI, setCollectionURI] = useState<string>(collectionData.project_uri);
 	const [collectionWebURL, setCollectionWebURL] = useState<string>(collectionData.website_url);
-	const [collectionLogoURL, setCollectionLogoURL] = useState<string>(collectionData.logo_url);
-	const [collectionBannerURL, setCollectionBannerURL] = useState<string>(collectionData.banner_url);
+	const [collectionLogoURL, setCollectionLogoURL] = useState<File>(collectionData.logo_url);
+	const [collectionBannerURL, setCollectionBannerURL] = useState<File>(collectionData.banner_url);
 	const [email, setEmail] = useState<string>(collectionData.contact_email);
 	const [adminAddress, setAdminAddress] = useState<string>(collectionData.admin);
 	const [networkData, setNetworkData] = useState([]);
 	const [networkValue, setNetworkValue] = useState<number>(collectionData.type);
-	const [network, setNetwork] = useState(networks[networkValue]?.name);
+	const [network, setNetwork] = useState(getNetworkList(TEST_NETWORK)[networkValue]?.name);
 
 	useEffect(() => {
 		setNetworkValue(networkData.indexOf(network));
 	}, [networkData, network]);
 
 	useEffect(() => {
-		const types = Object.keys(networks);
+		setNetworkValue(user.network.chain);
+		setNetwork(getNetworkList(TEST_NETWORK)[user.network.chain]?.name);
+	}, [user]);
+
+	useEffect(() => {
+		const types = Object.keys(getNetworkList(TEST_NETWORK));
 		const data = [];
 		types.map((type) => {
-			data[type] = networks[type].name;
+			data[type] = getNetworkList(TEST_NETWORK)[type].name;
 		});
 		setNetworkData(data);
 	}, []);
@@ -53,6 +61,7 @@ const CollectionPage = ({ step, setStep }) => {
 
 	const getData = () => {
 		const data = {
+			contract: contractType[collectionType],
 			type: networkValue,
 			name: collectionName,
 			symbol: collectionSymbol,
@@ -70,7 +79,7 @@ const CollectionPage = ({ step, setStep }) => {
 		e.preventDefault();
 		const valid = ethers.utils.isAddress(adminAddress);
 		if (networkValue === -1) {
-			toast.error('Please select the newwork');
+			toast.error('Please select the network');
 		} else if (!valid) {
 			toast.error('Invalid wallet address');
 		} else {
@@ -84,13 +93,17 @@ const CollectionPage = ({ step, setStep }) => {
 
 	useEffect(() => {
 		if (networkValue > 0 && process.browser) {
-			const chainId = `0x${networkValue.toString(16)}`;
+			const chainIdInHex = `${networkValue.toString(16)}`;
+			let chainId;
+			if (chainIdInHex.includes('0x')) {
+				chainId = chainIdInHex;
+			} else {
+				chainId = `0x${chainIdInHex}`;
+			}
 			const rpc = rpc_urls[networkValue];
 			const name = networkData[networkValue];
 
 			if (networkValue === 137 || networkValue === 80001) {
-				console.log({ chainId, rpc, name, networkValue });
-
 				// @ts-expect-error ethereum in window
 				window.ethereum.request({
 					method: 'wallet_addEthereumChain',
@@ -142,6 +155,15 @@ const CollectionPage = ({ step, setStep }) => {
 						<Dropdown setValue={setNetwork} value={network} data={networkData} placeholder="Blockchain" />
 					</LabelledTextInput>
 					<Box mt="mxxxl" />
+					<LabelledTextInput label="Collection Type" required>
+						<Dropdown
+							setValue={setCollectionType}
+							value={collectionType}
+							data={['ERC721', 'ERC721A']}
+							placeholder="ERC721"
+						/>
+					</LabelledTextInput>
+					<Box mt="mxxxl" />
 					<LabelledTextInput
 						type="text"
 						label="Collection Name"
@@ -185,27 +207,13 @@ const CollectionPage = ({ step, setStep }) => {
 						required
 					/>
 					<Box mt="mxxxl" />
-					<LabelledTextInput
-						type="url"
-						label="Collection Logo URL"
-						placeholder="https://"
-						helperText="Accepts JPEG and PNG files."
-						width="100%"
-						value={collectionLogoURL}
-						setValue={setCollectionLogoURL}
-						required
-					/>
+					<LabelledTextInput label="Collection Logo" required>
+						<Dropzone image={collectionLogoURL} setImage={setCollectionLogoURL} />
+					</LabelledTextInput>
 					<Box mt="mxxxl" />
-					<LabelledTextInput
-						type="url"
-						label="Collection Banner URL"
-						placeholder="https://"
-						helperText="Accepts JPEG and PNG files."
-						width="100%"
-						value={collectionBannerURL}
-						setValue={setCollectionBannerURL}
-						required
-					/>
+					<LabelledTextInput label="Collection Banner" required>
+						<Dropzone image={collectionBannerURL} setImage={setCollectionBannerURL} />
+					</LabelledTextInput>
 					<Box mt="mxxxl" />
 					<LabelledTextInput
 						type="email"

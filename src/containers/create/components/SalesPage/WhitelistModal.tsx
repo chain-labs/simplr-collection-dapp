@@ -9,24 +9,21 @@ import { X } from 'phosphor-react';
 import If from 'src/components/If';
 import toast from 'react-hot-toast';
 
-const WhitelistModal = ({ visible, setVisible }) => {
+interface Props {
+	visible: boolean;
+	setVisible: (boolean) => void;
+	readOnly?: boolean;
+	admin?: boolean;
+	handleWhitelistRemove?: (any) => any;
+}
+
+const WhitelistModal = ({ visible, setVisible, readOnly, admin }: Props) => {
 	const whiteList = useAppSelector(presaleWhitelistSelector);
 	const [empty, setEmpty] = useState(false); // Checks if search result is empty
 	const [searchInput, setSearchInput] = useState('');
 
-	const dispatch = useAppDispatch();
-
-	const handleRemove = (address) => {
-		console.log({ address });
-
-		dispatch(removeWhitelist(address));
-		toast.success(`Removed from whitelist`);
-	};
-
 	useEffect(() => {
 		const arr = whiteList.filter((item) => item.includes(searchInput));
-		console.log({ arr, len: arr.length });
-
 		if (arr.length === 0) {
 			setEmpty(true);
 		} else {
@@ -84,15 +81,6 @@ const WhitelistModal = ({ visible, setVisible }) => {
 													<Text as="h4" width="4.4rem">{`${index + 1}.`}</Text>
 													<Text as="h4">{address}</Text>
 												</Box>
-												<Text
-													as="h4"
-													color="red-50"
-													textAlign="end"
-													onClick={() => handleRemove(address)}
-													cursor="pointer"
-												>
-													Remove
-												</Text>
 											</Box>
 										))}
 								/>
@@ -103,9 +91,6 @@ const WhitelistModal = ({ visible, setVisible }) => {
 										<Text as="h4" width="4.4rem">{`${index + 1}.`}</Text>
 										<Text as="h4">{address}</Text>
 									</Box>
-									<Text as="h4" color="red-50" textAlign="end" onClick={() => handleRemove(address)} cursor="pointer">
-										Remove
-									</Text>
 								</Box>
 							))}
 						/>

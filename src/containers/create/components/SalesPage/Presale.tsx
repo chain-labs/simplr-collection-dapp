@@ -104,8 +104,8 @@ const Presale = ({
 						<Box mt="mxxxl" />
 						<LabelledTextInput
 							type="number"
-							step="0.01"
-							min="0.01"
+							step="0.000001"
+							min="0"
 							unit={unit ? getUnit(unit) : 'ETH'}
 							label="Price per NFT (Presale)"
 							required
@@ -137,7 +137,15 @@ const Presale = ({
 								disableValidation
 							/>
 							<Box mt="mm" alignSelf="flex-end">
-								<ButtonComp bg="tertiary" height="40px" px="ml" onClick={() => setShowWhitelistModal(true)}>
+								<ButtonComp
+									bg="tertiary"
+									height="40px"
+									px="ml"
+									onClick={(e) => {
+										e.preventDefault();
+										setShowWhitelistModal(true);
+									}}
+								>
 									View Whitelist
 								</ButtonComp>
 								<ButtonComp bg="primary" height="40px" px="ml" ml="mm" disable={!whitelist} onClick={handleAdd}>
@@ -147,7 +155,7 @@ const Presale = ({
 						</Box>
 						<Box mt="mxxxl" />
 						<LabelledTextInput label="Pre-Sale Launch" required>
-							<DateTime value={presaleStartTime} setValue={setPresaleStartTime} />
+							<DateTime value={presaleStartTime} setValue={setPresaleStartTime} width="64rem" />
 						</LabelledTextInput>
 					</Box>
 				}

@@ -4,6 +4,7 @@ import Box from './Box';
 import If from './If';
 import LabelledSelectInput from './LabelledSelectInput';
 import Text from './Text';
+import useOuterClick from './useOuterClick';
 
 interface Props {
 	setValue: (any) => void;
@@ -17,8 +18,11 @@ interface Props {
 
 const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }: Props) => {
 	const [visible, setVisible] = useState(false);
+	const ref = useOuterClick(() => {
+		setVisible(false);
+	});
 	return (
-		<Box className="dropdown" overflow="visible">
+		<Box className="dropdown" overflow="visible" ref={ref} width={width ?? '32rem'}>
 			<LabelledSelectInput
 				label={label}
 				set={setVisible}
@@ -35,6 +39,7 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }
 				maxHeight="40rem"
 				position="absolute"
 				onClick={() => setVisible(!visible)}
+				onBlur={() => setVisible(false)}
 			>
 				<If
 					condition={visible}

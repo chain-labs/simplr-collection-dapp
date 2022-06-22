@@ -34,10 +34,8 @@ export const getUnit = (network) => {
 export const getTimestamp = (timeObject: DateType) => {
 	const { date, time, timezone } = timeObject;
 	const label = timezone?.split(' ')[0];
-	const timestamp =
-		Date.parse(
-			`${date} ${time} ${label?.substring(1, label.length - 1) ?? `GMT${new Date().toString().split('GMT')[1]}`}`
-		) / 1000;
+	const newDate = date.replace(/-/g, '/');
+	const timestamp = Date.parse(`${newDate} ${time} ${label ?? `GMT${new Date().toString().split('GMT')[1]}`}`) / 1000;
 	return timestamp;
 };
 
@@ -68,7 +66,6 @@ const SalesPage = ({ step, setStep }) => {
 
 	const [isRevealable, setIsRevealable] = useState(revealable);
 	const [loadingUrl, setLoadingUrl] = useState<string>(sales.revealable.loadingImageUrl);
-	const [revealableTime, setRevealableTime] = useState<DateType>(sales.revealable.timestamp);
 
 	const addData = (Step) => {
 		const data = getData();
@@ -94,7 +91,6 @@ const SalesPage = ({ step, setStep }) => {
 			},
 			revealable: {
 				enabled: isRevealable,
-				timestamp: revealableTime,
 				loadingImageUrl: loadingUrl,
 			},
 			isAffiliable,
@@ -106,11 +102,11 @@ const SalesPage = ({ step, setStep }) => {
 		e.preventDefault();
 		const date = Date.now() / 1000;
 		const publicSaleTime = getTimestamp(publicSaleLaunchTimestamp);
-
 		if (+publicSaleTime < date) {
 			toast.error('Invalid time');
 			return;
 		}
+
 		if (isPresaleable) {
 			const presaleTime = getTimestamp(presaleStartTime);
 			if (+presaleReservedTokens > +maxTokens) {
@@ -121,13 +117,6 @@ const SalesPage = ({ step, setStep }) => {
 				return;
 			} else if (publicSaleTime < presaleTime) {
 				toast.error('Presale start time should be earlier than public sale');
-				return;
-			}
-		}
-		if (isRevealable) {
-			const revealTime = getTimestamp(revealableTime);
-			if (revealTime > publicSaleTime) {
-				toast.error('Invalid Time');
 				return;
 			}
 		}
@@ -179,7 +168,7 @@ const SalesPage = ({ step, setStep }) => {
 					<LabelledTextInput
 						type="number"
 						min="1"
-						max={maxTokens?.toString()}
+						max={maxHolding?.toString()}
 						label="Maximum NFTs allowed to buy per sale"
 						helperText="Maximum number of NFTs a user can buy at once"
 						required
@@ -202,8 +191,8 @@ const SalesPage = ({ step, setStep }) => {
 					<Box mt="mxxxl" />
 					<LabelledTextInput
 						type="number"
-						step="0.01"
-						min="0.01"
+						step="0.000001"
+						min="0"
 						unit={type ? getUnit(type) : 'ETH'}
 						label="Price per NFT"
 						required
@@ -225,7 +214,7 @@ const SalesPage = ({ step, setStep }) => {
 					/>
 					<Box mt="mxxxl" />
 					<LabelledTextInput label="Public Sale Launch" required type="date">
-						<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} />
+						<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} width="100%" />
 					</LabelledTextInput>
 					<Box mt="wm" />
 					<Presale
@@ -248,8 +237,6 @@ const SalesPage = ({ step, setStep }) => {
 						setIsChecked={setIsRevealable}
 						loadingUrl={loadingUrl}
 						setLoadingUrl={setLoadingUrl}
-						revealableTime={revealableTime}
-						setRevealableTime={setRevealableTime}
 					/>
 					<Box mt="wm" />
 					<Affiliable isChecked={isAffiliable} setIsChecked={setIsAffiliable} />

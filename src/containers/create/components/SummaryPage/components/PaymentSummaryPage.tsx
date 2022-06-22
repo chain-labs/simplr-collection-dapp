@@ -1,6 +1,5 @@
-import { ethers } from 'ethers';
-import React, { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { CircleNotch } from 'phosphor-react';
+import React, { useEffect, useRef, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import DateTime from 'src/components/DateTime';
@@ -9,10 +8,6 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import Toggle from 'src/components/Toggle';
-import useContract from 'src/ethereum/useContract';
-import useEthers from 'src/ethereum/useEthers';
-import useSigner from 'src/ethereum/useSigner';
-import { collectionSelector } from 'src/redux/collection';
 import { useAppSelector } from 'src/redux/hooks';
 import { beneficiariesSelector, paymentSelector } from 'src/redux/payment';
 import {
@@ -22,14 +17,10 @@ import {
 	saleSelector,
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
-import { createCollection, uploadToIPFS } from '../../utils';
-import DeployedModal from './DeployedModal';
+import ApprovalModal from './ApprovalModal';
 import WhitelistComp from './WhitelistComp';
 
-const PaymentSummaryPage = () => {
-	const [provider] = useEthers();
-	const [signer] = useSigner(provider);
-	const collection = useAppSelector(collectionSelector);
+const PaymentSummaryPage = ({ setModalStep, simplrShares, balance }) => {
 	const sales = useAppSelector(saleSelector);
 	const presaleable = useAppSelector(presaleableToggleSelector);
 	const revealable = useAppSelector(revealableToggleSelector);
@@ -39,99 +30,41 @@ const PaymentSummaryPage = () => {
 	const presaleMaxHolding = sales.presaleable.presaleMaxHolding;
 	const [presaleStartTime, setPresaleStartTime] = useState<DateType>(sales.presaleable.presaleStartTime);
 	const loadingUrl = sales.revealable.loadingImageUrl;
-	const [revealableTime, setRevealableTime] = useState<DateType>(sales.revealable.timestamp);
 	const payments = useAppSelector(paymentSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 
-	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
-	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
+	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.receiver);
+	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.royaltyFraction);
 
-	// const [maxShare, setMaxShare] = useState<number>(getMaxShares(beneficiaries?.shares));
-	const CollectionFactory = useContract('CollectionFactoryV2', collection.type, provider);
-	const [metadata, setMetadata] = useState<string>();
-	const [transactionResult, setTransactionResult] = useState<any>();
-	const [ready, setReady] = useState(false);
-	const [simplrAddress, setSimplrAddress] = useState<string>();
-	const [simplrShares, setSimplrShares] = useState<number>(10);
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
-	const [isDeploymentComplete, setIsDeploymentComplete] = useState<boolean>(false);
+	const [cta, setCta] = useState('Create Collection');
+	const [showApprovalModal, setShowApprovalModal] = useState<boolean>(false);
+
+	const componentRef = useRef(null);
 
 	useEffect(() => {
-		const getAddress = async () => {
-			try {
-				const address = await CollectionFactory?.callStatic.simplr();
-				const share = await CollectionFactory?.callStatic.simplrShares();
+		componentRef.current.scrollIntoView();
+	}, []);
 
-				const sharePercentage = ethers.utils.formatUnits(share?.toString());
-				const shareValue = parseFloat(sharePercentage) * 100;
+	const ref = useRef({ showApprovalModal });
 
-				setSimplrAddress(address);
-				setSimplrShares(shareValue);
-			} catch (err) {
-				console.log({ err });
-			}
-		};
-		getAddress();
-	}, [CollectionFactory]);
-
-	const sendData = async () => {
-		const res = uploadToIPFS(collection, sales, payments, simplrAddress)
-			.then((hash) => {
-				setMetadata(hash);
-			})
-			.catch((err) => {
-				console.log({ err });
-			});
-		toast.promise(res, {
-			loading: 'Pinning Metadata to IPFS',
-			success: 'Metadata Pinned to IPFS',
-			error: 'Something went wrong! Try Again.',
-		});
-		setReady(true);
+	const createCollectionHandler = async () => {
+		setCta('Creating Collection');
+		setShowApprovalModal(true);
+		ref.current.showApprovalModal = true;
 	};
 
 	useEffect(() => {
-		if (metadata && ready) {
-			const transaction = async () => {
-				const res = createCollection(CollectionFactory, metadata, collection, sales, payments, signer).then((tx) => {
-					setTransactionResult(tx);
-				});
-				toast.promise(
-					res,
-					{
-						loading: 'Transaction is processing!',
-						success: 'Transaction was completed succesfully',
-						error: 'Something went wrong! Try Again.',
-					},
-					{
-						success: {
-							duration: 3000,
-						},
-						error: {
-							duration: 3000,
-						},
-						loading: {
-							duration: Infinity,
-						},
-					}
-				);
-			};
-			transaction();
+		if (!showApprovalModal && ref.current.showApprovalModal) {
+			setModalStep(0);
+			setCta('Create Collection');
 		}
-	}, [metadata, ready]);
-
-	useEffect(() => {
-		if (transactionResult?.event) {
-			// const event = transactionResult?.event;
-			// const transaction = transactionResult?.transaction;
-			console.log({ transactionResult });
-			setIsDeploymentComplete(true);
-		}
-	}, [transactionResult]);
+	}, [showApprovalModal]);
 
 	return (
-		<Box overflow="visible">
-			{/* <WhitelistComp visible={showWhitelistModal} setVisible={setShowWhitelistModal} /> */}
+		<Box overflow="visible" mb="mxxl" ref={componentRef}>
+			<Box ref={componentRef} />
+			<ApprovalModal isOpen={showApprovalModal} setIsOpen={setShowApprovalModal} balance={balance} />
 			<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 				Pre-sale
 				<Box ml="mxxxl" />
@@ -195,10 +128,6 @@ const PaymentSummaryPage = () => {
 				condition={revealable}
 				then={
 					<Box mt="wxs" overflow="visible">
-						<LabelledTextInput label="Reveal Time">
-							<DateTime value={revealableTime} setValue={setRevealableTime} disabled disableValidation />
-						</LabelledTextInput>
-						<Box mt="mxxxl" />
 						<LabelledTextInput
 							label="Loading Image URI"
 							placeholder="https://"
@@ -243,12 +172,19 @@ const PaymentSummaryPage = () => {
 				<Box row overflow="visible" mb="ms">
 					<TextInput value="Simplr" type="text" width="41.7rem" disabled disableValidation fontSize="1.4rem" />
 					<Box ml="mxs" />
-					<TextInput value="15%" type="text" width="21.4rem" disabled disableValidation fontSize="1.4rem" />
+					<TextInput
+						value={`${simplrShares}%`}
+						type="text"
+						width="21.4rem"
+						disabled
+						disableValidation
+						fontSize="1.4rem"
+					/>
 				</Box>
 				{beneficiaries?.payees?.map((payee, index) => (
 					<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
 						<TextInput
-							value={null}
+							value=""
 							placeholder={payee}
 							type="text"
 							width="41.7rem"
@@ -258,7 +194,7 @@ const PaymentSummaryPage = () => {
 						/>
 						<Box ml="mxs" />
 						<TextInput
-							value={null}
+							value={undefined}
 							placeholder={`${beneficiaries?.shares[index]}%`}
 							type="number"
 							width="21.4rem"
@@ -275,15 +211,22 @@ const PaymentSummaryPage = () => {
 					<Box ml="mxxxl" />
 					<Toggle value={affiliable} disabled mobile />
 				</Text>
-				<Text as="b1" color="simply-gray" mt="mm">
-					Would you like to turn on affiliate marketing for this collection?
-				</Text>
 			</Box>
 			<Box mt="mxxxl" />
-			<ButtonComp bg="primary" width="100%" height="56px" type="submit" onClick={() => sendData()}>
-				<Text as="h4">Create Collection</Text>
+			<ButtonComp
+				bg="primary"
+				width="100%"
+				height="56px"
+				type="submit"
+				onClick={() => createCollectionHandler()}
+				disable={cta !== 'Create Collection'}
+				center
+			>
+				<Text as="h4">{cta}</Text>
+				<Box center ml="mxs" className="spin" display={cta === 'Creating Collection' ? 'flex' : 'none'}>
+					<CircleNotch size="24" />
+				</Box>
 			</ButtonComp>
-			<DeployedModal isOpen={isDeploymentComplete} transactionResult={transactionResult} />
 		</Box>
 	);
 };

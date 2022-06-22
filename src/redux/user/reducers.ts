@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { setNetwork } from '.';
+import { ProviderProps, SignerProps } from 'src/ethereum/types';
+import { setNetwork, setProvider, setSigner } from '.';
 
 import { setUser, removeUser } from './actions';
 
@@ -11,6 +12,8 @@ type UserState = {
 		name: string;
 		id: string;
 	};
+	provider: ProviderProps;
+	signer: SignerProps;
 };
 
 const initialState: UserState = {
@@ -21,6 +24,8 @@ const initialState: UserState = {
 		name: '',
 		id: '',
 	},
+	provider: null,
+	signer: null,
 };
 
 export const userReducer = createReducer(initialState, (builder) => {
@@ -44,6 +49,22 @@ export const userReducer = createReducer(initialState, (builder) => {
 			const newState = {
 				...state,
 				network,
+			};
+			return newState;
+		})
+		.addCase(setProvider, (state, action) => {
+			const provider = action.payload.provider;
+			const newState = {
+				...state,
+				provider,
+			};
+			return newState;
+		})
+		.addCase(setSigner, (state, action) => {
+			const signer = action.payload.signer;
+			const newState = {
+				...state,
+				signer,
 			};
 			return newState;
 		});

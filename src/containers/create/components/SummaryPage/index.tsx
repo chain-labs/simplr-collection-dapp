@@ -8,7 +8,7 @@ import CollectionSummaryPage from './components/CollectionSummaryPage';
 import PaymentSummaryPage from './components/PaymentSummaryPage';
 import SalesSummaryPage from './components/SalesSummaryPage';
 
-const SummaryPage = ({ visible, setVisible, setStep }) => {
+const SummaryPage = ({ visible, setVisible, setStep, simplrShares, balance }) => {
 	const handleVisibility = () => {
 		setVisible(false);
 		setStep(modalStep);
@@ -17,13 +17,14 @@ const SummaryPage = ({ visible, setVisible, setStep }) => {
 
 	const getFormPage = () => {
 		if (modalStep === 0) {
-			return <CollectionSummaryPage setModalStep={setModalStep} modalStep={modalStep} />;
+			return <CollectionSummaryPage setModalStep={setModalStep} />;
 		} else if (modalStep === 1) {
-			return <SalesSummaryPage setModalStep={setModalStep} modalStep={modalStep} />;
+			return <SalesSummaryPage setModalStep={setModalStep} />;
 		} else if (modalStep === 2) {
-			return <PaymentSummaryPage />;
+			return <PaymentSummaryPage setModalStep={setModalStep} simplrShares={simplrShares} balance={balance} />;
 		}
 	};
+
 	if (visible) {
 		return (
 			<Modal visible={visible}>
@@ -55,7 +56,7 @@ const SummaryPage = ({ visible, setVisible, setStep }) => {
 					</Box>
 					<Box pt="mxxxl" mx="auto" width="70rem" overflow="auto">
 						<Text as="h2" center>
-							Create new collection
+							Collection Summary
 						</Text>
 						<Box center mt="mxxxl" mb="ws">
 							<Text

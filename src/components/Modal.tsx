@@ -2,7 +2,13 @@ import { useEffect } from 'react';
 import theme from 'src/styleguide/theme';
 import Box from './Box';
 
-const Modal = ({ children, visible }) => {
+interface Props {
+	children: React.ReactNode;
+	visible: boolean;
+	bg?: string;
+}
+
+const Modal = ({ children, visible, bg }: Props) => {
 	useEffect(() => {
 		document.querySelector('html').style.overflow = 'hidden';
 		return () => {
@@ -13,13 +19,13 @@ const Modal = ({ children, visible }) => {
 		<Box
 			display={visible ? 'initial' : 'none'}
 			position="fixed"
-			bg={`${theme.colors['simply-black']}4c`}
+			bg={bg ?? `${theme.colors['simply-black']}4c`}
 			top="0"
 			left="0"
 			height="100vh"
 			width="100vw"
-			overflowY="scroll"
-			pb="15rem"
+			overflowY="auto"
+			overflowX="hidden"
 			zIndex={15}
 		>
 			{children}

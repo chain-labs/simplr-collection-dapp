@@ -1,5 +1,6 @@
-import { XCircle } from 'phosphor-react';
-import { useState } from 'react';
+/* eslint-disable no-console */
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
@@ -8,143 +9,150 @@ import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
-import theme from 'src/styleguide/theme';
+import { getUnitByChainId } from 'src/utils/chains';
+import RoyaltyEditModal from './RoyaltyEditModal';
+import WithdrawModal from './WithdrawModal';
 
-const PaymentsPage = ({ contract }) => {
-	const [payees, setPayees] = useState<string[]>([
-		'0xd18Cd50a6bDa288d331e3956BAC496AAbCa4960d',
-		'0x76713821424e866b365Be8512B47f0A16F85d3b4',
-	]);
-	const [shares, setsShares] = useState<number[]>([40, 45]);
-	const [maxShare, setMaxShare] = useState<number>(0);
-	const [beneficiary, setBeneficiary] = useState('');
-	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState<number>();
-	const [editBeneficiary, setEditBeneficiary] = useState(false);
-	const [editRoyalties, setEditRoyalties] = useState(false);
-	const [royaltyAddress, setRoyaltyAddress] = useState('0x363b616d72F433B41E48cF863f7CcB8c930b8682');
-	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(10);
-	const [edited, setEdited] = useState(false);
+const PaymentsPage = ({ contract, metadata, ready }) => {
+	const [payees, setPayees] = useState<string[]>([]);
+	const [shares, setShares] = useState<number[]>([]);
+	const [simplrShares, setSimplrShares] = useState<number>(0);
+	const [userShare, setUserShare] = useState('0');
+	const [pendingPayment, setPendingPayment] = useState('0.0');
+	const [totalFunds, setTotalFunds] = useState('0.0');
+	const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(0);
+	const [admin, setAdmin] = useState('');
 
 	const user = useAppSelector(userSelector);
 
-	const handleRemove = (index) => {
-		const newPayees = payees.filter((_, i) => i !== index);
-		const newShares = shares.filter((_, i) => i !== index);
-		setPayees(newPayees);
-		setsShares(newShares);
-		setMaxShare(maxShare + shares[index]);
-		toast.success('Beneficiary removed');
+	useEffect(() => {
+		const getDetails = async () => {
+			const simplrShares = await contract.callStatic.SIMPLR_SHARES();
+			setSimplrShares(simplrShares);
+		};
+		if (contract && ready) {
+			getDetails();
+		}
+	}, [contract, ready]);
+
+	useEffect(() => {
+		const hydrate = () => {
+			try {
+				if (metadata) {
+					const getPayment = async (share) => {
+						if (user.provider) {
+							const balance = await user.provider?.getBalance(contract.address);
+							const totalReleased = await contract.callStatic['totalReleased()']();
+							const totalFunds = balance.add(totalReleased);
+							const totalShares = await contract.callStatic.totalShares();
+							const released = await contract.callStatic['released(address)'](user.address);
+							const userShare = ethers.utils.parseUnits(share.toString(), 16);
+							const pendingPayment = totalFunds.mul(userShare).div(totalShares).sub(released);
+							setTotalFunds(ethers.utils.formatUnits(totalFunds));
+							setPendingPayment(ethers.utils.formatUnits(pendingPayment));
+							const admin = await contract.callStatic.owner();
+							setAdmin(admin);
+						}
+					};
+					const { tokenDetails } = metadata;
+					const payees: string[] = tokenDetails.paymentSplitter.payees;
+					const shares = tokenDetails.paymentSplitter.shares;
+					setPayees(payees);
+					setShares(shares);
+					const index = payees.findIndex((payee) => payee === user.address);
+					if (index !== -1) {
+						const share = shares[index];
+						setUserShare(share.toString());
+						if (contract) {
+							getPayment(share);
+						}
+					} else {
+						setUserShare('0');
+						setPendingPayment('0.0');
+						setTotalFunds('0.0');
+					}
+				}
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		if (isWithdrawModalOpen === 0 && ready) hydrate();
+	}, [metadata, user, user.provider, isWithdrawModalOpen]);
+
+	const withdraw = async () => {
+		toast.loading('Transaction is processing!', {
+			duration: Infinity,
+		});
+
+		const transaction = await contract
+			.connect(user.signer)
+			['release(address)'](user.address)
+			.catch(() => setIsWithdrawModalOpen(2));
+		const getEvent = async (transaction) => {
+			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'PaymentReleased')[0]?.args;
+			return event;
+		};
+		getEvent(transaction)
+			.then(() => {
+				setIsWithdrawModalOpen(1);
+				toast.dismiss();
+			})
+			.catch(() => {
+				setIsWithdrawModalOpen(2);
+				toast.dismiss();
+			});
 	};
 
-	const handleAdd = () => {
-		if (beneficiaryPercentage <= maxShare) {
-			if (payees.find((payee) => payee === beneficiary)) {
-				toast.error('Beneficiary already exists');
-			} else {
-				setPayees([...payees, beneficiary]);
-				setsShares([...shares, beneficiaryPercentage]);
-				setMaxShare(maxShare - beneficiaryPercentage);
-				setBeneficiary('');
-				setBeneficiaryPercentage(0);
-				toast.success('Beneficiary added');
-			}
-		}
+	const getShare = (share) => {
+		const shares = parseFloat(ethers.utils.formatUnits(share, 16));
+		if (shares > 0.01) return shares;
+		else return 0;
 	};
 
 	return (
 		<Box mt="6rem" width="116.8rem" mx="auto">
+			<WithdrawModal isOpen={isWithdrawModalOpen} setIsOpen={setIsWithdrawModalOpen} pendingPayment={pendingPayment} />
 			<Box row between alignItems="flex-start">
 				<Box width="55.2rem">
 					<Box between mb="mm">
 						<Text as="h6">Beneficiaries</Text>
-						<Text as="h6" color="simply-blue" textDecoration="underline" onClick={() => setEditBeneficiary(true)}>
-							Edit
-						</Text>
 					</Box>
 					<Box row overflow="visible" mb="ms">
 						<TextInput value="Simplr" type="text" width="45.2rem" disabled disableValidation fontSize="1.4rem" />
 						<Box ml="mxs" />
-						<TextInput value="15%" type="text" width="9.2rem" disabled disableValidation fontSize="1.4rem" />
+						<TextInput
+							value={`${getShare(simplrShares)}%`}
+							type="text"
+							width="9.2rem"
+							disabled
+							disableValidation
+							fontSize="1.4rem"
+						/>
 					</Box>
-					{payees.map((payee, index) => (
+					{payees.slice(0, payees.length - 1).map((payee, index) => (
 						<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
 							<TextInput
-								value={null}
+								value=""
 								placeholder={payee}
 								type="text"
 								width="45.2rem"
 								fontSize="1.4rem"
 								disableValidation
+								disabled
 							/>
 							<Box ml="mxs" />
 							<TextInput
-								value={null}
+								value={undefined}
 								placeholder={`${shares[index]}%`}
-								max={`${maxShare}`}
 								type="number"
 								width="9.2rem"
 								disableValidation
 								fontSize="1.4rem"
-							/>
-							<If
-								condition={editBeneficiary}
-								then={
-									<Box ml="mxs" onClick={() => handleRemove(index)} cursor="pointer">
-										<XCircle color={theme.colors['red-50']} size="18" weight="fill" />
-									</Box>
-								}
+								disabled
 							/>
 						</Box>
 					))}
-					<If
-						condition={editBeneficiary}
-						then={
-							<>
-								<Box row overflow="visible" mb="ms">
-									<TextInput
-										value={beneficiary}
-										setValue={setBeneficiary}
-										placeholder="Wallet Address"
-										type="text"
-										width="45.2rem"
-										fontSize="1.4rem"
-									/>
-									<Box ml="mxs" />
-									<TextInput
-										value={beneficiaryPercentage}
-										setValue={setBeneficiaryPercentage}
-										max={`${maxShare}`}
-										min="1"
-										placeholder="Share%"
-										type="number"
-										width="9.2rem"
-										fontSize="1.4rem"
-									/>
-								</Box>
-								<ButtonComp
-									bg="tertiary"
-									width="100%"
-									height="48px"
-									disable={!beneficiary || !beneficiaryPercentage}
-									onClick={handleAdd}
-								>
-									<Text as="h5">Add Beneficiary</Text>
-								</ButtonComp>
-							</>
-						}
-					/>
 					<Box mt="mxxl" />
-					<Box row mb="mxl">
-						<Text as="b1" color="simply-gray" mr="mm">
-							Total Shares: 100%
-						</Text>
-						<Text as="b1" color="simply-gray" mr="mm">
-							Simplr: 15%
-						</Text>
-						<Text as="b1" color="simply-gray">
-							{`Remaining: ${maxShare}%`}
-						</Text>
-					</Box>
 				</Box>
 				<Box width="55.2rem">
 					<Text as="h6" mb="mm">
@@ -164,7 +172,7 @@ const PaymentsPage = ({ contract }) => {
 								Share:
 							</Text>
 							<Text as="h6" color="simply-blue">
-								50%
+								{`${userShare}%`}
 							</Text>
 						</Box>
 						<Box row alignItems="center" mb="mxl">
@@ -172,7 +180,7 @@ const PaymentsPage = ({ contract }) => {
 								Total funds collected:
 							</Text>
 							<Text as="h6" color="simply-blue">
-								400 ETH
+								{`${totalFunds} ${getUnitByChainId(user.network.chain)}`}
 							</Text>
 						</Box>
 						<Box row alignItems="center">
@@ -180,54 +188,151 @@ const PaymentsPage = ({ contract }) => {
 								Funds you will receive:
 							</Text>
 							<Text as="h6" color="simply-blue">
-								200 ETH
+								{`${pendingPayment} ${getUnitByChainId(user.network.chain)}`}
 							</Text>
 						</Box>
 					</Box>
+					<Box row justifyContent="flex-end" mt="mm">
+						<ButtonComp bg="primary" height="40px" px="mxl" onClick={() => withdraw()}>
+							Withdraw
+						</ButtonComp>
+					</Box>
 				</Box>
 			</Box>
-			<Box width="55.2rem" mt="wxl">
-				<Text as="h3" color="simply-blue" mb="mxxxl">
-					Royalties
-				</Text>
-				<Box between mb="mm">
-					<Text as="h6">Royalties</Text>
-					<Text as="h6" color="simply-blue" textDecoration="underline" onClick={() => setEditRoyalties(true)}>
-						Edit
-					</Text>
-				</Box>
-				<Box row overflow="visible" mb="ms">
-					<TextInput
-						value={royaltyAddress}
-						setValue={setRoyaltyAddress}
-						type="text"
-						width="45.2rem"
-						disableValidation
-						disabled={!editRoyalties}
-						fontSize="1.4rem"
-					/>
-					<Box ml="mxs" />
-					<TextInput
-						value={royaltyPercentage}
-						setValue={setRoyaltyPercentage}
-						type="text"
-						width="9.2rem"
-						disabled={!editRoyalties}
-						disableValidation
-						fontSize="1.4rem"
-					/>
-				</Box>
-				<Text as="b1" color="simply-gray" mt="mxs" mb="16rem">
-					Maximum 10%
-				</Text>
-			</Box>
-			<Box center mb="14rem">
-				<ButtonComp bg={edited ? 'primary' : 'tertiary'} width="64rem" height="56px" mx="auto">
-					<Text as="h4">Save Changes</Text>
-				</ButtonComp>
-			</Box>
+			<Royalties {...{ contract, admin, signer: user.signer, ready }} />
 		</Box>
 	);
 };
 
 export default PaymentsPage;
+
+const Royalties = ({ admin, contract, signer, ready }) => {
+	const [edit, setEdit] = useState(false);
+	const user = useAppSelector(userSelector);
+	const [address, setAddress] = useState('');
+	const [percentage, setPercentage] = useState(0);
+	const [royalty, setRoyalty] = useState({
+		receiver: '',
+		royaltyFraction: 0,
+	});
+	const [isRoyaltyModalOpen, setIsRoyaltyModalOpen] = useState(false);
+
+	const editRoyalties = async () => {
+		if (!ethers.utils.isAddress(address)) {
+			toast.error('Invalid Address');
+		} else if (percentage > 10) {
+			toast.error('Value must be max upto 10%');
+		} else if (royalty.receiver !== address || royalty.royaltyFraction !== percentage) {
+			contract
+				.connect(signer)
+				.setRoyalties({ reciever: address, royaltyFraction: percentage * 100 })
+				.then(() => {
+					toast.success('Updated');
+					setEdit(false);
+					setIsRoyaltyModalOpen(true);
+				})
+				.catch((err) => {
+					console.error(err);
+					toast.error('Something Went Wrong');
+					setIsRoyaltyModalOpen(false);
+					setEdit(false);
+				});
+		}
+	};
+
+	useEffect(() => {
+		const getRoyalty = async () => {
+			const r = await contract.queryFilter('DefaultRoyaltyUpdated');
+			setRoyalty({ receiver: r[0]?.args[0], royaltyFraction: parseInt(r[0]?.args[1]?.toString()) / 100 });
+			setAddress(royalty.receiver);
+			setPercentage(royalty.royaltyFraction / 100);
+		};
+		if (contract && ready) {
+			getRoyalty();
+		}
+	}, [contract, ready]);
+	return (
+		<Box width="55.2rem" mt="wxl" mb="wxl">
+			<Text as="h3" color="simply-blue" mb="mxxxl">
+				Royalties
+			</Text>
+			<Box between mb="mm">
+				<Text as="h6">Royalties</Text>
+				<Text
+					display={admin !== user.address || edit ? 'none' : 'block'}
+					as="h6"
+					color="simply-blue"
+					textDecoration="underline"
+					onClick={() => setEdit(true)}
+					cursor="pointer"
+				>
+					Edit
+				</Text>
+			</Box>
+			<If
+				condition={!edit}
+				then={
+					<Box row overflow="visible" mb="ms">
+						<TextInput
+							value={royalty.receiver}
+							type="text"
+							width="45.2rem"
+							disableValidation
+							disabled
+							fontSize="1.4rem"
+						/>
+						<Box ml="mxs" />
+						<TextInput
+							value={`${royalty.royaltyFraction}%`}
+							type="text"
+							width="9.2rem"
+							disabled
+							disableValidation
+							fontSize="1.4rem"
+						/>
+					</Box>
+				}
+				else={
+					<Box>
+						<Box row overflow="visible" mb="ms">
+							<TextInput
+								value={address}
+								setValue={setAddress}
+								type="text"
+								width="45.2rem"
+								disableValidation
+								fontSize="1.4rem"
+							/>
+							<Box ml="mxs" />
+							<TextInput
+								value={percentage}
+								setValue={setPercentage}
+								max="10"
+								min="0"
+								type="number"
+								width="9.2rem"
+								disableValidation
+								fontSize="1.4rem"
+							/>
+						</Box>
+						<Box row justifyContent="space-between">
+							<Text as="b1" color="simply-gray" mt="mxs" mb="16rem">
+								Maximum 10%
+							</Text>
+							<ButtonComp bg="primary" height="40px" px="mxl" onClick={() => editRoyalties()}>
+								Update
+							</ButtonComp>
+						</Box>
+					</Box>
+				}
+			/>
+			<RoyaltyEditModal
+				visible={isRoyaltyModalOpen}
+				setVisible={setIsRoyaltyModalOpen}
+				data={royalty}
+				setData={setRoyalty}
+				{...{ address, percentage }}
+			/>
+		</Box>
+	);
+};

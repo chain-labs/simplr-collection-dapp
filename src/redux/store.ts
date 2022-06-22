@@ -1,5 +1,6 @@
 import { configureStore, Action, ThunkAction } from '@reduxjs/toolkit';
 import { collectionReducer } from './collection';
+import { EditReducer } from './edit';
 import { paymentReducer } from './payment';
 import { saleReducer } from './sales';
 import { userReducer } from './user/reducers';
@@ -10,7 +11,9 @@ export const store = configureStore({
 		collection: collectionReducer,
 		sales: saleReducer,
 		payment: paymentReducer,
+		edit: EditReducer,
 	},
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -1,14 +1,25 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
+import WhitelistManagement from 'src/utils/WhitelistManager';
 import { SignerProps } from 'src/ethereum/types';
 import { CollectionState, networks } from 'src/redux/collection/types';
 import { PaymentState } from 'src/redux/payment/types';
 import { SaleState } from 'src/redux/sales/types';
 import { getTimestamp } from './SalesPage';
 
-const PINATA_KEY = process.env.NEXT_PUBLIC_IPFS_API_PINATA_KEY;
-const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_IPFS_PINATA_API_SECRET;
-const PINATA_URL = 'https://api.pinata.cloud/';
+export const PINATA_KEY = process.env.NEXT_PUBLIC_IPFS_API_PINATA_KEY;
+export const PINATA_KEY_SECRET = process.env.NEXT_PUBLIC_IPFS_PINATA_API_SECRET;
+export const PINATA_URL = 'https://api.pinata.cloud/';
+export const PINATA_HASH = process.env.NEXT_PUBLIC_API_KEY;
+
+export const unpinMetadata = async (hash) => {
+	await axios.delete(`${PINATA_URL}pinning/unpin/${hash}`, {
+		headers: {
+			pinata_api_key: PINATA_KEY,
+			pinata_secret_api_key: PINATA_KEY_SECRET,
+		},
+	});
+};
 
 export const uploadToIPFS = async (
 	collection: CollectionState,
@@ -16,12 +27,39 @@ export const uploadToIPFS = async (
 	payments: PaymentState,
 	simplrAddress: string
 ) => {
+	const bannerData = new FormData();
+	const logoData = new FormData();
+	bannerData.append('file', collection.banner_url);
+	bannerData.append('pinataMetadata', JSON.stringify({ name: `${collection.name.replace(' ', '_')}_banner` }));
+	const banner_res = await axios.post(`${PINATA_URL}pinning/pinFileToIPFS`, bannerData, {
+		maxBodyLength: Infinity,
+		headers: {
+			// @ts-expect-error boundary not found
+			'Content-Type': `multipart/form-data; boundary=${bannerData._boundary}`,
+			pinata_api_key: PINATA_KEY,
+			pinata_secret_api_key: PINATA_KEY_SECRET,
+		},
+	});
+
+	logoData.append('file', collection.logo_url);
+	logoData.append('pinataMetadata', JSON.stringify({ name: `${collection.name.replace(' ', '_')}_logo` }));
+
+	const logo_res = await axios.post(`${PINATA_URL}pinning/pinFileToIPFS`, logoData, {
+		maxBodyLength: Infinity,
+		headers: {
+			// @ts-expect-error boundary not found
+			'Content-Type': `multipart/form-data; boundary=${bannerData._boundary}`,
+			pinata_api_key: PINATA_KEY,
+			pinata_secret_api_key: PINATA_KEY_SECRET,
+		},
+	});
+
 	const jsonBody = {
 		collectionDetails: {
 			name: collection.name,
 			symbol: collection.symbol,
-			logoUrl: collection.logo_url,
-			bannerImageUrl: collection.banner_url,
+			logoUrl: `https://simplr.mypinata.cloud/ipfs/${logo_res.data.IpfsHash}`,
+			bannerImageUrl: `https://simplr.mypinata.cloud/ipfs/${banner_res.data.IpfsHash}`,
 			contactEmail: collection.contact_email,
 			websiteUrl: collection.website_url,
 			adminAddress: collection.admin,
@@ -53,7 +91,6 @@ export const uploadToIPFS = async (
 			},
 			revealable: sales.revealable.enabled
 				? {
-						revealAfterTimestamp: getTimestamp(sales.revealable.timestamp),
 						projectURI: sales.revealable.loadingImageUrl,
 						projectURIProvenance: ethers.utils.keccak256(
 							ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
@@ -64,14 +101,33 @@ export const uploadToIPFS = async (
 			isAffiliable: sales.isAffiliable,
 		},
 	};
-
-	const res = await axios.post(`${PINATA_URL}pinning/pinJSONToIPFS`, jsonBody, {
-		headers: {
-			pinata_api_key: PINATA_KEY,
-			pinata_secret_api_key: PINATA_KEY_SECRET,
+	const res = await axios.post(
+		`${PINATA_URL}pinning/pinJSONToIPFS`,
+		{
+			pinataMetadata: {
+				name: `${collection.name.replace(' ', '_')}_metadata`,
+			},
+			pinataContent: jsonBody,
 		},
-	});
-	return res.data.IpfsHash;
+		{
+			headers: {
+				pinata_api_key: PINATA_KEY,
+				pinata_secret_api_key: PINATA_KEY_SECRET,
+			},
+		}
+	);
+	return {
+		banner: jsonBody.collectionDetails.bannerImageUrl.split('ipfs/')[1],
+		logo: jsonBody.collectionDetails.logoUrl.split('ipfs/')[1],
+		metadata: res.data.IpfsHash,
+	};
+};
+
+const getWhitelistObject = (addresses) => {
+	const whitelistManager = new WhitelistManagement(addresses);
+	const root = whitelistManager.getRoot();
+
+	return { root, whitelistManager };
 };
 
 export const createCollection = async (
@@ -80,7 +136,8 @@ export const createCollection = async (
 	collection: CollectionState,
 	sales: SaleState,
 	payments: PaymentState,
-	signer: SignerProps
+	signer: SignerProps,
+	balance: string[]
 ) => {
 	const upfrontFee = await contract.upfrontFee(); // it works without callStatic too // upfront fee should be fetched from smart contract
 
@@ -88,7 +145,8 @@ export const createCollection = async (
 	const simplrShares = await contract.simplrShares(); // simplrShares should be dynamic and be fetched from the smart contract
 
 	// create params
-	const type = 1; // by default
+	const type = collection.contract;
+	// by default
 
 	const baseCollection = {
 		name: collection.name, // Name of the collection
@@ -101,20 +159,29 @@ export const createCollection = async (
 		publicSaleStartTime: getTimestamp(sales.publicSaleStartTime), // timestamp of public sale start
 		projectURI: sales.revealable.enabled ? sales.revealable.loadingImageUrl : collection.project_uri, // placeholder or collection uri depending upon what they choose for reveal
 	};
+
+	const { root, whitelistManager } = getWhitelistObject(sales.presaleable.presaleWhitelist);
+
 	const presaleable = sales.presaleable.enabled
 		? {
 				presaleReservedTokens: sales.presaleable.presaleReservedTokens, // tokens that will be sold under presale, should be less than maximum tokens
 				presalePrice: ethers.utils.parseUnits(sales.presaleable.presalePrice?.toString(), 18), // 0.008 ETH  // price per token during presale // expect wei value
 				presaleStartTime: getTimestamp(sales.presaleable.presaleStartTime), // timestamp when presale starts, it should less than timestamp when public sale starts
 				presaleMaxHolding: sales.presaleable.presaleMaxHolding, // maximum tokens that a wallet can hold during presale
-				presaleWhitelist: sales.presaleable.presaleWhitelist ?? [], // list of addresses that needs to be whiteliste // can be an empty array
+				presaleWhitelist: {
+					root,
+					cid: await whitelistManager.getCid(collection.name),
+				}, // list of addresses that needs to be whiteliste // can be an empty array
 		  }
 		: {
 				presaleReservedTokens: 0, // it can be anything, but better to pass zero
 				presalePrice: 0, // it can be anything, but better to pass zero
 				presaleStartTime: 0, // this needs to be zero, to make sure presale doesn't get activated
 				presaleMaxHolding: 0, // it can be anything, but better to pass zero
-				presaleWhitelist: [], // can be empty array
+				presaleWhitelist: {
+					root: ethers.constants.HashZero,
+					cid: '',
+				}, // can be empty array
 		  }; // should be according to PresaleableStruct
 
 	const shares = [...payments.paymentSplitter.shares];
@@ -136,45 +203,54 @@ export const createCollection = async (
 		projectURIProvenance: ethers.utils.keccak256(
 			ethers.utils.defaultAbiCoder.encode(['string'], [collection.project_uri])
 		), // encoded hash of the project uri
-		revealAfterTimestamp: sales.revealable.enabled
-			? getTimestamp(sales.revealable.timestamp)
-			: parseInt(`${Date.now() / 1000 + 172800}`), // timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
+		// timestamp when the project will be revealed, it doesn't play a major on chain, it is only for user info
 	};
+
 	const royalties = {
-		account: payments.royalties.account ?? collection.admin, //account that will receive royalties for secondary sale
-		value: payments.royalties.value ? payments.royalties.value * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
+		receiver: payments.royalties.receiver ?? collection.admin, //account that will receive royalties for secondary sale
+		royaltyFraction: payments.royalties.royaltyFraction ? payments.royalties.royaltyFraction * 100 : 0, // 10% // 100% -> 10000 // percentage of the sale that will be transferred to account as royalty
 	}; // should be according to LibPart.Part or Royalties struct
 
 	const reserveTokens = sales.reserveTokens; // should be default, this will not activate reservable module
 	const isAffiliable = sales.isAffiliable; // true if user wants affiliable to be active
 
-	console.log({
-		contract,
-		baseCollection,
-		presaleable,
-		paymentSplitter,
-		projectURIProvenance: revealable.projectURIProvenance,
-		royalties,
-		reserveTokens,
-		metadata,
-		isAffiliable,
-	});
+	if (payments.useEarlyPass) {
+		const transaction = await contract
+			.connect(signer)
+			.createCollection(
+				type,
+				baseCollection,
+				presaleable,
+				paymentSplitter,
+				revealable.projectURIProvenance,
+				royalties,
+				reserveTokens,
+				metadata,
+				isAffiliable,
+				true,
+				parseInt(balance[0])
+			);
+		const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
+		return { transaction, event };
+	} else {
+		const transaction = await contract
+			.connect(signer)
+			.createCollection(
+				type,
+				baseCollection,
+				presaleable,
+				paymentSplitter,
+				revealable.projectURIProvenance,
+				royalties,
+				reserveTokens,
+				metadata,
+				isAffiliable,
+				false,
+				0,
+				{ value: upfrontFee }
+			);
+		const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
 
-	const transaction = await contract
-		.connect(signer)
-		.createCollection(
-			type,
-			baseCollection,
-			presaleable,
-			paymentSplitter,
-			revealable.projectURIProvenance,
-			royalties,
-			reserveTokens,
-			metadata,
-			isAffiliable,
-			{ value: upfrontFee.toString() }
-		);
-	const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;
-
-	return { transaction, event };
+		return { transaction, event };
+	}
 };
