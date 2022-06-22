@@ -1,8 +1,8 @@
 export interface PaymentState {
 	useEarlyPass?: boolean;
 	royalties?: {
-		account?: string;
-		value?: number;
+		receiver?: string;
+		royaltyFraction?: number;
 	};
 	paymentSplitter?: {
 		payees?: string[];

@@ -5,9 +5,10 @@ import PaymentPage from './components/PaymentPage';
 import CollectionPage from './components/CollectionPage';
 import SEATModal from './components/SEATModal';
 import Tnc from './components/Tnc';
-import { testNetworks } from 'src/utils/constants';
+import { SEAT_DISABLE, testNetworks } from 'src/utils/constants';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
+import If from 'src/components/If';
 
 const CreateComp = ({ balance }) => {
 	const [step, setStep] = useState<number>(0);
@@ -50,19 +51,24 @@ const CreateComp = ({ balance }) => {
 			return <CollectionPage setStep={setStep} step={step} />;
 		}
 		if (step === 2) {
-			return <PaymentPage setStep={setStep} step={step} earlyPass={balance.value > 0} />;
+			return <PaymentPage setStep={setStep} step={step} balance={balance.value} />;
 		}
 	};
 
 	return (
 		<Box mt="16rem" pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
 			{getFormPage()}
-			<SEATModal
-				isOpen={isModalOpen && !isTestNetwork}
-				setIsOpen={setIsModalOpen}
-				balance={balance.value}
-				loading={balance.loading}
-				setTncStatus={setTncStatus}
+			<If
+				condition={!SEAT_DISABLE}
+				then={
+					<SEATModal
+						isOpen={isModalOpen && !isTestNetwork}
+						setIsOpen={setIsModalOpen}
+						balance={balance.value}
+						loading={balance.loading}
+						setTncStatus={setTncStatus}
+					/>
+				}
 			/>
 		</Box>
 	);

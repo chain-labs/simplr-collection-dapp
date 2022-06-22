@@ -3,7 +3,7 @@ import Box from 'src/components/Box';
 import Dropdown from 'src/components/Dropdown';
 import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { getNetworkList, rpc_urls } from 'src/redux/collection/types';
+import { contractType, getNetworkList, rpc_urls } from 'src/redux/collection/types';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import ButtonComp from 'src/components/Button';
@@ -23,6 +23,7 @@ const CollectionPage = ({ step, setStep }) => {
 	const dispatch = useAppDispatch();
 
 	const [collectionName, setCollectionName] = useState<string>(collectionData.name);
+	const [collectionType, setCollectionType] = useState<string>('ERC721');
 	const [collectionSymbol, setCollectionSymbol] = useState<string>(collectionData.symbol);
 	const [collectionURI, setCollectionURI] = useState<string>(collectionData.project_uri);
 	const [collectionWebURL, setCollectionWebURL] = useState<string>(collectionData.website_url);
@@ -60,6 +61,7 @@ const CollectionPage = ({ step, setStep }) => {
 
 	const getData = () => {
 		const data = {
+			contract: contractType[collectionType],
 			type: networkValue,
 			name: collectionName,
 			symbol: collectionSymbol,
@@ -91,7 +93,13 @@ const CollectionPage = ({ step, setStep }) => {
 
 	useEffect(() => {
 		if (networkValue > 0 && process.browser) {
-			const chainId = `0x${networkValue.toString(16)}`;
+			const chainIdInHex = `${networkValue.toString(16)}`;
+			let chainId;
+			if (chainIdInHex.includes('0x')) {
+				chainId = chainIdInHex;
+			} else {
+				chainId = `0x${chainIdInHex}`;
+			}
 			const rpc = rpc_urls[networkValue];
 			const name = networkData[networkValue];
 
@@ -147,6 +155,15 @@ const CollectionPage = ({ step, setStep }) => {
 						<Dropdown setValue={setNetwork} value={network} data={networkData} placeholder="Blockchain" />
 					</LabelledTextInput>
 					<Box mt="mxxxl" />
+					<LabelledTextInput label="Collection Type" required>
+						<Dropdown
+							setValue={setCollectionType}
+							value={collectionType}
+							data={['ERC721', 'ERC721A']}
+							placeholder="ERC721"
+						/>
+					</LabelledTextInput>
+					<Box mt="mxxxl" />
 					<LabelledTextInput
 						type="text"
 						label="Collection Name"
@@ -190,11 +207,11 @@ const CollectionPage = ({ step, setStep }) => {
 						required
 					/>
 					<Box mt="mxxxl" />
-					<LabelledTextInput label="Collection Logo URL" required>
+					<LabelledTextInput label="Collection Logo" required>
 						<Dropzone image={collectionLogoURL} setImage={setCollectionLogoURL} />
 					</LabelledTextInput>
 					<Box mt="mxxxl" />
-					<LabelledTextInput label="Collection Banner URL" required>
+					<LabelledTextInput label="Collection Banner" required>
 						<Dropzone image={collectionBannerURL} setImage={setCollectionBannerURL} />
 					</LabelledTextInput>
 					<Box mt="mxxxl" />

@@ -17,21 +17,10 @@ interface Props {
 	handleWhitelistRemove?: (any) => any;
 }
 
-const WhitelistModal = ({ visible, setVisible, readOnly, admin, handleWhitelistRemove }: Props) => {
+const WhitelistModal = ({ visible, setVisible, readOnly, admin }: Props) => {
 	const whiteList = useAppSelector(presaleWhitelistSelector);
 	const [empty, setEmpty] = useState(false); // Checks if search result is empty
 	const [searchInput, setSearchInput] = useState('');
-
-	const dispatch = useAppDispatch();
-
-	const handleRemove = (address) => {
-		if (admin) {
-			handleWhitelistRemove(address);
-		} else {
-			dispatch(removeWhitelist(address));
-			toast.success(`Removed from whitelist`);
-		}
-	};
 
 	useEffect(() => {
 		const arr = whiteList.filter((item) => item.includes(searchInput));
@@ -92,16 +81,6 @@ const WhitelistModal = ({ visible, setVisible, readOnly, admin, handleWhitelistR
 													<Text as="h4" width="4.4rem">{`${index + 1}.`}</Text>
 													<Text as="h4">{address}</Text>
 												</Box>
-												<Text
-													display={readOnly ? 'none' : 'flex'}
-													as="h4"
-													color="red-50"
-													textAlign="end"
-													onClick={() => handleRemove(address)}
-													cursor="pointer"
-												>
-													Remove
-												</Text>
 											</Box>
 										))}
 								/>
@@ -112,16 +91,6 @@ const WhitelistModal = ({ visible, setVisible, readOnly, admin, handleWhitelistR
 										<Text as="h4" width="4.4rem">{`${index + 1}.`}</Text>
 										<Text as="h4">{address}</Text>
 									</Box>
-									<Text
-										display={readOnly ? 'none' : 'block'}
-										as="h4"
-										color="red-50"
-										textAlign="end"
-										onClick={() => handleRemove(address)}
-										cursor="pointer"
-									>
-										Remove
-									</Text>
 								</Box>
 							))}
 						/>

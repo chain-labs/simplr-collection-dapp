@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ethers } from 'ethers';
 import { CaretRight, Info, XCircle } from 'phosphor-react';
 import { useEffect, useState } from 'react';
@@ -23,6 +24,7 @@ import {
 } from 'src/redux/payment';
 import { saleSelector } from 'src/redux/sales';
 import theme from 'src/styleguide/theme';
+import { SEAT_DISABLE } from 'src/utils/constants';
 import SummaryPage from '../SummaryPage';
 
 const getMaxShares = (shares, simplrShares) => {
@@ -33,19 +35,19 @@ const getMaxShares = (shares, simplrShares) => {
 	return total;
 };
 
-const PaymentPage = ({ step, setStep, earlyPass }) => {
+const PaymentPage = ({ step, setStep, balance }) => {
 	const [provider] = useEthers();
 	const collection = useAppSelector(collectionSelector);
 	const payments = useAppSelector(paymentSelector);
 	const sales = useAppSelector(saleSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
-	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
-	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
+	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.receiver);
+	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.royaltyFraction);
 	const [beneficiary, setBeneficiary] = useState<string>();
 	const [beneficiaryPercentage, setBeneficiaryPercentage] = useState('');
 	const [showSummaryPage, setShowSummaryPage] = useState<boolean>();
 	const [simplrShares, setSimplrShares] = useState<number>(null);
-	const [useEarlyPass, setUseEarlyPass] = useState<boolean>(payments.useEarlyPass && earlyPass);
+	const [useEarlyPass, setUseEarlyPass] = useState<boolean>(payments.useEarlyPass && balance.length > 0);
 	const [maxShare, setMaxShare] = useState<number>(
 		getMaxShares(beneficiaries?.shares, useEarlyPass ? 0 : simplrShares)
 	);
@@ -60,7 +62,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 				const share = await Simplr?.callStatic.simplrShares();
 
 				const sharePercentage = ethers.utils.formatUnits(share?.toString());
-				const shareValue = parseFloat(sharePercentage) * 100;
+				const shareValue = Math.floor(parseFloat(sharePercentage) * 100);
 				setSimplrShares(shareValue);
 			} catch (err) {
 				console.log({ err });
@@ -83,8 +85,8 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 		const data = {
 			useEarlyPass,
 			royalties: {
-				account: royaltyAddress,
-				value: royaltyPercentage,
+				receiver: royaltyAddress,
+				royaltyFraction: royaltyPercentage,
 			},
 		};
 		return data;
@@ -169,6 +171,7 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 				setVisible={setShowSummaryPage}
 				setStep={setStep}
 				simplrShares={simplrShares}
+				balance={balance}
 			/>
 			<Box overflow="visible" mb="10rem">
 				<Text as="h2" center>
@@ -197,17 +200,21 @@ const PaymentPage = ({ step, setStep, earlyPass }) => {
 								}}
 							/>
 						</Box>
-
-						<Box>
-							<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
-								Use early pass benefits
-								<Box ml="mxxxl" />
-								<Toggle value={useEarlyPass} setValue={setUseEarlyPass} mobile disabled={!earlyPass} />
-							</Text>
-							<Text as="b1" color="simply-gray" mt="mm" mb="4.4rem">
-								Turning this off would add Simplr as a beneificiary.
-							</Text>
-						</Box>
+						<If
+							condition={!SEAT_DISABLE}
+							then={
+								<Box>
+									<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
+										Use early pass benefits
+										<Box ml="mxxxl" />
+										<Toggle value={useEarlyPass} setValue={setUseEarlyPass} mobile disabled={!balance.length} />
+									</Text>
+									<Text as="b1" color="simply-gray" mt="mm" mb="4.4rem">
+										Turning this off would add Simplr as a beneificiary.
+									</Text>
+								</Box>
+							}
+						/>
 
 						<LabelledTextInput label="Royalties" helperText="Maximum 10%">
 							<Box row overflow="visible">
@@ -368,10 +375,10 @@ const Payee = ({ percentage, payee, maxShare, handleRemove }) => {
 			onMouseOut={() => setDeleteButton(false)}
 			width="105%"
 		>
-			<TextInput value={null} placeholder={payee} type="text" width="41.7rem" fontSize="1.4rem" disableValidation />
+			<TextInput value="" placeholder={payee} type="text" width="41.7rem" fontSize="1.4rem" disableValidation />
 			<Box ml="mxs" />
 			<TextInput
-				value={null}
+				value={undefined}
 				placeholder={`${percentage}%`}
 				max={`${maxShare}`}
 				type="number"

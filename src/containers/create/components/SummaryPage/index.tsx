@@ -8,7 +8,7 @@ import CollectionSummaryPage from './components/CollectionSummaryPage';
 import PaymentSummaryPage from './components/PaymentSummaryPage';
 import SalesSummaryPage from './components/SalesSummaryPage';
 
-const SummaryPage = ({ visible, setVisible, setStep, simplrShares }) => {
+const SummaryPage = ({ visible, setVisible, setStep, simplrShares, balance }) => {
 	const handleVisibility = () => {
 		setVisible(false);
 		setStep(modalStep);
@@ -21,7 +21,7 @@ const SummaryPage = ({ visible, setVisible, setStep, simplrShares }) => {
 		} else if (modalStep === 1) {
 			return <SalesSummaryPage setModalStep={setModalStep} />;
 		} else if (modalStep === 2) {
-			return <PaymentSummaryPage setModalStep={setModalStep} simplrShares={simplrShares} />;
+			return <PaymentSummaryPage setModalStep={setModalStep} simplrShares={simplrShares} balance={balance} />;
 		}
 	};
 

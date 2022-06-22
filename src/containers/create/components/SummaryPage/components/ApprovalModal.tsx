@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ethers } from 'ethers';
 import { gsap } from 'gsap';
 import { Check, CircleNotch, Warning, X } from 'phosphor-react';
@@ -19,7 +20,7 @@ import theme from 'src/styleguide/theme';
 import { createCollection, uploadToIPFS } from '../../utils';
 import DeployedModal from './DeployedModal';
 
-const ApprovalModal = ({ isOpen, setIsOpen }) => {
+const ApprovalModal = ({ isOpen, setIsOpen, balance }) => {
 	const payments = useAppSelector(paymentSelector);
 	const [SEATInstance, setSEATInstance] = useState(null);
 	const [step, setStep] = useState(payments.useEarlyPass ? 0 : 1);
@@ -33,7 +34,7 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 	const CollectionFactory = useContract('CollectionFactoryV2', network.chain, user.provider);
 
 	const getSEATDetails = async () => {
-		const abi = getContractDetails('AffiliateCollection');
+		const abi = getContractDetails('Collection');
 		const seatAddress = await CollectionFactory.callStatic.freePass();
 		const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, user.provider);
 		setSEATInstance(SEATInstance);
@@ -65,7 +66,16 @@ const ApprovalModal = ({ isOpen, setIsOpen }) => {
 				uploadToIPFS(collection, sales, payments, address)
 					.then(async (res) => {
 						setStep(2);
-						createCollection(CollectionFactory, res.metadata, collection, sales, payments, user.signer)
+						console.log({
+							CollectionFactory,
+							metadata: res.metadata,
+							collection,
+							sales,
+							payments,
+							signer: user.signer,
+							balance,
+						});
+						createCollection(CollectionFactory, res.metadata, collection, sales, payments, user.signer, balance)
 							.then((res) => {
 								setStep(3);
 								setFinish(res?.event?.collection);

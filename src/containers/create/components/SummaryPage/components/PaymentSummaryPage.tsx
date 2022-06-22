@@ -20,7 +20,7 @@ import { DateType } from 'src/redux/sales/types';
 import ApprovalModal from './ApprovalModal';
 import WhitelistComp from './WhitelistComp';
 
-const PaymentSummaryPage = ({ setModalStep, simplrShares }) => {
+const PaymentSummaryPage = ({ setModalStep, simplrShares, balance }) => {
 	const sales = useAppSelector(saleSelector);
 	const presaleable = useAppSelector(presaleableToggleSelector);
 	const revealable = useAppSelector(revealableToggleSelector);
@@ -33,8 +33,8 @@ const PaymentSummaryPage = ({ setModalStep, simplrShares }) => {
 	const payments = useAppSelector(paymentSelector);
 	const beneficiaries = useAppSelector(beneficiariesSelector);
 
-	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.account);
-	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.value);
+	const [royaltyAddress, setRoyaltyAddress] = useState<string>(payments?.royalties?.receiver);
+	const [royaltyPercentage, setRoyaltyPercentage] = useState<number>(payments?.royalties?.royaltyFraction);
 
 	const [showWhitelist, setShowWhitelist] = useState<boolean>(false);
 	const [cta, setCta] = useState('Create Collection');
@@ -64,7 +64,7 @@ const PaymentSummaryPage = ({ setModalStep, simplrShares }) => {
 	return (
 		<Box overflow="visible" mb="mxxl" ref={componentRef}>
 			<Box ref={componentRef} />
-			<ApprovalModal isOpen={showApprovalModal} setIsOpen={setShowApprovalModal} />
+			<ApprovalModal isOpen={showApprovalModal} setIsOpen={setShowApprovalModal} balance={balance} />
 			<Text as="h3" mb="mxs" color="simply-black" row alignItems="center">
 				Pre-sale
 				<Box ml="mxxxl" />
@@ -184,7 +184,7 @@ const PaymentSummaryPage = ({ setModalStep, simplrShares }) => {
 				{beneficiaries?.payees?.map((payee, index) => (
 					<Box row overflow="visible" mb="ms" key={payee.substr(-4)}>
 						<TextInput
-							value={null}
+							value=""
 							placeholder={payee}
 							type="text"
 							width="41.7rem"
@@ -194,7 +194,7 @@ const PaymentSummaryPage = ({ setModalStep, simplrShares }) => {
 						/>
 						<Box ml="mxs" />
 						<TextInput
-							value={null}
+							value={undefined}
 							placeholder={`${beneficiaries?.shares[index]}%`}
 							type="number"
 							width="21.4rem"

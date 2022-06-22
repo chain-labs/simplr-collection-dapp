@@ -7,13 +7,13 @@ import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
 
 const RoyaltyEditModal = ({ visible, setVisible, data, setData, address, percentage }) => {
-	const [royalty, setRoyalty] = useState({ account: '', value: 0 });
+	const [royalty, setRoyalty] = useState({ receiver: '', royaltyFraction: 0 });
 
 	useEffect(() => {
 		setRoyalty(data);
 
 		return () => {
-			setRoyalty({ account: '', value: 0 });
+			setRoyalty({ receiver: '', royaltyFraction: 0 });
 		};
 	}, [data]);
 
@@ -32,12 +32,12 @@ const RoyaltyEditModal = ({ visible, setVisible, data, setData, address, percent
 							OLD ROYALTY ADDRESS
 						</Text>
 						<Text as="c3" color="simply-blue">
-							{royalty.account}
+							{royalty.receiver}
 						</Text>
 						<Text as="c1" color="gray-00" mt="mxxs" row alignItems="center">
 							OLD ROYALTY PERCENTAGE
 							<Text as="c3" color="simply-blue" ml="mxxs">
-								{royalty.value}%
+								{royalty.royaltyFraction}%
 							</Text>
 						</Text>
 					</Box>
@@ -62,7 +62,7 @@ const RoyaltyEditModal = ({ visible, setVisible, data, setData, address, percent
 					height="40px"
 					onClick={() => {
 						setVisible(false);
-						setData({ account: address, value: percentage });
+						setData({ receiver: address, royaltyFraction: percentage });
 					}}
 				>
 					Return to Dashboard

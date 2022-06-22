@@ -8,11 +8,15 @@ import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
+import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
 import { editSelector } from 'src/redux/edit';
-import { useAppSelector } from 'src/redux/hooks';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
 import { networkSelector, userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { getUnitByChainId } from 'src/utils/chains';
+import tokensOfOwner from 'src/utils/tokenOwnership';
+import WhitelistManagement from 'src/utils/WhitelistManager';
 import Step2Modal from './CollectionPage/Step2Modal';
 import Step3Modal from './CollectionPage/Step3Modal';
 
@@ -84,10 +88,13 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const [info, setInfo] = useState(getInfo(type));
 	const [fails, setFails] = useState(false);
 	const user = useAppSelector(userSelector);
+	const dispatch = useAppDispatch();
 
 	const { contract, data: arr } = useAppSelector(editSelector);
 	const [gas, setGas] = useState('');
 	const currentNetwork = useAppSelector(networkSelector);
+	const collection = useAppSelector(collectionSelector);
+	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
 
 	useEffect(() => {
 		if (!visible) {
@@ -109,21 +116,45 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	}, [step]);
 
 	useEffect(() => {
+		setInfo(getInfo(type));
+	}, [type]);
+
+	useEffect(() => {
 		let interval;
 		const getGasPrice = async () => {
 			try {
+				const CONTRACT_NAME = await contract.callStatic.CONTRACT_NAME();
+				const isERC721 = CONTRACT_NAME === 'Collection';
 				const fees = await user.provider.getGasPrice();
 				if (type === 'whitelist_add') {
-					const gas = await contract.connect(user.signer).estimateGas.presaleWhitelistBatch(arr);
+					const whitelistManager = new WhitelistManagement(presaleWhitelist);
+					whitelistManager.addWhitelist(data);
+					const newPresaleWhitelistConfig = {
+						root: whitelistManager.getRoot(),
+						cid: await whitelistManager.getCid(collection.name),
+					};
+					const gas = await contract.connect(user.signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
 					setGas(ethers.utils.formatUnits(gas.mul(fees)));
 				} else if (type === 'whitelist_remove') {
-					const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
-					const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
-					const gas = await contract.connect(user.signer).estimateGas.removeWhitelist(prev, data[0]);
+					const whitelistManager = new WhitelistManagement(presaleWhitelist);
+					whitelistManager.removeWhitelist(data);
+					const newPresaleWhitelistConfig = {
+						root: whitelistManager.getRoot(),
+						cid: await whitelistManager.getCid(collection.name),
+					};
+					const gas = await contract.connect(user.signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
 					setGas(ethers.utils.formatUnits(gas.mul(fees)));
 				} else if (type === 'airdrop') {
-					const gas = await contract.connect(user.signer).estimateGas.transferReservedTokens(data);
-					setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					if (isERC721) {
+						const gas = await contract.connect(user.signer).estimateGas.transferReservedTokens(data);
+						setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					} else {
+						const tokenIds = await tokensOfOwner(contract, user.address);
+						const gas = await contract
+							.connect(user.signer)
+							.estimateGas['safeTransferFrom(address,address,uint256)'](user.address, data[0], parseInt(tokenIds[0]));
+						setGas(ethers.utils.formatUnits(gas.mul(fees)));
+					}
 				}
 			} catch (err) {
 				console.log(err);
@@ -146,11 +177,17 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 
 	const addWhitelist = async () => {
 		try {
-			const transaction = await contract.connect(user.signer).presaleWhitelistBatch(arr);
+			const whitelistManager = new WhitelistManagement(presaleWhitelist);
+			whitelistManager.addWhitelist(data);
+			const newPresaleWhitelistConfig = {
+				root: whitelistManager.getRoot(),
+				cid: await whitelistManager.getCid(collection.name),
+			};
+			const transaction = await contract.connect(user.signer).updateWhitelist(newPresaleWhitelistConfig);
 			if (transaction) {
 				setInfo({ ...info, yes: 'Processing Transaction' });
 			}
-			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistAdded')[0]?.args;
+			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistUpdated')[0]?.args;
 			return event;
 		} catch (err) {
 			console.log(err);
@@ -164,13 +201,17 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 
 	const removeWhitelist = async () => {
 		try {
-			const SENTINEL_ADDRESS = await contract.callStatic.SENTINEL_ADDRESS();
-			const prev = arr[arr.indexOf(data[0]) - 1] ?? SENTINEL_ADDRESS;
-			const transaction = await contract.connect(user.signer).removeWhitelist(prev, data[0]);
+			const whitelistManager = new WhitelistManagement(presaleWhitelist);
+			whitelistManager.removeWhitelist(data);
+			const newPresaleWhitelistConfig = {
+				root: whitelistManager.getRoot(),
+				cid: await whitelistManager.getCid(collection.name),
+			};
+			const transaction = await contract.connect(user.signer).updateWhitelist(newPresaleWhitelistConfig);
 			if (transaction) {
 				setInfo({ ...info, yes: 'Processing Transaction' });
 			}
-			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistRemoved')[0]?.args;
+			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'WhitelistUpdated')[0]?.args;
 			return event;
 		} catch (err) {
 			console.log(err);
@@ -184,12 +225,26 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 
 	const airdrop = async () => {
 		try {
-			const transaction = await contract.connect(user.signer).transferReservedTokens(data);
-			if (transaction) {
-				setInfo({ ...info, yes: 'Processing Transaction' });
+			const CONTRACT_NAME = await contract.callStatic.CONTRACT_NAME();
+			const isERC721 = CONTRACT_NAME === 'Collection';
+			if (isERC721) {
+				const transaction = await contract.connect(user.signer).transferReservedTokens(data);
+				if (transaction) {
+					setInfo({ ...info, yes: 'Processing Transaction' });
+				}
+				const event = (await transaction.wait())?.events?.filter((event) => event.event === 'Airdrop')[0]?.args;
+				return event;
+			} else {
+				const tokenIds = await tokensOfOwner(contract, user.address);
+				const transaction = await contract
+					.connect(user.signer)
+					['safeTransferFrom(address,address,uint256)'](user.address, data[0], parseInt(tokenIds[0]));
+				if (transaction) {
+					setInfo({ ...info, yes: 'Processing Transaction' });
+				}
+				const event = (await transaction.wait())?.events?.filter((event) => event.event === 'Airdrop')[0]?.args;
+				return event;
 			}
-			const event = (await transaction.wait())?.events?.filter((event) => event.event === 'Airdrop')[0]?.args;
-			return event;
 		} catch (err) {
 			console.log(err);
 			toast.error('An unexpected error occured.');
@@ -206,11 +261,15 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 		} else if (step === 1) {
 			if (type === 'whitelist_add') {
 				addWhitelist().then(() => {
+					const arr = [...presaleWhitelist, ...data];
+					dispatch(setSaleDetails({ presaleable: { presaleWhitelist: arr } }));
 					setStep(3);
 					clearInput();
 				});
 			} else if (type === 'whitelist_remove') {
 				removeWhitelist().then(() => {
+					const arr = [...presaleWhitelist].filter((item) => !data.includes(item));
+					dispatch(setSaleDetails({ presaleable: { presaleWhitelist: arr } }));
 					setStep(3);
 					clearInput();
 				});

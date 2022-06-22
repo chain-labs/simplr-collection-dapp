@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import useListeners from 'src/ethereum/useListeners';
