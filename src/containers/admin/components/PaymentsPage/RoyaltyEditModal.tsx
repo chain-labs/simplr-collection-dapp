@@ -31,12 +31,12 @@ const RoyaltyEditModal = ({ visible, setVisible, data, setData, address, percent
 						<Text as="c1" color="gray-00">
 							OLD ROYALTY ADDRESS
 						</Text>
-						<Text as="c3" color="simply-blue">
+						<Text as="c2" color="simply-blue">
 							{royalty.receiver}
 						</Text>
 						<Text as="c1" color="gray-00" mt="mxxs" row alignItems="center">
 							OLD ROYALTY PERCENTAGE
-							<Text as="c3" color="simply-blue" ml="mxxs">
+							<Text as="c2" color="simply-blue" ml="mxxs">
 								{royalty.royaltyFraction}%
 							</Text>
 						</Text>
@@ -45,12 +45,12 @@ const RoyaltyEditModal = ({ visible, setVisible, data, setData, address, percent
 						<Text as="c1" color="gray-00">
 							NEW ROYALTY ADDRESS
 						</Text>
-						<Text as="c3" color="simply-blue">
+						<Text as="c2" color="simply-blue">
 							{address}
 						</Text>
 						<Text as="c1" color="gray-00" mt="mxxs" row alignItems="center">
 							NEW ROYALTY PERCENTAGE
-							<Text as="c3" color="simply-blue" ml="mxxs">
+							<Text as="c2" color="simply-blue" ml="mxxs">
 								{percentage}%
 							</Text>
 						</Text>
