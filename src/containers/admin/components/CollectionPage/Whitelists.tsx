@@ -14,7 +14,8 @@ import { userSelector } from 'src/redux/user';
 import EditModalv2 from '../EditModalv2';
 
 const Whitelists = ({ admin }) => {
-	const [whitelist, setWhitelist] = useState('');
+	const [whitelistAdder, setWhitelistAdder] = useState('');
+	const [whitelistRemover, setWhitelistRemover] = useState('');
 	const [whitelistModalOpen, setWhitelistModalOpen] = useState(false);
 	const [whitelistArray, setWhitelistArray] = useState([]);
 	const [editType, setEditType] = useState<'whitelist_add' | 'whitelist_remove'>();
@@ -24,7 +25,7 @@ const Whitelists = ({ admin }) => {
 	const user = useAppSelector(userSelector);
 
 	const handleAdd = () => {
-		const whitelistString = whitelist.replace(/\s+/g, '');
+		const whitelistString = whitelistAdder.replace(/\s+/g, '');
 		const whitelistsArray = whitelistString.split(',');
 		const list = [...whitelistsArray, ...presaleWhitelist];
 		let err = false;
@@ -51,7 +52,7 @@ const Whitelists = ({ admin }) => {
 	};
 
 	const handleRemove = () => {
-		const whitelistString = whitelist.replace(/\s+/g, '');
+		const whitelistString = whitelistRemover.replace(/\s+/g, '');
 		const whitelistsArray = whitelistString.split(',');
 		const list = [...whitelistsArray];
 		let err = false;
@@ -92,7 +93,7 @@ const Whitelists = ({ admin }) => {
 						width="100%"
 						disabled={admin !== user.address}
 					>
-						<TextArea width="100%" value={whitelist} setValue={setWhitelist} />
+						<TextArea width="100%" value={whitelistAdder} setValue={setWhitelistAdder} />
 					</LabelledTextInput>
 					<Box row justifyContent="flex-end" mt="mxl" mb="wm">
 						<ButtonComp bg="tertiary" height="40px" px="mxl" onClick={() => setWhitelistModalOpen(true)} mr="mxs">
@@ -102,7 +103,7 @@ const Whitelists = ({ admin }) => {
 							bg="primary"
 							height="40px"
 							px="mxl"
-							disable={!whitelist}
+							disable={!whitelistAdder}
 							onClick={() => handleAdd()}
 							display={admin === user.address ? 'block' : 'none'}
 							mr="mxs"
@@ -115,7 +116,7 @@ const Whitelists = ({ admin }) => {
 							setVisible={setShowModal}
 							data={[...whitelistArray]}
 							type={editType}
-							clearInput={() => setWhitelist('')}
+							clearInput={() => setWhitelistAdder('')}
 						/>
 					</Box>
 				</Box>
@@ -128,14 +129,14 @@ const Whitelists = ({ admin }) => {
 						width="100%"
 						disabled={admin !== user.address}
 					>
-						<TextArea width="100%" value={whitelist} setValue={setWhitelist} />
+						<TextArea width="100%" value={whitelistRemover} setValue={setWhitelistRemover} />
 					</LabelledTextInput>
 					<Box row justifyContent="flex-end" mt="mxl" mb="wm">
 						<ButtonComp
 							bg="secondary"
 							height="40px"
 							px="mxl"
-							disable={!whitelist}
+							disable={!whitelistRemover}
 							onClick={() => handleRemove()}
 							display={admin === user.address ? 'block' : 'none'}
 						>
