@@ -2,19 +2,20 @@ import React from 'react';
 import Box, { BoxProps } from 'components/Box';
 
 export const fontSizes = {
-	headline: { mobS: '4.0rem', tabL: '5.6rem' },
-	h1: { mobS: '3.2rem', tabL: '4rem' },
-	h2: { mobS: '2.4rem', tabL: '3.2rem' },
-	h3: { mobS: '1.8rem', tabL: '2.4rem' },
-	h4: '1.8rem',
-	h5: '1.6rem',
-	h6: '1.4rem',
-	b3: '1.8rem',
-	b2: '1.6rem',
-	b1: '1.4rem',
-	c1: '1rem',
+	h1: { mobS: '4rem', tabL: '4.8rem', deskM: '5.6rem' },
+	h2: { mobS: '3.2rem', tabL: '4rem', deskM: '4.8rem' },
+	h3: { mobS: '3.2rem', deskM: '4rem' },
+	h4: { mobS: '2.4rem', deskM: '3.2rem' },
+	h5: { mobS: '1.8rem', deskM: '2rem' },
+	h6: '1.6rem',
+	b3: { mobS: '1.2rem', deskM: '1.4rem' },
+	b2: { mobS: '1.4rem', deskM: '1.6rem' },
+	b1: { mobS: '1.6rem', deskM: '1.8rem' },
+	btn1: { mobS: '1.6rem', deskM: '1.8rem' },
+	btn2: { mobS: '1.4rem', deskM: '1.6rem' },
+	c1: '1.2rem',
 	c2: '1rem',
-	c3: '1rem',
+	nav: { mobS: '2rem', tabL: '1.4rem' },
 };
 
 const fontWeights = {
