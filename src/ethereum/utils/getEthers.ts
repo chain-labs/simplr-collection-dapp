@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // use this file to connect with metamask or with some JSON RPC
 import { ethers } from 'ethers';
 

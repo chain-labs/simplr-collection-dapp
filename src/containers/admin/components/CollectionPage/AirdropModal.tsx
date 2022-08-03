@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import ReactDom from 'react-dom';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -9,7 +8,7 @@ import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 
-const AirdropModal = ({ addresses, isOpen, setIsOpen, adminAddress, contract, signer, setAirdropAddress }) => {
+const AirdropModal = ({ addresses, isOpen, adminAddress, contract, signer, setAirdropAddress }) => {
 	const user = useAppSelector(userSelector);
 
 	const handleConfirm = () => {

@@ -1,4 +1,3 @@
-import { X } from 'phosphor-react';
 import React, { useState } from 'react';
 import Box from 'src/components/Box';
 import If from 'src/components/If';

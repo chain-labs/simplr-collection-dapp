@@ -6,8 +6,6 @@ import ButtonComp from 'src/components/Button';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextArea from 'src/components/TextArea';
-import { useAppSelector } from 'src/redux/hooks';
-import { userSelector } from 'src/redux/user';
 import EditModalv2 from '../EditModalv2';
 
 const Airdrop = ({ contractName }) => {

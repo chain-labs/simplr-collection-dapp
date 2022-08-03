@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ethers } from 'ethers';
 import { CircleNotch } from 'phosphor-react';
 import { useEffect, useState } from 'react';
@@ -8,7 +9,7 @@ import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
-import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
+import { collectionSelector } from 'src/redux/collection';
 import { editSelector } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
@@ -90,7 +91,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const user = useAppSelector(userSelector);
 	const dispatch = useAppDispatch();
 
-	const { contract, data: arr } = useAppSelector(editSelector);
+	const { contract } = useAppSelector(editSelector);
 	const [gas, setGas] = useState('');
 	const currentNetwork = useAppSelector(networkSelector);
 	const collection = useAppSelector(collectionSelector);
