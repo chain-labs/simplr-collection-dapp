@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import CreateComp from 'containers/create';
 import { ethers } from 'ethers';
 import Head from 'next/head';

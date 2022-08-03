@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/no-children-prop */
 import { CaretRight, CheckCircle } from 'phosphor-react';
 import Box from 'src/components/Box';
@@ -73,6 +74,7 @@ const SEATModal = ({ isOpen, setIsOpen, balance, loading, setTncStatus }: Props)
 				}
 			);
 	};
+
 	if (!isOpen) {
 		return null;
 	} else {

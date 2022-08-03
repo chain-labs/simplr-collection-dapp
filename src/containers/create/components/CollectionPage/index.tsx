@@ -10,11 +10,10 @@ import ButtonComp from 'src/components/Button';
 import toast from 'react-hot-toast';
 import { Toaster } from 'react-hot-toast';
 import { ethers } from 'ethers';
-import { CaretRight } from 'phosphor-react';
-import theme from 'src/styleguide/theme';
 import Dropzone from 'src/components/Dropzone';
 import { userSelector } from 'src/redux/user';
 import { TEST_NETWORK } from 'src/utils/constants';
+import Breadcrumb from '../Breadcrumb';
 
 const CollectionPage = ({ step, setStep }) => {
 	const collectionData = useAppSelector(collectionSelector);
@@ -130,19 +129,7 @@ const CollectionPage = ({ step, setStep }) => {
 			<Text as="h2" center>
 				Create new collection
 			</Text>
-			<Box center mt="mxxxl" mb="ws">
-				<Text as="h5" color={step === 0 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(0)}>
-					Collection Details
-				</Text>
-				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
-				<Text as="h5" color={step === 1 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(1)}>
-					Sales
-				</Text>
-				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
-				<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(2)}>
-					Payment Details
-				</Text>
-			</Box>
+			<Breadcrumb step={step} addData={addData} />
 			<form onSubmit={addCollectionDetails}>
 				<Box overflow="visible" mb="20rem">
 					<Toaster
