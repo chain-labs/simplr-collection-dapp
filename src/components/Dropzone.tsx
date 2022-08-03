@@ -119,7 +119,7 @@ const Dropzone = React.memo(
 										Upload
 									</Text>
 								</ButtonComp>
-								<Text as="c3" color="gray-00" textAlign="center">
+								<Text as="c2" color="gray-00" textAlign="center">
 									Click or drag and drop to upload. (JPEG and
 									<br /> PNG files accepted.)
 								</Text>

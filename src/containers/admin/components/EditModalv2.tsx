@@ -311,7 +311,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 							<Box width="100%" overflowY="auto" maxHeight="9rem">
 								{step === 0 ? (
 									data.map((item, index) => (
-										<Text key={`${type}-${index}`} color="simply-blue" as="c3" mb="mxs">
+										<Text key={`${type}-${index}`} color="simply-blue" as="c2" mb="mxs">
 											{item}
 										</Text>
 									))

@@ -219,7 +219,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 													then={
 														<Box row mt="mm">
 															<WarningCircle weight="fill" color={theme.colors['red-50']} size="24" />
-															<Text as="c3" color="red-50" ml="mxs">
+															<Text as="c2" color="red-50" ml="mxs">
 																We currently only support Ethereum and Polygon. Please switch your network to either of
 																those and try again.
 															</Text>
