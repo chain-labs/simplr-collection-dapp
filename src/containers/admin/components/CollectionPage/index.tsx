@@ -17,7 +17,6 @@ import { getUnitByChainId } from 'src/utils/chains';
 import axios from 'axios';
 import { setCollectionDetails } from 'src/redux/collection';
 import tokensOfOwner from 'src/utils/tokenOwnership';
-import WhitelistManagement from 'src/utils/WhitelistManager';
 
 const CollectionPage = ({ contract, metadata, ready }) => {
 	const [provider] = useEthers();
