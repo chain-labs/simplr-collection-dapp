@@ -1,4 +1,3 @@
-import { CaretRight } from 'phosphor-react';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -17,7 +16,7 @@ import {
 	setSaleDetails,
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
-import theme from 'src/styleguide/theme';
+import Breadcrumb from '../Breadcrumb';
 import Affiliable from './Affiliable';
 import Presale from './Presale';
 import Revealable from './Revealable';
@@ -132,19 +131,7 @@ const SalesPage = ({ step, setStep }) => {
 			<Text as="h2" center>
 				Create new collection
 			</Text>
-			<Box center mt="mxxxl" mb="ws">
-				<Text as="h5" color={step === 0 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(0)}>
-					Collection Details
-				</Text>
-				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
-				<Text as="h5" color={step === 1 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(1)}>
-					Sales
-				</Text>
-				<CaretRight size="24px" color={theme.colors['gray-00']} style={{ marginInline: '4px' }} />
-				<Text as="h5" color={step === 2 ? 'simply-blue' : 'gray-00'} cursor="pointer" onClick={() => addData(2)}>
-					Payment Details
-				</Text>
-			</Box>
+			<Breadcrumb step={step} addData={addData} />
 			<form onSubmit={addSalesDetails}>
 				<Box overflow="visible" mb="20rem">
 					<Box overflow="visible">
