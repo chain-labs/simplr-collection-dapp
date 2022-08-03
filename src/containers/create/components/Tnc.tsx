@@ -39,18 +39,18 @@ const Tnc = ({ setStep }) => {
 						message: signature.message,
 					})
 					.then(
-						(response) => {
+						() => {
 							toast.success('Signed successfully');
 							setStep(0);
 							setLoading(false);
 						},
-						(error) => {
+						() => {
 							toast.error('Something went wrong');
 							setLoading(false);
 						}
 					);
 			})
-			.catch((error) => {
+			.catch(() => {
 				toast.error('Something went wrong');
 				setLoading(false);
 			});

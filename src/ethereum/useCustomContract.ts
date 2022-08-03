@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ethers, providers } from 'ethers';
 import { useEffect, useState } from 'react';
 import contracts from '../contracts/contracts.json';

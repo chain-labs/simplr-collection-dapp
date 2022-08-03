@@ -6,12 +6,9 @@ import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
-import { networkSelector } from 'src/redux/user';
-import { getUnitByChainId } from 'src/utils/chains';
 
-const Step1Modal = ({ value, setValue, gas }) => {
+const Step1Modal = ({ value, setValue }) => {
 	const modalData = useAppSelector(editSelector);
-	const currentNetwork = useAppSelector(networkSelector);
 	const [showTooltip, setShowTooltip] = useState(false);
 
 	return (

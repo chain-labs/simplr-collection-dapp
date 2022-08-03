@@ -4,12 +4,9 @@ import If from 'src/components/If';
 import Text from 'src/components/Text';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
-import { networkSelector } from 'src/redux/user';
-import { getUnitByChainId } from 'src/utils/chains';
 
 const Step4Modal = ({ value }: { value?: string; gas?: string }) => {
 	const modalData = useAppSelector(editSelector);
-	const currentNetwork = useAppSelector(networkSelector);
 
 	return (
 		<Box>

@@ -3,11 +3,10 @@ import Box from 'src/components/Box';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
-import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { presaleWhitelistSelector, removeWhitelist } from 'src/redux/sales';
+import { useAppSelector } from 'src/redux/hooks';
+import { presaleWhitelistSelector } from 'src/redux/sales';
 import { X } from 'phosphor-react';
 import If from 'src/components/If';
-import toast from 'react-hot-toast';
 
 interface Props {
 	visible: boolean;
@@ -17,7 +16,7 @@ interface Props {
 	handleWhitelistRemove?: (any) => any;
 }
 
-const WhitelistModal = ({ visible, setVisible, readOnly, admin }: Props) => {
+const WhitelistModal = ({ visible, setVisible }: Props) => {
 	const whiteList = useAppSelector(presaleWhitelistSelector);
 	const [empty, setEmpty] = useState(false); // Checks if search result is empty
 	const [searchInput, setSearchInput] = useState('');
