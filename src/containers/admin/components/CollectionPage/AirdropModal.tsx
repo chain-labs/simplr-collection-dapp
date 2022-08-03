@@ -47,7 +47,7 @@ const AirdropModal = ({ addresses, isOpen, adminAddress, contract, signer, setAi
 				</Text>
 				<Box overflowY="auto" className="hidden-scrollbar" maxHeight="9rem" mb="mxl">
 					{addresses.split(', ').map((address, index) => (
-						<Text key={`air-${index}`} as="c3" color="simply-blue">
+						<Text key={`air-${index}`} as="c2" color="simply-blue">
 							{address}
 						</Text>
 					))}

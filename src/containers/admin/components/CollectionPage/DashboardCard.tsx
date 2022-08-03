@@ -187,7 +187,7 @@ const DashboardCard = ({
 										px="ms"
 										py="mxs"
 									>
-										<Text as="c3">{`Goes Live on ${tooltipTime}`}</Text>
+										<Text as="c2">{`Goes Live on ${tooltipTime}`}</Text>
 									</Box>
 								}
 							/>
@@ -252,7 +252,7 @@ const DashboardCard = ({
 									cursor="pointer"
 									onClick={handleAction}
 								>
-									<Text as="c3">{status === 'Live' ? 'Pause' : status === 'Paused' ? 'Resume' : 'Edit'}</Text>
+									<Text as="c2">{status === 'Live' ? 'Pause' : status === 'Paused' ? 'Resume' : 'Edit'}</Text>
 								</Box>
 							}
 						/>
