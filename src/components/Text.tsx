@@ -15,7 +15,7 @@ export const fontSizes = {
 	btn2: { mobS: '1.4rem', deskM: '1.6rem' },
 	c1: '1.2rem',
 	c2: '1rem',
-	nav: { mobS: '2rem', tabL: '1.4rem' },
+	nav: { mobS: '2rem', tabS: '1.4rem' },
 };
 
 const fontWeights = {
