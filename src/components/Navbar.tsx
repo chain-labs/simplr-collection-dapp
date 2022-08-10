@@ -181,7 +181,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 							<Box display={{ mobS: 'block', tabS: 'none' }} mr="mm" row alignItems="center" height="2.4rem">
 								<List size={24} />
 							</Box>
-							<Box as="img" src="/static/images/png/logo.png" />
+							<Box as="img" src="/static/images/svgs/logo.svg" />
 						</Box>
 						<Box row center>
 							<Box row mr="wxs" display={{ mobS: 'none', tabS: 'flex' }}>
@@ -209,7 +209,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 										border="1px solid"
 										borderColor="blue-10"
 										borderRadius="64px"
-										my="mxs"
+										my={{ mobS: 'ms', tabS: 'mxs' }}
 										pl="mxs"
 										pr="mxxs"
 										py="mxxs"
@@ -320,16 +320,23 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 						bg="sky-blue-10"
 						borderTop="1px solid"
 						borderTopColor="blue-10"
+						borderBottom="1px solid"
+						borderBottomColor="blue-10"
 						order={{ mobS: 1, tabS: 2 }}
 					>
-						<Box row justifyContent="flex-end" width={{ mobS: '95vw', tabS: '90vw', deskM: '136rem' }} mx="auto">
+						<Box
+							row
+							justifyContent={{ mobS: 'center', tabS: 'flex-end' }}
+							width={{ mobS: '95vw', tabS: '90vw', deskM: '136rem' }}
+							mx="auto"
+						>
 							<Text
 								as="c2"
 								bg={networkProps?.bannerColor}
 								color={networkProps?.bannerTextColor}
 								position="absolute"
 								top={{ mobS: '100%', tabS: '100%', deskM: '0' }}
-								transform={{ mobS: 'translateY(64px)', tabS: '' }}
+								transform={{ mobS: 'translateY(76px)', tabS: '' }}
 								left="0"
 								center
 								width="100%"
