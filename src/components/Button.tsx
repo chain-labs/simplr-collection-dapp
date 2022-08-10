@@ -3,7 +3,7 @@ import Box, { BoxProps } from 'components/Box';
 import theme from 'src/styleguide/theme';
 
 export const color = {
-	primary: 'blue-50',
+	primary: 'simply-blue',
 	secondary: 'blue-00',
 	tertiary: 'simply-white',
 };
