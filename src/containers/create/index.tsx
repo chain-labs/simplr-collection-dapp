@@ -56,7 +56,7 @@ const CreateComp = ({ balance }) => {
 	};
 
 	return (
-		<Box mt="16rem" pt="mxxxl" mx="auto" width="64rem" minHeight="100vh" overflowX="visible">
+		<Box mt="16rem" pt="mxxxl" mx="auto" width={{ mobS: '90vw', tabS: '64rem' }} minHeight="100vh" overflowX="visible">
 			{getFormPage()}
 			<If
 				condition={!SEAT_DISABLE}

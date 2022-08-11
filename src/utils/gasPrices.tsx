@@ -29,3 +29,14 @@ export const getCoinPrice = async (chain: number) => {
 			).data['matic-network']['usd'].toFixed(2);
 	}
 };
+
+export const getGasSource = (chain: number) => {
+	switch (chain) {
+		case 1:
+		case 4:
+			return 'etherscan.io';
+		case 137:
+		case 80001:
+			return 'polygonscan.com';
+	}
+};
