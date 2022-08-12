@@ -47,8 +47,8 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }
 						<Box
 							key={item}
 							padding="7px 16px"
-							border={`1px solid ${theme.colors['white-20']}`}
-							backgroundColor="white-00"
+							border={`1px solid ${theme.colors['gray-20']}`}
+							backgroundColor="gray-10"
 							minWidth="32rem"
 							css={`
 								&:hover {

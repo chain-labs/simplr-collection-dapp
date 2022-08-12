@@ -38,6 +38,7 @@ declare module 'styled-components' {
 			'disable-black': string;
 			'simply-gray': string;
 			'light-purple': string;
+			'simply-purple': string;
 
 			'blue-10': string;
 			'blue-20': string;
@@ -45,21 +46,13 @@ declare module 'styled-components' {
 			'blue-40': string;
 			'blue-50': string;
 			'blue-60': string;
-			'blue-70': string;
-			'blue-80': string;
-			'blue-90': string;
-			'blue-00': string;
 
-			'black-10': string;
-			'black-20': string;
-			'black-30': string;
-			'black-40': string;
-			'black-50': string;
-			'black-60': string;
-			'black-70': string;
-			'black-80': string;
-			'black-90': string;
-			'black-00': string;
+			'sky-blue-10': string;
+			'sky-blue-20': string;
+			'sky-blue-30': string;
+			'sky-blue-40': string;
+			'sky-blue-50': string;
+			'sky-blue-60': string;
 
 			'green-10': string;
 			'green-20': string;
@@ -67,10 +60,6 @@ declare module 'styled-components' {
 			'green-40': string;
 			'green-50': string;
 			'green-60': string;
-			'green-70': string;
-			'green-80': string;
-			'green-90': string;
-			'green-00': string;
 
 			'red-10': string;
 			'red-20': string;
@@ -78,10 +67,6 @@ declare module 'styled-components' {
 			'red-40': string;
 			'red-50': string;
 			'red-60': string;
-			'red-70': string;
-			'red-80': string;
-			'red-90': string;
-			'red-00': string;
 
 			'yellow-10': string;
 			'yellow-20': string;
@@ -89,19 +74,13 @@ declare module 'styled-components' {
 			'yellow-40': string;
 			'yellow-50': string;
 			'yellow-60': string;
-			'yellow-70': string;
-			'yellow-80': string;
-			'yellow-90': string;
-			'yellow-00': string;
 
-			'purple-10': string;
-			'purple-50': string;
-
-			'white-00': string;
-			'white-10': string;
-			'white-20': string;
-
-			'gray-00': string;
+			'gray-10': string;
+			'gray-20': string;
+			'gray-30': string;
+			'gray-40': string;
+			'gray-50': string;
+			'gray-60': string;
 		};
 		space: string[] & Partial<ISpace>;
 		breakpoints: string[] & Partial<IBreakpoints>;
