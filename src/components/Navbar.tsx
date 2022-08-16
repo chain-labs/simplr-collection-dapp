@@ -227,6 +227,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 			>
 				<ReactTooltip
 					className="tooltip"
+					place="bottom"
 					arrowColor="transparent"
 					backgroundColor={theme.colors['blue-10']}
 					textColor={theme.colors['simply-black']}
@@ -413,6 +414,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 										<Box
 											borderRadius="64px"
 											data-tip={user.address}
+											data-offset="{'right': 150,'bottom': 37}"
 											px="mm"
 											py="1.05rem"
 											bg="sky-blue-20"
@@ -537,14 +539,19 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 							</Text>
 							<Box center opacity={gasPrice && coinPrice ? '1' : '0'} zIndex={2}>
 								<GasPump color={theme.colors['simply-blue']} size={16} weight="fill" />
-								<Text as="c1" ml="mxs" data-tip={`Source: ${getGasSource(user.network.chain)}`}>
+								<Text
+									as="c1"
+									ml="mxs"
+									data-tip={`Source: ${getGasSource(user.network.chain)}`}
+									data-offset="{'left': 10, 'top': 2}"
+								>
 									{`${gasPrice} Gwei`}
 								</Text>
 								<Box width="1px" bg="simply-black" height="1.2rem" mx="ms" />
 								<Text as="c1" color="simply-blue" mr="mxxs">
 									{`${networkProps?.currency}:`}
 								</Text>
-								<Text as="c1" mr="2px" data-tip="Source: coingecko.com">
+								<Text as="c1" mr="2px" data-tip="Source: coingecko.com" data-offset="{'left': 10, 'top': 2}">
 									{`$${coinPrice}`}
 								</Text>
 							</Box>
