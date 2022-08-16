@@ -414,6 +414,8 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 											</Box>
 										</Box>
 										<Box
+											as="button"
+											border="none"
 											borderRadius="64px"
 											data-tip={user.address}
 											data-offset="{'right': 150,'bottom': 37}"
@@ -425,7 +427,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 											center
 											cursor="pointer"
 											css={`
-												&:hover {
+												&:active {
 													background: ${theme.colors['sky-blue-30']};
 												}
 											`}
