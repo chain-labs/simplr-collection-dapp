@@ -19,6 +19,7 @@ import ButtonComp from './Button';
 import { ProviderProps, SignerProps } from 'src/ethereum/types';
 import { ethers } from 'ethers';
 import {
+	CALENDLY_URL,
 	DOCS_URL,
 	FAQ_URL,
 	HOW_TO_CREATE_URL,
@@ -301,7 +302,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 								cursor="pointer"
 								css={`
 									&:hover {
-										color: ${theme.colors['simply-blue']};
+										color: ${theme.colors['simply-blue']} !important;
 									}
 								`}
 							>
@@ -353,6 +354,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 										column
 										top="150%"
 										left="-10%"
+										cursor="auto"
 									>
 										<Box mb="mm" as="a" href={HOW_TO_CREATE_URL} target="_blank">
 											<Text as="nav" color="gray-50" display="inline-block">
@@ -364,11 +366,11 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 												Manage Collection
 											</Text>
 										</Box>
-										<Box mt="mm" bg="simply-black" height="1px" mb="ms" />
-										<Text as="c2">
+										<Box mt="mm" bg="gray-50" height="1px" mb="ms" />
+										<Text as="c2" color="gray-50">
 											Still need help?{' '}
 											<span>
-												<Box as="a" color="simply-blue" cursor="pointer">
+												<Box as="a" href={CALENDLY_URL} target="_blank" color="simply-blue" cursor="pointer">
 													Contact Us
 												</Box>
 											</span>
