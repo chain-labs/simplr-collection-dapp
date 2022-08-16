@@ -20,3 +20,5 @@ export const DOCS_URL = 'https://docs.simplrcollection.com';
 export const HOW_TO_CREATE_URL = 'https://www.youtube.com/watch?v=Nl7qMKwX_Iw';
 
 export const HOW_TO_MANAGE_URL = 'https://www.youtube.com/watch?v=PxKvGDzApso';
+
+export const CALENDLY_URL = 'https://calendly.com/0xmihir/nft-consultation';
