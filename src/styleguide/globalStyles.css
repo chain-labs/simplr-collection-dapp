@@ -93,5 +93,9 @@ svg {
 }
 
 a:hover {
-	text-decoration: underline;
+	text-decoration: none;
+}
+
+.nav-icon {
+	color: currentColor;
 }

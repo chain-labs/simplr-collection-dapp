@@ -221,6 +221,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 						opacity: 1 !important;
 						box-shadow: 0px 2px 4px -2px rgba(24, 39, 75, 0.12), 0px 4px 4px -2px rgba(24, 39, 75, 0.08);
 						border-radius: 4px;
+						padding: 4px 8px;
 					}
 				`}
 			>
@@ -250,17 +251,41 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 							<Box as="img" src="/static/images/svgs/logo.svg" />
 						</Box>
 						<Box row center>
-							<Box row mr="wxs" display={{ mobS: 'none', tabS: 'flex' }} as="a" href={FAQ_URL} target="_blank">
-								<Text as="nav" color="gray-80" mr="0.2rem">
+							<Box
+								row
+								mr="wxs"
+								display={{ mobS: 'none', tabS: 'flex' }}
+								as="a"
+								href={FAQ_URL}
+								target="_blank"
+								css={`
+									&:hover {
+										color: ${theme.colors['simply-blue']};
+									}
+								`}
+							>
+								<Text as="nav" mr="0.2rem">
 									FAQs
 								</Text>
-								<ArrowUpRight color={theme.colors['gray-80']} size={16} />
+								<ArrowUpRight className="nav-icon" size={16} />
 							</Box>
-							<Box row mr="wxs" display={{ mobS: 'none', tabS: 'flex' }} as="a" href={DOCS_URL} target="_blank">
-								<Text as="nav" color="gray-80" mr="0.2rem">
+							<Box
+								row
+								mr="wxs"
+								display={{ mobS: 'none', tabS: 'flex' }}
+								as="a"
+								href={DOCS_URL}
+								target="_blank"
+								css={`
+									&:hover {
+										color: ${theme.colors['simply-blue']};
+									}
+								`}
+							>
+								<Text as="nav" mr="0.2rem">
 									Docs
 								</Text>
-								<ArrowUpRight color={theme.colors['gray-80']} size={16} />
+								<ArrowUpRight className="nav-icon" size={16} />
 							</Box>
 							<Box
 								row
@@ -273,8 +298,13 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 								position="relative"
 								ref={ref}
 								cursor="pointer"
+								css={`
+									&:hover {
+										color: ${theme.colors['simply-blue']};
+									}
+								`}
 							>
-								<Text as="nav" color="gray-80" mr="0.2rem">
+								<Text as="nav" mr="0.2rem">
 									How to
 								</Text>
 								<motion.div
@@ -293,7 +323,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 									animate={animateCaret}
 									style={{ height: '16px' }}
 								>
-									<CaretDown color={theme.colors['gray-80']} size={16} />
+									<CaretDown className="nav-icon" size={16} />
 								</motion.div>
 								<motion.div
 									initial="closed"
@@ -314,7 +344,8 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 										zIndex={6}
 										bg="gray-10"
 										borderRadius="8px"
-										px="mxs"
+										pl="ms"
+										pr="mxs"
 										py="ms"
 										width="16rem"
 										boxShadow="0px 2px 4px -2px rgba(24, 39, 75, 0.12), 0px 4px 4px -2px rgba(24, 39, 75, 0.08)"
@@ -323,12 +354,12 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 										left="-10%"
 									>
 										<Box mb="mm" as="a" href={HOW_TO_CREATE_URL} target="_blank">
-											<Text as="nav" color="gray-40" display="inline-block">
+											<Text as="nav" color="gray-50" display="inline-block">
 												Launch Collection
 											</Text>
 										</Box>
 										<Box as="a" href={HOW_TO_MANAGE_URL} target="_blank">
-											<Text as="nav" color="gray-40" display="inline-block">
+											<Text as="nav" color="gray-50" display="inline-block">
 												Manage Collection
 											</Text>
 										</Box>
@@ -389,6 +420,11 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 											row
 											center
 											cursor="pointer"
+											css={`
+												&:hover {
+													background: ${theme.colors['sky-blue-30']};
+												}
+											`}
 											onClick={
 												!user.exists
 													? handleConnectWallet
@@ -482,7 +518,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 							mx="auto"
 						>
 							<Text
-								as="c2"
+								as="c1"
 								bg={networkProps?.bannerColor}
 								color={networkProps?.bannerTextColor}
 								position="absolute"
