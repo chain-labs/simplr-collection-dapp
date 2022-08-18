@@ -1,9 +1,8 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { addBeneficiary, clearBeneficiaries, removeBeneficiary } from '.';
-import { setPaymentDetails, setValidation } from './actions';
-import { PaymentState } from './types';
+import { setValidation } from './actions';
+import { ValidationState } from './types';
 
-const intitalState: PaymentState = {
+const intitalState: ValidationState = {
 	collection: false,
 	pricing: false,
 	withdraw: false,
@@ -11,7 +10,7 @@ const intitalState: PaymentState = {
 
 export const validationReducer = createReducer(intitalState, (builder) => {
 	builder.addCase(setValidation, (state, action) => {
-		const updateState: PaymentState = action.payload;
+		const updateState: ValidationState = action.payload;
 		const newState = { ...state, ...updateState };
 		state = newState;
 		return state;

@@ -2,7 +2,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import { addPayee, addRoyaltyPayee, setWithdrawDetails, updatePayee, updateRoyaltyPayee } from './actions';
 import { IPayee, WithdrawState } from './types';
 
-const intitialState: WithdrawState = {
+const initialState: WithdrawState = {
 	useEarlyPass: true,
 	paymentSplitter: [],
 	royalties: [],
