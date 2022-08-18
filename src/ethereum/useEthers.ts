@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import getEthers from './utils/getEthers';
 import { useEffect, useState } from 'react';
 import { ETH_REQUEST_ACCOUNT } from './utils/methods';

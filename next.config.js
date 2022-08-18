@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const withTM = require('next-transpile-modules')(['gsap', 'react-timezone-select']);
+const withTM = require('next-transpile-modules')(['gsap']);
 const withPlugins = require('next-compose-plugins');
 
 const nextConfig = {

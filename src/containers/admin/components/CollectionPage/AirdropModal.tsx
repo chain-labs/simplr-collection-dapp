@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import ReactDom from 'react-dom';
 import toast from 'react-hot-toast';
 import Box from 'src/components/Box';
@@ -9,7 +8,7 @@ import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 
-const AirdropModal = ({ addresses, isOpen, setIsOpen, adminAddress, contract, signer, setAirdropAddress }) => {
+const AirdropModal = ({ addresses, isOpen, adminAddress, contract, signer, setAirdropAddress }) => {
 	const user = useAppSelector(userSelector);
 
 	const handleConfirm = () => {
@@ -48,7 +47,7 @@ const AirdropModal = ({ addresses, isOpen, setIsOpen, adminAddress, contract, si
 				</Text>
 				<Box overflowY="auto" className="hidden-scrollbar" maxHeight="9rem" mb="mxl">
 					{addresses.split(', ').map((address, index) => (
-						<Text key={`air-${index}`} as="c3" color="simply-blue">
+						<Text key={`air-${index}`} as="c2" color="simply-blue">
 							{address}
 						</Text>
 					))}

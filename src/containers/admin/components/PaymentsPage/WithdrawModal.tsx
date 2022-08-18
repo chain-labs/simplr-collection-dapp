@@ -1,5 +1,4 @@
 import { Check, X } from 'phosphor-react';
-import { useState } from 'react';
 import ReactDom from 'react-dom';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';

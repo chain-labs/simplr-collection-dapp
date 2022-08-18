@@ -1,5 +1,3 @@
-import { BigNumber } from '@ethersproject/bignumber';
-
 export interface format {
 	type: number;
 	baseCollection: {

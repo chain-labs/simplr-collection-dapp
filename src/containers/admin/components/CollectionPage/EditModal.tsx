@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ethers } from 'ethers';
 import { CircleNotch } from 'phosphor-react';
 import { useEffect, useState } from 'react';
@@ -213,7 +214,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 		if (step === 0) {
 			if (modalData.editable === 'Live' || modalData.editable === 'Paused')
 				return <StatusModal gas={gas} fails={fails} />;
-			else return <Step1Modal value={value} setValue={setValue} gas={gas} />;
+			else return <Step1Modal value={value} setValue={setValue} />;
 		}
 		if (step === 1) {
 			return <Step2Modal gas={gas} fails={fails} />;

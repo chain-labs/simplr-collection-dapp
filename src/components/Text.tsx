@@ -2,22 +2,24 @@ import React from 'react';
 import Box, { BoxProps } from 'components/Box';
 
 export const fontSizes = {
-	headline: { mobS: '4.0rem', tabL: '5.6rem' },
-	h1: { mobS: '3.2rem', tabL: '4rem' },
-	h2: { mobS: '2.4rem', tabL: '3.2rem' },
-	h3: { mobS: '1.8rem', tabL: '2.4rem' },
-	h4: '1.8rem',
-	h5: '1.6rem',
-	h6: '1.4rem',
-	b3: '1.8rem',
-	b2: '1.6rem',
-	b1: '1.4rem',
-	c1: '1rem',
+	h1: { mobS: '4rem', tabL: '4.8rem', deskM: '5.6rem' },
+	h2: { mobS: '3.2rem', tabL: '4rem', deskM: '4.8rem' },
+	h3: { mobS: '3.2rem', deskM: '4rem' },
+	h4: { mobS: '2.4rem', deskM: '3.2rem' },
+	h5: { mobS: '1.8rem', deskM: '2rem' },
+	h6: '1.6rem',
+	b3: { mobS: '1.2rem', deskM: '1.4rem' },
+	b2: { mobS: '1.4rem', deskM: '1.6rem' },
+	b1: { mobS: '1.6rem', deskM: '1.8rem' },
+	btn1: { mobS: '1.6rem', deskM: '1.8rem' },
+	btn2: { mobS: '1.4rem', deskM: '1.6rem' },
+	c1: '1.2rem',
 	c2: '1rem',
-	c3: '1rem',
+	nav: { mobS: '2rem', tabS: '1.4rem' },
 };
 
 const fontWeights = {
+	'extra-bold': 800,
 	bold: 700,
 	'semi-bold': 600,
 	medium: 500,
@@ -26,71 +28,72 @@ const fontWeights = {
 };
 
 const fontW = {
-	headline: fontWeights.bold,
-	h1: fontWeights.bold,
+	h1: fontWeights['extra-bold'],
 	h2: fontWeights.bold,
 	h3: fontWeights.bold,
-	h4: fontWeights.medium,
-	h5: fontWeights.medium,
+	h4: { mobS: fontWeights.medium, deskM: fontWeights.bold },
+	h5: { mobS: fontWeights.regular, deskM: fontWeights.medium },
 	h6: fontWeights.medium,
 	b3: fontWeights.regular,
 	b2: fontWeights.regular,
 	b1: fontWeights.regular,
-	c1: fontWeights.bold,
+	btn1: { mobS: fontWeights.regular, deskM: fontWeights.medium },
+	btn2: fontWeights.regular,
+	c1: fontWeights.medium,
 	c2: fontWeights.medium,
-	c3: fontWeights.regular,
+	nav: { mobS: fontWeights.regular, deskM: fontWeights.medium },
 };
 
 const charSpacing = {
-	headline: '-0.5px',
-	h1: '-0.4px',
-	h2: { mobS: '-0.1px', tabL: '-0.4px' },
-	h3: '-0.1px',
-	h4: '0.1px',
-	h5: '0px',
+	h1: { mobS: '-0.5px', deskM: '-1px' },
+	h2: '-0.5px',
+	h3: '-0.5px',
+	h4: '-0.5px',
+	h5: '-0.5px',
 	h6: '0px',
 	b3: '0.1px',
-	b2: '-0.1px',
-	b1: '0.1px',
-	c1: '0.4px',
-	c2: '0.4px',
-	c3: '0.4px',
+	b2: { mobS: '0.1px', deskM: '-0.25px' },
+	b1: '-0.25px',
+	c1: '0.1px',
+	c2: '0.1px',
+	btn1: '0.1px',
+	btn2: '-0.25px',
+	nav: '0.1px',
 };
 
 const lineHeights = (as) => {
 	switch (as) {
-		case 'headline':
 		case 'h1':
-			return '150%';
 		case 'h2':
+			return { mobS: '125%', deskM: '120%' };
 		case 'h3':
+		case 'h4':
+			return '125%';
 		case 'h5':
+			return { mobS: '150%', deskM: '140%' };
 		case 'h6':
 			return '140%';
-		case 'h4':
 		case 'b3':
-			return '27px';
+			return { mobS: '160%', deskM: '155%' };
 		case 'b2':
-			return '24px';
+			return { mobS: '160%', tabL: '155%', deskM: '150%' };
 		case 'b1':
-			return '26px';
+			return { mobS: '150%', deskM: '145%' };
+		case 'btn1':
+		case 'btn2':
+			return '120%';
 		case 'c1':
-			return '21px';
+			return { mobS: '160%', deskM: '150%' };
 		case 'c2':
-		case 'c3':
-			return '18px';
+			return '160%';
+		case 'nav':
+			return '115%';
 	}
 	return as === 'h1' || as === 'headline' ? '150%' : '140%';
 };
 
-const fontFamily = (as) => {
-	return as === 'b1' || as === 'b2' || as === 'b3' || as === 'c1' || as === 'c2' || as === 'c3'
-		? '"OpenSauceOneRegular", sans-serif'
-		: '"Switzer", sans-serif';
-};
-
 export interface TextProps extends BoxProps {
-	as?: 'headline' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3' | 'c1' | 'c2' | 'c3';
+	as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'b1' | 'b2' | 'b3' | 'btn1' | 'btn2' | 'c1' | 'c2' | 'nav';
 	fontWeight?: 'semi-bold' | 'bold' | 'medium' | 'regular' | 'thin';
 	children?: string | React.ReactNode;
 	id?: string;
@@ -104,7 +107,7 @@ const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProp
 	const fw = fontWeight ? fontWeights[fontWeight] : fontW[as];
 	const lh = restProps.lineHeight ?? lineHeights(as);
 	const cs = restProps.letterSpacing ?? charSpacing[as];
-	const ff = restProps.fontFamily ?? fontFamily(as);
+	const ff = restProps.fontFamily ?? '"OpenSauceOneRegular", sans-serif';
 
 	return (
 		<Box

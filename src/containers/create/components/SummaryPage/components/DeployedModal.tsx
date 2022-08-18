@@ -43,7 +43,7 @@ const DeployedModal = ({ isOpen, transactionResult }) => {
 								Congratulations, you have successfully deployed the smart contracts for your NFT collection!
 							</Text>
 						</Box>
-						<Link href={`/admin/${getShortNameByChainId(user.network.chain)}:${transactionResult}`}>
+						<Link href={`/admin/${getShortNameByChainId(user.network.chain)}:${transactionResult}`} passHref>
 							<ButtonComp bg="primary" height="40px" width="100%">
 								<Text as="h6">Go to Dashboard</Text>
 							</ButtonComp>
