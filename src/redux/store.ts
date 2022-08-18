@@ -1,6 +1,7 @@
 import { configureStore, Action, ThunkAction } from '@reduxjs/toolkit';
 import { collectionReducer } from './collection';
 import { EditReducer } from './edit';
+import { modalReducer } from './modal/reducers';
 import { paymentReducer } from './payment';
 import { pricingReducer } from './pricing';
 import { saleReducer } from './sales';
@@ -18,6 +19,7 @@ export const store = configureStore({
 		withdraw: withdrawReducer,
 		validation: validationReducer,
 		edit: EditReducer,
+		modal: modalReducer,
 	},
 	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });

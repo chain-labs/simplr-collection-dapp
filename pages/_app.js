@@ -9,6 +9,7 @@ import { ThemeProvider } from 'styled-components';
 
 import { Provider } from 'react-redux';
 import { store } from 'src/redux/store';
+import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';
 
@@ -61,8 +62,7 @@ const MyApp = ({ Component, pageProps }) => {
 				<ThemeProvider theme={theme}>
 					<Navbar banner />
 					<Component {...pageProps} />
-					<div id="portal"></div>
-					<div id="portal-2"></div>
+					<ModalHandler />
 				</ThemeProvider>
 			</Provider>
 		</>
