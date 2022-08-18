@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppDispatch } from 'src/redux/hooks';
 import { hideModal, replaceModal } from 'src/redux/modal';
-import { MODALS, MODALS_LIST } from 'src/redux/modal/types';
+import { MODALS_LIST } from 'src/redux/modal/types';
 import theme from 'src/styleguide/theme';
 import Box from '../Box';
 import ButtonComp from '../Button';

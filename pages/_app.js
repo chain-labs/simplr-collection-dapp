@@ -9,8 +9,6 @@ import { ThemeProvider } from 'styled-components';
 
 import { Provider } from 'react-redux';
 import { store } from 'src/redux/store';
-import { useAppSelector } from 'src/redux/hooks';
-import { modalSelector } from 'src/redux/modal';
 import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';

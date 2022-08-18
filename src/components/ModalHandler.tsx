@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAppSelector } from 'src/redux/hooks';
-import { modalSelector, showModal } from 'src/redux/modal';
+import { modalSelector } from 'src/redux/modal';
 import { MODALS, MODALS_LIST } from 'src/redux/modal/types';
 
 const ModalHandler = () => {
