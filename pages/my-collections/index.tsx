@@ -1,12 +1,12 @@
 import React from 'react';
 import Text from 'src/components/Text';
 
-const CreatePage = () => {
+const MyCollectionPage = () => {
 	return (
 		<Text as="h1" mt="wxxl" ml="mxl">
-			Create Page
+			My Collection Page
 		</Text>
 	);
 };
 
-export default CreatePage;
+export default MyCollectionPage;
