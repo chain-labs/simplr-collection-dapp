@@ -4,7 +4,7 @@ import { setNetwork, setProvider, setSigner } from '.';
 
 import { setUser, removeUser } from './actions';
 
-type UserState = {
+export type UserState = {
 	address: string;
 	exists: boolean;
 	network: {

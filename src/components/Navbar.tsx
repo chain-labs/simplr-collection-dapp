@@ -12,7 +12,7 @@ import ReactTooltip from 'react-tooltip';
 
 import { networks } from 'src/redux/collection/types';
 import If from './If';
-import { ArrowLeft, ArrowUpRight, CaretDown, CopySimple, GasPump, List, WarningCircle } from 'phosphor-react';
+import { ArrowLeft, ArrowUpRight, CaretDown, CopySimple, GasPump, List } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 import toast from 'react-hot-toast';
 import ButtonComp from './Button';
@@ -32,12 +32,13 @@ import { getCoinPrice, getGasPrice, getGasSource } from 'src/utils/gasPrices';
 import { getNavProps } from 'src/utils/navbarUtils';
 import { motion, useAnimationControls } from 'framer-motion';
 import useOuterClick from 'components/useOuterClick';
+import Link from 'next/link';
 
 const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
 	const [signer] = useSigner();
-	const [wrongNetwork, setWrongNetwork] = useState(false);
+	const [setWrongNetwork] = useState(false);
 	const [ens, setEns] = useState('');
 	const [gasPrice, setGasPrice] = useState('');
 	const [coinPrice, setCoinPrice] = useState('');
@@ -250,7 +251,9 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 								<List size={24} />
 							</Box>
 							<Drawer {...{ drawerOpen, setDrawerOpen }} />
-							<Box as="img" src="/static/images/svgs/logo.svg" />
+							<Link href="/" passHref>
+								<Box as="img" src="/static/images/svgs/logo.svg" cursor="pointer" />
+							</Link>
 						</Box>
 						<Box row center>
 							<Box

@@ -7,12 +7,10 @@ import theme from 'styleguide/theme';
 import 'styleguide/globalStyles.css';
 import { ThemeProvider } from 'styled-components';
 
-import { Provider } from 'react-redux';
-import { store } from 'src/redux/store';
+import { wrapper } from 'src/redux/store';
 import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';
-import { WrappedBuildError } from 'next/dist/server/next-server';
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
