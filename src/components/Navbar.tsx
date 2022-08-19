@@ -38,7 +38,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
 	const [signer] = useSigner();
-	const [setWrongNetwork] = useState(false);
+	const [wrongNetwork, setWrongNetwork] = useState(false);
 	const [ens, setEns] = useState('');
 	const [gasPrice, setGasPrice] = useState('');
 	const [coinPrice, setCoinPrice] = useState('');

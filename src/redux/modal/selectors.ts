@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { AppState } from '../store';
 
-export const selectModal = (state: RootState) => state.modal;
+export const selectModal = (state: AppState) => state.modal;
 
 export const modalSelector = createSelector(selectModal, (state) => state);
