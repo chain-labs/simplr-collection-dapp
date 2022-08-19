@@ -12,6 +12,7 @@ import { store } from 'src/redux/store';
 import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';
+import { WrappedBuildError } from 'next/dist/server/next-server';
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
@@ -58,15 +59,13 @@ const MyApp = ({ Component, pageProps }) => {
 					}}
 				/>
 			</Head>
-			<Provider store={store}>
-				<ThemeProvider theme={theme}>
-					<Navbar banner />
-					<Component {...pageProps} />
-					<ModalHandler />
-				</ThemeProvider>
-			</Provider>
+			<ThemeProvider theme={theme}>
+				<Navbar banner />
+				<Component {...pageProps} />
+				<ModalHandler />
+			</ThemeProvider>
 		</>
 	);
 };
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);
