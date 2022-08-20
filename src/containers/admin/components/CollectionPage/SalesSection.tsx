@@ -5,6 +5,7 @@ import If from 'src/components/If';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import { getUnitByChainId } from 'src/utils/chains';
+import { useNetwork } from 'wagmi';
 import DashboardCard from './DashboardCard';
 import { IAdminCollection } from './OverviewSection';
 
@@ -15,7 +16,7 @@ export interface CollectionSectionProps {
 }
 
 const SalesSection = ({ collection, showModal, setShowModal }: CollectionSectionProps) => {
-	const user = useAppSelector(userSelector);
+	const { chain } = useNetwork();
 
 	return (
 		<Box row flexWrap="wrap" between mt="mxxxl">
@@ -102,7 +103,7 @@ const SalesSection = ({ collection, showModal, setShowModal }: CollectionSection
 			<DashboardCard
 				Icon={CurrencyEth}
 				text="Funds Collected"
-				data={`${collection.totalFunds} ${getUnitByChainId(user.network.chain)}`}
+				data={`${collection.totalFunds} ${getUnitByChainId(chain?.id)}`}
 			/>
 			<DashboardCard
 				Icon={ImageSquare}

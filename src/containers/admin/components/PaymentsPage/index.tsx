@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
+import { useProvider, useSigner } from 'wagmi';
 import BeneficiaryInfo from './BeneficiaryInfo';
 import Royalties from './Royalties';
 import WithdrawModal from './WithdrawModal';
@@ -20,6 +21,8 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 	const [admin, setAdmin] = useState('');
 
 	const user = useAppSelector(userSelector);
+	const { data: signer } = useSigner();
+	const provider = useProvider();
 
 	useEffect(() => {
 		const getDetails = async () => {
@@ -36,8 +39,8 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 			try {
 				if (metadata) {
 					const getPayment = async (share) => {
-						if (user.provider) {
-							const balance = await user.provider?.getBalance(contract.address);
+						if (provider) {
+							const balance = await provider?.getBalance(contract.address);
 							const totalReleased = await contract.callStatic['totalReleased()']();
 							const totalFunds = balance.add(totalReleased);
 							const totalShares = await contract.callStatic.totalShares();
@@ -73,7 +76,7 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 			}
 		};
 		if (isWithdrawModalOpen === 0 && ready) hydrate();
-	}, [metadata, user, user.provider, isWithdrawModalOpen]);
+	}, [metadata, user, provider, isWithdrawModalOpen]);
 
 	return (
 		<Box mt="6rem" width="116.8rem" mx="auto">
@@ -82,7 +85,7 @@ const PaymentsPage = ({ contract, metadata, ready }) => {
 				<BeneficiaryInfo {...{ payees, shares, simplrShares }} />
 				<WithdrawSection {...{ contract, userShare, totalFunds, pendingPayment, setIsWithdrawModalOpen }} />
 			</Box>
-			<Royalties {...{ contract, admin, signer: user.signer, ready }} />
+			<Royalties {...{ contract, admin, signer: signer, ready }} />
 		</Box>
 	);
 };
