@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import React from 'react';
-import { useAppSelector } from 'src/redux/hooks';
-import { userSelector } from 'src/redux/user';
+import React, { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
+import { setUser, userSelector } from 'src/redux/user';
 import { useEnsName } from 'wagmi';
 import Box from '../Box';
 import If from '../If';
@@ -16,6 +16,7 @@ import ButtonComp from '../Button';
 
 const ConnectWallet = ({ networkProps }) => {
 	const user = useAppSelector(userSelector);
+	const dispatch = useAppDispatch();
 
 	return (
 		<ConnectButton.Custom>
@@ -23,6 +24,12 @@ const ConnectWallet = ({ networkProps }) => {
 				const { data: ens } = useEnsName({
 					address: account?.address,
 				});
+
+				useEffect(() => {
+					if (account) {
+						dispatch(setUser(account?.address));
+					}
+				}, [account]);
 				const ready = mounted;
 				const connected = ready && account && chain;
 

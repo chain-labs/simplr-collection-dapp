@@ -94,7 +94,7 @@ const Navbar = () => {
 					</Box>
 				</Box>
 			</Box>
-			<If condition={!!chain} then={<Banners {...{ networkProps, setNetworkProps }} />} />
+			<If condition={user.exists} then={<Banners {...{ networkProps, setNetworkProps }} />} />
 		</Box>
 	);
 };
