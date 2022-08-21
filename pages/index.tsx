@@ -1,16 +1,11 @@
+import Text from 'src/components/Text';
+
 const HomePage = () => {
-	return <></>;
+	return (
+		<Text as="h1" mt="wxxl" ml="mxl">
+			Home Page
+		</Text>
+	);
 };
 
 export default HomePage;
-
-HomePage.getInitialProps = async ({ res }) => {
-	if (res) {
-		res.writeHead(301, {
-			Location: '/create',
-		});
-		res.end();
-	}
-
-	return {};
-};
