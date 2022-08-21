@@ -14,15 +14,19 @@ import Text from '../Text';
 import { CopySimple } from 'phosphor-react';
 import ButtonComp from '../Button';
 
+export const condenseAddress = (address) => {
+	return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
 const ConnectWallet = ({ networkProps }) => {
 	const user = useAppSelector(userSelector);
 	const dispatch = useAppDispatch();
 
 	return (
 		<ConnectButton.Custom>
-			{({ account, chain, openConnectModal, mounted }) => {
+			{({ account, chain, openConnectModal }) => {
 				const { data: ens } = useEnsName({
-					address: account?.address,
+					address: user.address,
 				});
 
 				useEffect(() => {
@@ -30,8 +34,7 @@ const ConnectWallet = ({ networkProps }) => {
 						dispatch(setUser(account?.address));
 					}
 				}, [account]);
-				const ready = mounted;
-				const connected = ready && account && chain;
+				const connected = user.exists;
 
 				if (!connected) {
 					return (
@@ -100,7 +103,7 @@ const ConnectWallet = ({ networkProps }) => {
 							}}
 						>
 							<Text as="c1" mr="mxs">
-								{ens ?? account?.displayName}
+								{ens ?? condenseAddress(user.address)}
 							</Text>
 							<CopySimple size={20} weight="regular" />
 						</Box>

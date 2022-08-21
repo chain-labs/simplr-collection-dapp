@@ -8,7 +8,7 @@ import ReactTooltip from 'react-tooltip';
 import { List } from 'phosphor-react';
 import { DOCS_URL, FAQ_URL } from 'src/utils/constants';
 import Link from 'next/link';
-import { useNetwork, useSigner } from 'wagmi';
+import { useAccount, useSigner, useSwitchNetwork } from 'wagmi';
 import If from '../If';
 import Drawer from './Drawer';
 import TooltipPortal from './TooltipPortal';
@@ -17,11 +17,14 @@ import HowToDropdown from './HowToDropdown';
 import ConnectWallet from './ConnectWallet';
 import Banners from './Banners';
 import { Toaster } from 'react-hot-toast';
+import { getNavProps } from 'src/utils/navbarUtils';
 
 const Navbar = () => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(userSelector);
 	const { data: signer } = useSigner();
+	const account = useAccount();
+	const { switchNetwork } = useSwitchNetwork();
 	const [drawerOpen, setDrawerOpen] = useState(false);
 	const [networkProps, setNetworkProps] = useState({
 		logoColor: '',
@@ -31,7 +34,22 @@ const Navbar = () => {
 		bannerText: '',
 	});
 
-	const { chain } = useNetwork();
+	useEffect(() => {
+		if (account?.connector?.id === 'metaMask' && process.browser) {
+			window?.ethereum?.on('accountsChanged', (accounts) => {
+				if (dispatch) {
+					dispatch(setUser(accounts[0]));
+				}
+			});
+
+			window?.ethereum?.on('chainChanged', (chain) => {
+				const chainId = parseInt(chain);
+				switchNetwork(chainId);
+
+				// setNetworkProps(getNavProps(chainId));
+			});
+		}
+	}, [account]);
 
 	useEffect(() => {
 		if (drawerOpen) {
