@@ -13,6 +13,7 @@ import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';
 import Wagmi from 'components/Wagmi';
+import ApolloClientProvider from 'components/ApolloClient';
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
@@ -61,9 +62,11 @@ const MyApp = ({ Component, pageProps }) => {
 			</Head>
 			<ThemeProvider theme={theme}>
 				<Wagmi>
-					<Navbar />
-					<Component {...pageProps} />
-					<ModalHandler />
+					<ApolloClientProvider>
+						<Navbar />
+						<Component {...pageProps} />
+						<ModalHandler />
+					</ApolloClientProvider>
 				</Wagmi>
 			</ThemeProvider>
 		</>
