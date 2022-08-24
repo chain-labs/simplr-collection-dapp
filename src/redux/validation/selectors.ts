@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { AppState } from '../store';
 
-export const selectValidation = (state: RootState) => state.validation;
+export const selectValidation = (state: AppState) => state.validation;
 
 export const validationSelector = createSelector(selectValidation, (state) => state);

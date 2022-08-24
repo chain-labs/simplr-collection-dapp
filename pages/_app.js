@@ -7,8 +7,7 @@ import theme from 'styleguide/theme';
 import 'styleguide/globalStyles.css';
 import { ThemeProvider } from 'styled-components';
 
-import { Provider } from 'react-redux';
-import { store } from 'src/redux/store';
+import { wrapper } from 'src/redux/store';
 import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';
@@ -58,15 +57,13 @@ const MyApp = ({ Component, pageProps }) => {
 					}}
 				/>
 			</Head>
-			<Provider store={store}>
-				<ThemeProvider theme={theme}>
-					<Navbar banner />
-					<Component {...pageProps} />
-					<ModalHandler />
-				</ThemeProvider>
-			</Provider>
+			<ThemeProvider theme={theme}>
+				<Navbar banner />
+				<Component {...pageProps} />
+				<ModalHandler />
+			</ThemeProvider>
 		</>
 	);
 };
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

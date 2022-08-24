@@ -12,7 +12,7 @@ import ReactTooltip from 'react-tooltip';
 
 import { networks } from 'src/redux/collection/types';
 import If from './If';
-import { ArrowLeft, ArrowUpRight, CaretDown, CopySimple, GasPump, List, WarningCircle } from 'phosphor-react';
+import { ArrowLeft, ArrowUpRight, CaretDown, CopySimple, GasPump, List } from 'phosphor-react';
 import theme from 'src/styleguide/theme';
 import toast from 'react-hot-toast';
 import ButtonComp from './Button';
@@ -32,6 +32,7 @@ import { getCoinPrice, getGasPrice, getGasSource } from 'src/utils/gasPrices';
 import { getNavProps } from 'src/utils/navbarUtils';
 import { motion, useAnimationControls } from 'framer-motion';
 import useOuterClick from 'components/useOuterClick';
+import Link from 'next/link';
 
 const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
@@ -250,7 +251,9 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 								<List size={24} />
 							</Box>
 							<Drawer {...{ drawerOpen, setDrawerOpen }} />
-							<Box as="img" src="/static/images/svgs/logo.svg" />
+							<Link href="/" passHref>
+								<Box as="img" src="/static/images/svgs/logo.svg" cursor="pointer" />
+							</Link>
 						</Box>
 						<Box row center>
 							<Box
@@ -462,40 +465,6 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 												Connect Wallet
 											</Text>
 										</ButtonComp>
-										<Box
-											position="absolute"
-											zIndex={-1}
-											top="0"
-											left="0"
-											height="100vh"
-											width="100vw"
-											bg="simply-white"
-										>
-											<Box mx="auto" width="80%" row between height="100%">
-												<Box maxWidth="40rem">
-													<Text as="h2" color="simply-blue" mb="ms">
-														Create and manage cost effective NFT Collections.
-													</Text>
-													<Text as="b2" mb="mxl">
-														Simplr is an easy to use, no-code platform to create NFT smart contracts and launch your NFT
-														projects without any hassle.
-													</Text>
-													<If
-														condition={wrongNetwork}
-														then={
-															<Box row mt="mm">
-																<WarningCircle weight="fill" color={theme.colors['red-50']} size="24" />
-																<Text as="c2" color="red-50" ml="mxs">
-																	We currently only support Ethereum and Polygon. Please switch your network to either
-																	of those and try again.
-																</Text>
-															</Box>
-														}
-													/>
-												</Box>
-												<Box as="img" src="/static/images/png/hero_image.png"></Box>
-											</Box>
-										</Box>
 									</>
 								}
 							/>
