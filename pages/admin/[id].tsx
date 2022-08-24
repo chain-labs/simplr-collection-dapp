@@ -9,8 +9,8 @@ import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
-import { networkSelector } from 'src/redux/user';
 import { getNetworkByShortName } from 'src/utils/chains';
+import { useNetwork } from 'wagmi';
 
 const AdminDashboardPage = () => {
 	const router = useRouter();
@@ -18,7 +18,7 @@ const AdminDashboardPage = () => {
 	const [provider] = useEthers();
 	const [metadata, setMetadata] = useState();
 	const dispatch = useDispatch();
-	const currentNetwork = useAppSelector(networkSelector);
+	const { chain } = useNetwork();
 	const [ready, setReady] = useState(false);
 	const [contractName, setContractName] = useState();
 
@@ -41,9 +41,8 @@ const AdminDashboardPage = () => {
 				const shortName = `${id}`.split(':')[0];
 				const network = getNetworkByShortName(shortName);
 				const chainId = `0x${network.chainId.toString(16)}`;
-				if (network.chainId !== currentNetwork.chain) {
+				if (network.chainId !== chain?.id) {
 					if (network.chainId === 137 || network.chainId === 80001) {
-						// @ts-expect-error ethereum in window
 						window.ethereum
 							.request({
 								method: 'wallet_addEthereumChain',
@@ -56,7 +55,6 @@ const AdminDashboardPage = () => {
 								],
 							})
 							.then(() => {
-								// @ts-expect-error ethereum in window
 								window.ethereum
 									.request({
 										method: 'wallet_switchEthereumChain',
@@ -68,7 +66,6 @@ const AdminDashboardPage = () => {
 									.catch((err) => console.log({ err }));
 							});
 					} else {
-						// @ts-expect-error ethereum in window
 						window.ethereum
 							.request({
 								method: 'wallet_switchEthereumChain',

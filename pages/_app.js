@@ -5,12 +5,14 @@ import Head from 'next/head';
 import theme from 'styleguide/theme';
 
 import 'styleguide/globalStyles.css';
+import '@rainbow-me/rainbowkit/styles.css';
 import { ThemeProvider } from 'styled-components';
 
 import { wrapper } from 'src/redux/store';
 import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';
+import Wagmi from 'components/Wagmi';
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
@@ -58,9 +60,11 @@ const MyApp = ({ Component, pageProps }) => {
 				/>
 			</Head>
 			<ThemeProvider theme={theme}>
-				<Navbar banner />
-				<Component {...pageProps} />
-				<ModalHandler />
+				<Wagmi>
+					<Navbar />
+					<Component {...pageProps} />
+					<ModalHandler />
+				</Wagmi>
 			</ThemeProvider>
 		</>
 	);

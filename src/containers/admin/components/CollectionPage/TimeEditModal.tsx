@@ -18,6 +18,7 @@ import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { timezones } from 'src/utils/timezones';
+import { useProvider, useSigner } from 'wagmi';
 import Step2Modal from './Step2Modal';
 import Step3Modal from './Step3Modal';
 
@@ -60,6 +61,8 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	const [presaleTime, setPresaleTime] = useState(null);
 	const [error, setError] = useState(false);
 	const user = useAppSelector(userSelector);
+	const provider = useProvider();
+	const { data: signer } = useSigner();
 
 	const getContractDetails = async () => {
 		const saleTime = await contract.callStatic.publicSaleStartTime();
@@ -114,7 +117,7 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	const setNewTime = async () => {
 		try {
 			const transaction = await contract
-				.connect(user.signer)
+				.connect(signer)
 				.setSaleStartTime(getTimestamp({ date, time, timezone }), type !== 'presale');
 			if (transaction) {
 				setInfo({ ...info, cta: 'Processing Transaction' });
@@ -133,9 +136,9 @@ const TimeEditModal = ({ visible, setVisible, type, data }: Props) => {
 	};
 
 	const getGas = async () => {
-		const fees = await user.provider?.getGasPrice();
+		const fees = await provider?.getGasPrice();
 		const gas = await contract
-			.connect(user.signer)
+			.connect(signer)
 			.estimateGas.setSaleStartTime(getTimestamp({ date, time, timezone }), type === 'sale');
 		setGas(ethers.utils.formatUnits(gas.mul(fees)));
 	};

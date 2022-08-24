@@ -13,11 +13,12 @@ import { collectionSelector } from 'src/redux/collection';
 import { editSelector } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
-import { networkSelector, userSelector } from 'src/redux/user';
+import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { getUnitByChainId } from 'src/utils/chains';
 import tokensOfOwner from 'src/utils/tokenOwnership';
 import WhitelistManagement from 'src/utils/WhitelistManager';
+import { useNetwork, useProvider, useSigner } from 'wagmi';
 import Step2Modal from './CollectionPage/Step2Modal';
 import Step3Modal from './CollectionPage/Step3Modal';
 
@@ -93,7 +94,10 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 
 	const { contract } = useAppSelector(editSelector);
 	const [gas, setGas] = useState('');
-	const currentNetwork = useAppSelector(networkSelector);
+	const { chain } = useNetwork();
+	const provider = useProvider();
+	const { data: signer } = useSigner();
+
 	const collection = useAppSelector(collectionSelector);
 	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
 
@@ -126,7 +130,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 			try {
 				const CONTRACT_NAME = await contract.callStatic.CONTRACT_NAME();
 				const isERC721 = CONTRACT_NAME === 'Collection';
-				const fees = await user.provider.getGasPrice();
+				const fees = await provider.getGasPrice();
 				if (type === 'whitelist_add') {
 					const whitelistManager = new WhitelistManagement(presaleWhitelist);
 					whitelistManager.addWhitelist(data);
@@ -134,7 +138,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 						root: whitelistManager.getRoot(),
 						cid: await whitelistManager.getCid(collection.name),
 					};
-					const gas = await contract.connect(user.signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
+					const gas = await contract.connect(signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
 					setGas(ethers.utils.formatUnits(gas.mul(fees)));
 				} else if (type === 'whitelist_remove') {
 					const whitelistManager = new WhitelistManagement(presaleWhitelist);
@@ -143,16 +147,16 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 						root: whitelistManager.getRoot(),
 						cid: await whitelistManager.getCid(collection.name),
 					};
-					const gas = await contract.connect(user.signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
+					const gas = await contract.connect(signer).estimateGas.updateWhitelist(newPresaleWhitelistConfig);
 					setGas(ethers.utils.formatUnits(gas.mul(fees)));
 				} else if (type === 'airdrop') {
 					if (isERC721) {
-						const gas = await contract.connect(user.signer).estimateGas.transferReservedTokens(data);
+						const gas = await contract.connect(signer).estimateGas.transferReservedTokens(data);
 						setGas(ethers.utils.formatUnits(gas.mul(fees)));
 					} else {
 						const tokenIds = await tokensOfOwner(contract, user.address);
 						const gas = await contract
-							.connect(user.signer)
+							.connect(signer)
 							.estimateGas['safeTransferFrom(address,address,uint256)'](user.address, data[0], parseInt(tokenIds[0]));
 						setGas(ethers.utils.formatUnits(gas.mul(fees)));
 					}
@@ -170,7 +174,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 				}
 			}, 4000);
 		};
-		if (step > 0 && user.signer) getGasDetails();
+		if (step > 0 && signer) getGasDetails();
 		return () => {
 			clearInterval(interval);
 		};
@@ -184,7 +188,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 				root: whitelistManager.getRoot(),
 				cid: await whitelistManager.getCid(collection.name),
 			};
-			const transaction = await contract.connect(user.signer).updateWhitelist(newPresaleWhitelistConfig);
+			const transaction = await contract.connect(signer).updateWhitelist(newPresaleWhitelistConfig);
 			if (transaction) {
 				setInfo({ ...info, yes: 'Processing Transaction' });
 			}
@@ -208,7 +212,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 				root: whitelistManager.getRoot(),
 				cid: await whitelistManager.getCid(collection.name),
 			};
-			const transaction = await contract.connect(user.signer).updateWhitelist(newPresaleWhitelistConfig);
+			const transaction = await contract.connect(signer).updateWhitelist(newPresaleWhitelistConfig);
 			if (transaction) {
 				setInfo({ ...info, yes: 'Processing Transaction' });
 			}
@@ -229,7 +233,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 			const CONTRACT_NAME = await contract.callStatic.CONTRACT_NAME();
 			const isERC721 = CONTRACT_NAME === 'Collection';
 			if (isERC721) {
-				const transaction = await contract.connect(user.signer).transferReservedTokens(data);
+				const transaction = await contract.connect(signer).transferReservedTokens(data);
 				if (transaction) {
 					setInfo({ ...info, yes: 'Processing Transaction' });
 				}
@@ -238,7 +242,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 			} else {
 				const tokenIds = await tokensOfOwner(contract, user.address);
 				const transaction = await contract
-					.connect(user.signer)
+					.connect(signer)
 					['safeTransferFrom(address,address,uint256)'](user.address, data[0], parseInt(tokenIds[0]));
 				if (transaction) {
 					setInfo({ ...info, yes: 'Processing Transaction' });
@@ -328,7 +332,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 											<Text as="c1" color="gray-00" display="flex">
 												ESTIMATED GAS COSTS :{' '}
 												<Text as="c1" color="simply-blue">
-													{gas ? `${gas} ${getUnitByChainId(currentNetwork.chain)}` : 'Fetching...'}
+													{gas ? `${gas} ${getUnitByChainId(chain?.id)}` : 'Fetching...'}
 												</Text>
 											</Text>
 										}

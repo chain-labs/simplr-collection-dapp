@@ -15,8 +15,8 @@ const HomePage = () => {
 						My Collection
 					</ButtonComp>
 				</Link>
-				<Link href="/create">
-					<ButtonComp bg="secondary" height="48px" px="mm">
+				<Link href="/create" as="create" passHref replace>
+					<ButtonComp bg="secondary" height="48px" px="mm" mb="mxl">
 						Create Form
 					</ButtonComp>
 				</Link>
