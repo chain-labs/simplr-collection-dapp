@@ -19,12 +19,12 @@ export const fontSizes = {
 };
 
 const fontWeights = {
-	'extra-bold': 800,
-	bold: 700,
-	'semi-bold': 600,
-	medium: 500,
-	regular: 400,
-	thin: 300,
+	'extra-bold': 'OpenSauceOneExtraBold',
+	bold: 'OpenSauceOneBold',
+	'semi-bold': 'OpenSauceOneSemiBold',
+	medium: 'OpenSauceOneMedium',
+	regular: 'OpenSauceOneRegular',
+	thin: 'OpenSauceOneThin',
 };
 
 const fontW = {
@@ -107,7 +107,6 @@ const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProp
 	const fw = fontWeight ? fontWeights[fontWeight] : fontW[as];
 	const lh = restProps.lineHeight ?? lineHeights(as);
 	const cs = restProps.letterSpacing ?? charSpacing[as];
-	const ff = restProps.fontFamily ?? '"OpenSauceOneRegular", sans-serif';
 
 	return (
 		<Box
@@ -116,10 +115,9 @@ const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProp
 			padding={0}
 			color={color as string}
 			fontSize={fs}
-			fontWeight={fw}
 			letterSpacing={cs}
 			lineHeight={lh}
-			fontFamily={ff}
+			fontFamily={fontW[as]}
 			fontStyle="normal"
 			{...restProps}
 		>

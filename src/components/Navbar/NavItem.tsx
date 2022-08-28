@@ -12,7 +12,7 @@ const NavItem = ({ url, text }) => {
 			mr="wxs"
 			display={{ mobS: 'none', tabS: 'flex' }}
 			as="a"
-			href={FAQ_URL}
+			href={url}
 			target="_blank"
 			css={`
 				&:hover {
@@ -21,9 +21,9 @@ const NavItem = ({ url, text }) => {
 			`}
 		>
 			<Text as="nav" mr="0.2rem">
-				FAQs
+				{text}
 			</Text>
-			<ArrowUpRight className="nav-icon" size={16} />
+			<ArrowUpRight className="nav-icon" weight="bold" size={16} />
 		</Box>
 	);
 };

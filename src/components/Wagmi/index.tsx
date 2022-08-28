@@ -25,7 +25,9 @@ const Wagmi = ({ children }) => {
 	});
 	return (
 		<WagmiConfig client={wagmiClient}>
-			<RainbowKitProvider chains={chains}>{children}</RainbowKitProvider>
+			<RainbowKitProvider chains={chains} modalSize="compact">
+				{children}
+			</RainbowKitProvider>
 		</WagmiConfig>
 	);
 };
