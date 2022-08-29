@@ -4,7 +4,7 @@ const withPlugins = require('next-compose-plugins');
 
 const nextConfig = {
 	images: {
-		domains: ['nftfy.mypinata.cloud'],
+		domains: ['nftfy.mypinata.cloud', 'images.unsplash.com', 'img.freepik.com'],
 	},
 };
 module.exports = withPlugins([
