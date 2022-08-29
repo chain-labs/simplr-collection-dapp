@@ -1,12 +1,8 @@
 import React from 'react';
-import Text from 'src/components/Text';
+import MyCollectionsPage from 'src/containers/MyCollections';
 
 const MyCollectionPage = () => {
-	return (
-		<Text as="h1" mt="wxxl" ml="mxl">
-			My Collection Page
-		</Text>
-	);
+	return <MyCollectionsPage />;
 };
 
 export default MyCollectionPage;
