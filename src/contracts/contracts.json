@@ -23536,7 +23536,7 @@
       "chainId": "80001",
       "contracts": {
         "Collection": {
-          "address": "0x486167384F5CF10C5f5C85FDB8B3D513Df9c2519",
+          "address": "0xcc0579ccD604742a7FA61c81Bc8e3714Cd048F8b",
           "abi": [
             {
               "anonymous": false,
@@ -23618,6 +23618,19 @@
               "inputs": [
                 {
                   "indexed": false,
+                  "internalType": "string",
+                  "name": "projectUri",
+                  "type": "string"
+                }
+              ],
+              "name": "CollectionRevealed",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
                   "internalType": "address",
                   "name": "receiver",
                   "type": "address"
@@ -23668,6 +23681,77 @@
                 }
               ],
               "name": "Initialized",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newMaxHolding",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaxHoldingUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newMaxPurchase",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaxPurchaseUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "maximumTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaximumTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "string",
+                  "name": "metadata",
+                  "type": "string"
+                }
+              ],
+              "name": "MetadataUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "quantity",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Minted",
               "type": "event"
             },
             {
@@ -23763,6 +23847,142 @@
               "anonymous": false,
               "inputs": [
                 {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleMaxHolding",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleMaxHoldingUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presalePrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresalePriceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleReservedTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleReservedTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newPresaleStartTime",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleStartTimeUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PriceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "projectUri",
+                  "type": "string"
+                }
+              ],
+              "name": "ProjectURIUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "provenance",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "ProvenanceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newSaleStartTime",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PublicSaleStartTimeUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "tokenId",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ReservedTokenTransferred",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "reservedTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ReservedTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
                   "indexed": true,
                   "internalType": "address",
                   "name": "from",
@@ -23801,15 +24021,15 @@
               "anonymous": false,
               "inputs": [
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "bytes32",
-                  "name": "root",
+                  "name": "whitelistRoot",
                   "type": "bytes32"
                 },
                 {
                   "indexed": false,
                   "internalType": "string",
-                  "name": "cid",
+                  "name": "whitelistCid",
                   "type": "string"
                 }
               ],
@@ -24211,9 +24431,9 @@
               "name": "maxHolding",
               "outputs": [
                 {
-                  "internalType": "uint16",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "uint16"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -24224,9 +24444,9 @@
               "name": "maxPurchase",
               "outputs": [
                 {
-                  "internalType": "uint16",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "uint16"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -24485,6 +24705,49 @@
             {
               "inputs": [
                 {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "releasable",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "releasable",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "address payable",
                   "name": "account",
                   "type": "address"
@@ -24673,7 +24936,7 @@
                 },
                 {
                   "internalType": "bytes",
-                  "name": "_data",
+                  "name": "data",
                   "type": "bytes"
                 }
               ],
@@ -24703,12 +24966,103 @@
             {
               "inputs": [
                 {
+                  "internalType": "uint16",
+                  "name": "_newMaxHolding",
+                  "type": "uint16"
+                }
+              ],
+              "name": "setMaxHolding",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint16",
+                  "name": "_newMaxPurchase",
+                  "type": "uint16"
+                }
+              ],
+              "name": "setMaxPurchase",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newMaximumTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setMaximumTokens",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "string",
                   "name": "_metadata",
                   "type": "string"
                 }
               ],
               "name": "setMetadata",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newPresaleMaxHolding",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setPresaleMaxHolding",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newPresalePrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setPresalePrice",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newPresaleReservedTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setPresaleReservedTokens",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setPrice",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -25207,6 +25561,25 @@
             {
               "inputs": [
                 {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "name": "tokensMinted",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "contract IERC20Upgradeable",
                   "name": "token",
                   "type": "address"
@@ -25363,7 +25736,7 @@
           ]
         },
         "CollectionA": {
-          "address": "0xb9FD9186Ba8402CcDC0b23C51CABFaDcEa3d9918",
+          "address": "0x03B3A934413937aFfB90ecB578B621708cdD29Cb",
           "abi": [
             {
               "inputs": [],
@@ -25510,6 +25883,19 @@
               "inputs": [
                 {
                   "indexed": false,
+                  "internalType": "string",
+                  "name": "projectUri",
+                  "type": "string"
+                }
+              ],
+              "name": "CollectionRevealed",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
                   "internalType": "address",
                   "name": "receiver",
                   "type": "address"
@@ -25560,6 +25946,77 @@
                 }
               ],
               "name": "Initialized",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newMaxHolding",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaxHoldingUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newMaxPurchase",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaxPurchaseUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "maximumTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaximumTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "string",
+                  "name": "metadata",
+                  "type": "string"
+                }
+              ],
+              "name": "MetadataUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "quantity",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Minted",
               "type": "event"
             },
             {
@@ -25655,6 +26112,166 @@
               "anonymous": false,
               "inputs": [
                 {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleMaxHolding",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleMaxHoldingUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presalePrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresalePriceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleReservedTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleReservedTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleReservedTokens",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presalePrice",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleStartTime",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleMaxHolding",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "whitelistRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "whitelistCid",
+                  "type": "string"
+                }
+              ],
+              "name": "PresaleSetup",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newPresaleStartTime",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleStartTimeUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PriceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "projectUri",
+                  "type": "string"
+                }
+              ],
+              "name": "ProjectURIUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "provenance",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "ProvenanceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newSaleStartTime",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PublicSaleStartTimeUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "reservedTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ReservedTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
                   "indexed": true,
                   "internalType": "address",
                   "name": "from",
@@ -25693,15 +26310,15 @@
               "anonymous": false,
               "inputs": [
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "bytes32",
-                  "name": "root",
+                  "name": "whitelistRoot",
                   "type": "bytes32"
                 },
                 {
                   "indexed": false,
                   "internalType": "string",
-                  "name": "cid",
+                  "name": "whitelistCid",
                   "type": "string"
                 }
               ],
@@ -26103,9 +26720,9 @@
               "name": "maxHolding",
               "outputs": [
                 {
-                  "internalType": "uint16",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "uint16"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -26116,9 +26733,9 @@
               "name": "maxPurchase",
               "outputs": [
                 {
-                  "internalType": "uint16",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "uint16"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -26377,6 +26994,49 @@
             {
               "inputs": [
                 {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "releasable",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "releasable",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "address payable",
                   "name": "account",
                   "type": "address"
@@ -26457,6 +27117,11 @@
             },
             {
               "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_receiver",
+                  "type": "address"
+                },
                 {
                   "internalType": "uint256",
                   "name": "_reserveTokens",
@@ -26582,12 +27247,103 @@
             {
               "inputs": [
                 {
+                  "internalType": "uint16",
+                  "name": "_newMaxHolding",
+                  "type": "uint16"
+                }
+              ],
+              "name": "setMaxHolding",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint16",
+                  "name": "_newMaxPurchase",
+                  "type": "uint16"
+                }
+              ],
+              "name": "setMaxPurchase",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newMaximumTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setMaximumTokens",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "string",
                   "name": "_metadata",
                   "type": "string"
                 }
               ],
               "name": "setMetadata",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newPresaleMaxHolding",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setPresaleMaxHolding",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newPresalePrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setPresalePrice",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newPresaleReservedTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setPresaleReservedTokens",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setPrice",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -27060,6 +27816,25 @@
             {
               "inputs": [
                 {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "name": "tokensMinted",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "contract IERC20Upgradeable",
                   "name": "token",
                   "type": "address"
@@ -27203,7 +27978,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0x623Ec9aEa4Ed2fbEC6951F0f965bFd26FC313f5F",
+          "address": "0x717416d0c8E60672bf1D944516F6EF7EbeF53eeF",
           "abi": [
             {
               "inputs": [
@@ -27220,6 +27995,11 @@
                 {
                   "internalType": "address",
                   "name": "_simplr",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "_trustedForwarder",
                   "type": "address"
                 },
                 {
@@ -27569,16 +28349,6 @@
                   "internalType": "bool",
                   "name": "_isAffiliable",
                   "type": "bool"
-                },
-                {
-                  "internalType": "bool",
-                  "name": "_useSeat",
-                  "type": "bool"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "_seatId",
-                  "type": "uint256"
                 }
               ],
               "name": "createCollection",
@@ -27588,12 +28358,31 @@
             },
             {
               "inputs": [],
-              "name": "freePass",
+              "name": "getTrustedForwarder",
               "outputs": [
                 {
                   "internalType": "address",
-                  "name": "",
+                  "name": "forwarder",
                   "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "forwarder",
+                  "type": "address"
+                }
+              ],
+              "name": "isTrustedForwarder",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
                 }
               ],
               "stateMutability": "view",
@@ -27659,6 +28448,19 @@
               "type": "function"
             },
             {
+              "inputs": [],
+              "name": "seat",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
               "inputs": [
                 {
                   "internalType": "bytes32",
@@ -27688,19 +28490,6 @@
               "inputs": [
                 {
                   "internalType": "address",
-                  "name": "_freePass",
-                  "type": "address"
-                }
-              ],
-              "name": "setFreePass",
-              "outputs": [],
-              "stateMutability": "nonpayable",
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "internalType": "address",
                   "name": "_newMastercopy",
                   "type": "address"
                 },
@@ -27711,6 +28500,19 @@
                 }
               ],
               "name": "setMastercopy",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_newSeat",
+                  "type": "address"
+                }
+              ],
+              "name": "setSeat",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
@@ -27737,6 +28539,19 @@
                 }
               ],
               "name": "setSimplrShares",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_trustedForwarder",
+                  "type": "address"
+                }
+              ],
+              "name": "setTrustedForwarder",
               "outputs": [],
               "stateMutability": "nonpayable",
               "type": "function"
