@@ -7,9 +7,8 @@ import Box from '../Box';
 import If from '../If';
 
 import PolygonSVG from 'src/../public/static/images/svgs/polygon.svg';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton, useChainModal } from '@rainbow-me/rainbowkit';
 import theme from 'src/styleguide/theme';
-import toast from 'react-hot-toast';
 import Text from '../Text';
 import { CopySimple } from 'phosphor-react';
 import ButtonComp from '../Button';
@@ -29,6 +28,12 @@ const ConnectWallet = ({ networkProps }) => {
 					address: user.address,
 				});
 
+				const { openChainModal } = useChainModal();
+
+				useEffect(() => {
+					console.log('chainged');
+				}, [openChainModal]);
+
 				useEffect(() => {
 					if (account) {
 						dispatch(setUser(account?.address));
@@ -39,9 +44,7 @@ const ConnectWallet = ({ networkProps }) => {
 				if (!connected) {
 					return (
 						<ButtonComp bg="primary" py="0.95rem" px="mxxxl" borderRadius="64px" onClick={openConnectModal}>
-							<Text fontFamily="Switzer" color="simply-white">
-								Connect Wallet
-							</Text>
+							<Text color="simply-white">Connect Wallet</Text>
 						</ButtonComp>
 					);
 				}
@@ -59,6 +62,8 @@ const ConnectWallet = ({ networkProps }) => {
 						center
 					>
 						<Box
+							as="button"
+							type="button"
 							borderRadius="50%"
 							bg={networkProps?.logoColor}
 							height="3rem"
@@ -66,6 +71,9 @@ const ConnectWallet = ({ networkProps }) => {
 							mr="mxs"
 							center
 							data-tip={chain?.name}
+							cursor="pointer"
+							onClick={openChainModal}
+							border="none"
 						>
 							<Box position="relative" height="2.4rem" width="2.4rem" center>
 								<If
@@ -97,10 +105,7 @@ const ConnectWallet = ({ networkProps }) => {
 									background: ${theme.colors['sky-blue-30']};
 								}
 							`}
-							onClick={() => {
-								navigator.clipboard.writeText(user.address);
-								toast.success('Copied to clipboard');
-							}}
+							// onClick={openAccountModal}
 						>
 							<Text as="c1" mr="mxs">
 								{ens ?? condenseAddress(user.address)}

@@ -64,7 +64,7 @@ const HowToDropdown = () => {
 				animate={animateCaret}
 				style={{ height: '16px' }}
 			>
-				<CaretDown className="nav-icon" size={16} />
+				<CaretDown className="nav-icon" size={16} weight="bold" />
 			</motion.div>
 			<motion.div
 				initial="closed"

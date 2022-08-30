@@ -13,6 +13,7 @@ import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';
 import Wagmi from 'components/Wagmi';
+import NextNProgress from 'nextjs-progressbar';
 import ApolloClientProvider from 'components/ApolloClient';
 
 const MyApp = ({ Component, pageProps }) => {
@@ -64,6 +65,7 @@ const MyApp = ({ Component, pageProps }) => {
 				<Wagmi>
 					<ApolloClientProvider>
 						<Navbar />
+						<NextNProgress color="#4743C5" />
 						<Component {...pageProps} />
 						<ModalHandler />
 					</ApolloClientProvider>

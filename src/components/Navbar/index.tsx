@@ -17,7 +17,6 @@ import HowToDropdown from './HowToDropdown';
 import ConnectWallet from './ConnectWallet';
 import Banners from './Banners';
 import { Toaster } from 'react-hot-toast';
-import { getNavProps } from 'src/utils/navbarUtils';
 
 const Navbar = () => {
 	const dispatch = useAppDispatch();
