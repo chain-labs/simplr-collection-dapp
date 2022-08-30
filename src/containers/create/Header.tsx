@@ -33,19 +33,43 @@ const Header = ({ step, setStep }: Props) => {
 						</Box>
 					</Box>
 					<Box mt="mxxl" row alignItems="center">
-						<Text as="h5" color={step === 1 ? 'blue-40' : 'gray-30'} mr="mxxs">
+						<Text
+							as="h5"
+							color={step === 1 ? 'blue-40' : 'gray-30'}
+							mr="mxxs"
+							onClick={() => setStep(1)}
+							cursor="pointer"
+						>
 							Collection Details
 						</Text>
 						<CaretRight color={theme.colors['gray-20']} size={24} />
-						<Text as="h5" color={step === 2 ? 'blue-40' : 'gray-30'} mx="mxxs">
+						<Text
+							as="h5"
+							color={step === 2 ? 'blue-40' : 'gray-30'}
+							mx="mxxs"
+							onClick={() => setStep(2)}
+							cursor="pointer"
+						>
 							Pricing
 						</Text>
 						<CaretRight color={theme.colors['gray-20']} size={24} />
-						<Text as="h5" color={step === 3 ? 'blue-40' : 'gray-30'} mx="mxxs">
+						<Text
+							as="h5"
+							color={step === 3 ? 'blue-40' : 'gray-30'}
+							mx="mxxs"
+							onClick={() => setStep(3)}
+							cursor="pointer"
+						>
 							Withdraw Details
 						</Text>
 						<CaretRight color={theme.colors['gray-20']} size={24} />
-						<Text as="h5" color={step === 4 ? 'blue-40' : 'gray-30'} ml="mxxs">
+						<Text
+							as="h5"
+							color={step === 4 ? 'blue-40' : 'gray-30'}
+							ml="mxxs"
+							onClick={() => setStep(4)}
+							cursor="pointer"
+						>
 							Deploy
 						</Text>
 					</Box>
