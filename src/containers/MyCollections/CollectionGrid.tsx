@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { PlusCircle } from 'phosphor-react';
 import React from 'react';
 import Box from 'src/components/Box';
@@ -18,30 +19,32 @@ const CollectionGrid = () => {
 				grid-gap: ${theme.space.mxl};
 			`}
 		>
-			<Box
-				border="1px solid"
-				borderColor="blue-20"
-				bg="sky-blue-10"
-				borderRadius="8px"
-				width="30rem"
-				height="23.4rem"
-				column
-				center
-				css={`
-					transition: all 0.4s ease-in-out;
-					&:hover {
-						border: 2px solid ${theme.colors['blue-30']};
-						background: ${theme.colors['sky-blue-20']};
-						transform: scale(1.05);
-					}
-				`}
-				cursor="pointer"
-			>
-				<PlusCircle size="48px" color={theme.colors['blue-30']} />
-				<Text as="h6" mt="mxs">
-					Create new collection
-				</Text>
-			</Box>
+			<Link href="/create" passHref>
+				<Box
+					border="1px solid"
+					borderColor="blue-20"
+					bg="sky-blue-10"
+					borderRadius="8px"
+					width="30rem"
+					height="23.4rem"
+					column
+					center
+					css={`
+						transition: all 0.4s ease-in-out;
+						&:hover {
+							border: 2px solid ${theme.colors['blue-30']};
+							background: ${theme.colors['sky-blue-20']};
+							transform: scale(1.05);
+						}
+					`}
+					cursor="pointer"
+				>
+					<PlusCircle size="48px" color={theme.colors['blue-30']} />
+					<Text as="h6" mt="mxs">
+						Create new collection
+					</Text>
+				</Box>
+			</Link>
 			{COLLECTION.map((collection, idx) => (
 				<CollectionTile {...collection} key={`key-${idx}-${collection.name}`} />
 			))}

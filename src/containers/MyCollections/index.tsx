@@ -18,10 +18,6 @@ const MyCollectionsPage = () => {
 		fetchPolicy: 'network-only',
 	});
 
-	useEffect(() => {
-		console.log({ data });
-	}, [data]);
-
 	return (
 		<Box bg="gray-10" pt="15rem" pb="wm">
 			<Box width="126rem" mx="auto">

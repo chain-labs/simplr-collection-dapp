@@ -23,16 +23,10 @@ const ConnectWallet = ({ networkProps }) => {
 
 	return (
 		<ConnectButton.Custom>
-			{({ account, chain, openConnectModal }) => {
+			{({ account, chain, openConnectModal, openChainModal, openAccountModal }) => {
 				const { data: ens } = useEnsName({
 					address: user.address,
 				});
-
-				const { openChainModal } = useChainModal();
-
-				useEffect(() => {
-					console.log('chainged');
-				}, [openChainModal]);
 
 				useEffect(() => {
 					if (account) {
@@ -105,7 +99,7 @@ const ConnectWallet = ({ networkProps }) => {
 									background: ${theme.colors['sky-blue-30']};
 								}
 							`}
-							// onClick={openAccountModal}
+							onClick={openAccountModal}
 						>
 							<Text as="c1" mr="mxs">
 								{ens ?? condenseAddress(user.address)}
