@@ -10,16 +10,6 @@ import theme from 'src/styleguide/theme';
 import CollectionTile from '../create/CollectionTile';
 
 const CollectionGrid = () => {
-	const getStatusBg = (status) => {
-		switch (status) {
-			case 'Live':
-				return 'blue-40';
-			case 'Paused':
-				return 'yellow-30';
-			case 'Sold Out':
-				return 'green-50';
-		}
-	};
 	return (
 		<Box
 			css={`

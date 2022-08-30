@@ -1,23 +1,27 @@
-import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
-import { CaretDown, PlayCircle, PlusCircle, X } from 'phosphor-react';
-import React from 'react';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { CaretDown } from 'phosphor-react';
+import React, { useEffect } from 'react';
 import Box from 'src/components/Box';
 import Text from 'src/components/Text';
+import { GET_USER_COLLECTIONS } from 'src/graphql/query/UserCollections';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
-import theme from 'src/styleguide/theme';
-import { HOW_TO_CREATE_URL } from 'src/utils/constants';
 import CollectionGrid from './CollectionGrid';
 import TutorialBanner from './TutorialBanner';
 
 const MyCollectionsPage = () => {
 	const user = useAppSelector(userSelector);
-	const { openConnectModal } = useConnectModal();
+	const { data } = useQuery(GET_USER_COLLECTIONS, {
+		variables: {
+			id: user.address.toLowerCase(),
+		},
+		fetchPolicy: 'network-only',
+	});
 
-	if (!user.exists) {
-		openConnectModal();
-		return <ConnectButton />;
-	}
+	useEffect(() => {
+		console.log({ data });
+	}, [data]);
+
 	return (
 		<Box bg="gray-10" pt="15rem" pb="wm">
 			<Box width="126rem" mx="auto">
