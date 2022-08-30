@@ -14,6 +14,7 @@ import ModalHandler from 'components/ModalHandler';
 import Navbar from 'components/Navbar';
 import Wagmi from 'components/Wagmi';
 import NextNProgress from 'nextjs-progressbar';
+import ApolloClientProvider from 'components/ApolloClient';
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
@@ -62,10 +63,12 @@ const MyApp = ({ Component, pageProps }) => {
 			</Head>
 			<ThemeProvider theme={theme}>
 				<Wagmi>
-					<Navbar />
-					<NextNProgress color="#4743C5" />
-					<Component {...pageProps} />
-					<ModalHandler />
+					<ApolloClientProvider>
+						<Navbar />
+						<NextNProgress color="#4743C5" />
+						<Component {...pageProps} />
+						<ModalHandler />
+					</ApolloClientProvider>
 				</Wagmi>
 			</ThemeProvider>
 		</>
