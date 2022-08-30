@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { keccak256 } from 'ethers/lib/utils';
 import MerkleTree from 'merkletreejs';
-import { PINATA_KEY, PINATA_KEY_SECRET, PINATA_URL } from 'src/containers/create/components/utils';
+import { PINATA_KEY, PINATA_KEY_SECRET, PINATA_URL } from 'src/containers/create-old/components/utils';
 
 interface IWhitelistManager {
 	addresses: string[];

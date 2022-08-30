@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import Box from 'src/components/Box';
 import Text from 'src/components/Text';
+import CreateComponent from 'src/containers/create';
 import { wrapper } from 'src/redux/store';
 import { UserState } from 'src/redux/user';
 
@@ -14,9 +16,9 @@ const CreatePage = ({ user }: { user: UserState }) => {
 	}, []);
 
 	return (
-		<Text as="h1" mt="wxxl" ml="mxl">
-			Create Page
-		</Text>
+		<Box bg="gray-10" width="100vw" minHeight="100vh">
+			<CreateComponent />
+		</Box>
 	);
 };
 

@@ -6,7 +6,7 @@ import ButtonComp from 'src/components/Button';
 import LabelledTextInput from 'src/components/LabelledTextInput';
 import Text from 'src/components/Text';
 import TextArea from 'src/components/TextArea';
-import WhitelistModal from 'src/containers/create/components/SalesPage/WhitelistModal';
+import WhitelistModal from 'src/containers/create-old/components/SalesPage/WhitelistModal';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector } from 'src/redux/sales';

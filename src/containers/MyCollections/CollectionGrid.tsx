@@ -8,7 +8,7 @@ import Text from 'src/components/Text';
 import { COLLECTION } from 'src/mock-datastore/my-collection';
 import { networks } from 'src/redux/collection.new/types';
 import theme from 'src/styleguide/theme';
-import CollectionTile from '../create/CollectionTile';
+import CollectionTile from '../create-old/CollectionTile';
 
 const CollectionGrid = () => {
 	return (
