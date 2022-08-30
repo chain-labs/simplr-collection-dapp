@@ -3,14 +3,14 @@ import { setCollectionDetails } from './actions';
 import { CollectionState } from './types';
 
 const intitalState: CollectionState = {
-	type: null,
+	type: 1,
 	name: '',
 	symbol: '',
-	project_uri: '',
-	website_url: '',
+	project_uri: 'https://angelred.tech/api/v1',
+	website_url: 'https://angelred.tech',
 	logo_url: null,
 	banner_url: null,
-	contact_email: '',
+	contact_email: 'ngllakra@gmail.com',
 	admin: '',
 	collection_validated: false,
 };

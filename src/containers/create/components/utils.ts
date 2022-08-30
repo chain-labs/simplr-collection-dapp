@@ -245,8 +245,6 @@ export const createCollection = async (
 				reserveTokens,
 				metadata,
 				isAffiliable,
-				false,
-				0,
 				{ value: upfrontFee }
 			);
 		const event = (await transaction.wait())?.events?.filter((event) => event.event === 'CollectionCreated')[0]?.args;

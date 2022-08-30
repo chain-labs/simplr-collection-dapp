@@ -4,11 +4,11 @@ import { setSaleDetails } from './actions';
 import { SaleState } from './types';
 
 const intitalState: SaleState = {
-	maximumTokens: null,
-	maxPurchase: null,
-	maxHolding: null,
-	price: null,
-	reserveTokens: null,
+	maximumTokens: 1000,
+	maxPurchase: 5,
+	maxHolding: 10,
+	price: 0,
+	reserveTokens: 0,
 	publicSaleStartTime: null,
 	presaleable: {
 		enabled: false,
