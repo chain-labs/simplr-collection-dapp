@@ -38,7 +38,9 @@ const ConnectWallet = ({ networkProps }) => {
 				if (!connected) {
 					return (
 						<ButtonComp bg="primary" py="0.95rem" px="mxxxl" borderRadius="64px" onClick={openConnectModal}>
-							<Text color="simply-white">Connect Wallet</Text>
+							<Text as="btn2" color="simply-white">
+								Connect Wallet
+							</Text>
 						</ButtonComp>
 					);
 				}
