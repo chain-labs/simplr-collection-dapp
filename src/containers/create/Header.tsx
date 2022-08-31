@@ -14,7 +14,7 @@ const Header = ({ step, setStep }: Props) => {
 	switch (step) {
 		case 0:
 			return (
-				<Box pt="13.6rem" border="1px solid black" center>
+				<Box pt="13.6rem" center>
 					<Text as="h3">Select Collection Type</Text>
 				</Box>
 			);

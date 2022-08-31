@@ -4,13 +4,12 @@ import theme from 'src/styleguide/theme';
 
 export const color = {
 	primary: 'simply-blue',
-	secondary: 'blue-00',
-	tertiary: 'simply-white',
+	secondary: 'gray-10',
 };
 
 export const hoverColor = {
-	primary: 'blue-60',
-	secondary: 'blue-10',
+	primary: '#3733B3',
+	secondary: 'simplr-black',
 	tertiary: 'blue-00',
 };
 
@@ -19,7 +18,7 @@ const fontColor = (bg) => {
 };
 
 const borderColor = (bg) => {
-	return bg === 'tertiary' ? `1px solid #4743C5` : 'none';
+	return bg === 'secondary' ? `1px solid ${theme.colors['gray-40']}` : 'none';
 };
 
 export interface ButtonProps extends BoxProps {
@@ -43,7 +42,7 @@ const ButtonComp = ({ bg, disable, height, children, ...restProps }: ButtonProps
 			//@ts-expect-error-button
 			color={!disable ? fontColor(bg) : 'disable-black'}
 			border={!disable ? bColor : '1px solid rgba(140, 140, 161, 0.2)'}
-			borderRadius="8px"
+			borderRadius="64px"
 			height={height}
 			cursor={!disable ? 'pointer' : 'not-allowed'}
 			disabled={!disable ? false : true}
