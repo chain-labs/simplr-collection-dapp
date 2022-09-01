@@ -10,12 +10,13 @@ import TypeSection from './sections/Type';
 import WithdrawSection from './sections/Withdraw';
 
 const CreateComponent = () => {
-	const [step, setStep] = React.useState(1);
+	const [step, setStep] = React.useState(0);
+	const [disableButton, setDisableButton] = React.useState(true);
 
 	const getFormSection = () => {
 		switch (step) {
 			case 0:
-				return <TypeSection />;
+				return <TypeSection setDisableButton={setDisableButton} />;
 			case 1:
 				return <CollectionSection />;
 			case 2:
@@ -32,7 +33,7 @@ const CreateComponent = () => {
 		<Box width="126rem" mx="auto">
 			<Header {...{ step, setStep }} />
 			{getFormSection()}
-			<Footer {...{ step, setStep }} />
+			<Footer {...{ step, setStep }} disableButton={disableButton} />
 		</Box>
 	);
 };

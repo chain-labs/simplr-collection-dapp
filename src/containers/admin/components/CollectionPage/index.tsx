@@ -11,7 +11,7 @@ import { userSelector } from 'src/redux/user';
 import Whitelists from './Whitelists';
 import Airdrop from './Airdrop';
 import axios from 'axios';
-import { setCollectionDetails } from 'src/redux/collection';
+import { setCollectionDetails } from 'src/redux/collection.old';
 import tokensOfOwner from 'src/utils/tokenOwnership';
 import LoadingSection from './LoadingSection';
 import OverviewSection, { IAdminCollection } from './OverviewSection';

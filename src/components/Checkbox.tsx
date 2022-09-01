@@ -18,7 +18,7 @@ const Checkbox = ({ disabled, value, setValue, ...restProps }: Props) => {
 		//@ts-expect-error-box
 		<Box
 			width="32px"
-			height="33px"
+			height="32px"
 			cursor={disabled ? 'not-allowed' : 'pointer'}
 			display="flex"
 			justifyContent="center"

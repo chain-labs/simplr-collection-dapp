@@ -9,7 +9,7 @@ import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
-import { collectionSelector } from 'src/redux/collection';
+import { collectionSelector } from 'src/redux/collection.old';
 import { editSelector } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';

@@ -65,7 +65,7 @@ const MyApp = ({ Component, pageProps }) => {
 				<Wagmi>
 					<ApolloClientProvider>
 						<Navbar />
-						<NextNProgress color="#4743C5" />
+						<NextNProgress color="#4743C5" options={{ showSpinner: false }} />
 						<Component {...pageProps} />
 						<ModalHandler />
 					</ApolloClientProvider>

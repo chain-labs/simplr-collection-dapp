@@ -6,9 +6,10 @@ import Text from 'src/components/Text';
 interface Props {
 	step: number;
 	setStep: (step: number) => void;
+	disableButton?: boolean;
 }
 
-const Footer = ({ step, setStep }: Props) => {
+const Footer = ({ step, setStep, disableButton }: Props) => {
 	const handleBack = (e) => {
 		e.preventDefault();
 		setStep(step - 1);
@@ -22,8 +23,8 @@ const Footer = ({ step, setStep }: Props) => {
 	switch (step) {
 		case 0:
 			return (
-				<Box width="100%" center>
-					<ButtonComp bg="primary" px="wm" py="mm" borderRadius="64px" onClick={handleNext}>
+				<Box width="100%" center pb="wl">
+					<ButtonComp bg="primary" px="wm" py="mm" borderRadius="64px" onClick={handleNext} disable={disableButton}>
 						<Text as="btn1">Select and Continue</Text>
 					</ButtonComp>
 				</Box>

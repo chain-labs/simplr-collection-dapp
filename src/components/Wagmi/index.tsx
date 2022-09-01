@@ -5,9 +5,11 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
+import { useRouter } from 'next/router';
 
 const Wagmi = ({ children }) => {
 	const user = useAppSelector(userSelector);
+	const router = useRouter();
 	const { chains, provider } = configureChains(
 		[chain.mainnet, chain.rinkeby, chain.polygonMumbai, chain.polygon],
 		[alchemyProvider({ apiKey: 'lqM0WXfur0rGOi8x0lU1amSOH7FR_DQx' }), publicProvider()]
@@ -19,7 +21,7 @@ const Wagmi = ({ children }) => {
 	});
 
 	const wagmiClient = createClient({
-		autoConnect: user.exists ? true : false,
+		autoConnect: user.exists ? true : router.false,
 		connectors,
 		provider,
 	});

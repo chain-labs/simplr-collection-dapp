@@ -1,15 +1,17 @@
 export interface CollectionState {
 	contract?: 1 | 2;
-	type?: 1 | 4 | 137 | 80001;
+	network?: 'Ethereum' | 'Polygon';
 	name?: string;
 	symbol?: string;
-	project_uri?: string;
+	collection_metadata?: string;
 	website_url?: string;
-	logo_url?: File;
-	banner_url?: File;
-	contact_email?: string;
+	logo?: File;
+	banner?: File;
 	admin?: string;
-	collection_validated?: boolean;
+	delay_reveal?: {
+		enabled?: boolean;
+		metadata_uri?: string;
+	};
 }
 
 export const networks = {

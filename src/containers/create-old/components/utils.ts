@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import WhitelistManagement from 'src/utils/WhitelistManager';
 import { SignerProps } from 'src/ethereum/types';
-import { CollectionState, networks } from 'src/redux/collection/types';
+import { CollectionState, networks } from 'src/redux/collection.old/types';
 import { PaymentState } from 'src/redux/payment/types';
 import { SaleState } from 'src/redux/sales/types';
 import { getTimestamp } from './SalesPage';

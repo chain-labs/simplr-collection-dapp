@@ -18,7 +18,7 @@ export interface InputProps {
 const LabelledSelectInput = ({ label, placeholder, set, visible, value, width, disabled }: InputProps) => {
 	return (
 		<Box overflow="visible">
-			<Text as="h6" mb="mxs" color="simply-black">
+			<Text as="h6" mb={label ? 'mxs' : '0'} color="simply-black">
 				{label}
 			</Text>
 			<Box display="flex" color="disable-black" onClick={() => set(!visible)} width={width}>

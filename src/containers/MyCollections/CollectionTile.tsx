@@ -3,7 +3,7 @@ import React from 'react';
 import Box from 'src/components/Box';
 import ChainCircle from 'src/components/ChainCircle';
 import Text from 'src/components/Text';
-import { networks } from 'src/redux/collection.new/types';
+import { networks } from 'src/redux/collection/types';
 import theme from 'src/styleguide/theme';
 
 const CollectionTile = ({ name, image, status, chainId }) => {
@@ -30,7 +30,7 @@ const CollectionTile = ({ name, image, status, chainId }) => {
 			column
 			cursor="pointer"
 			css={`
-				transition: all 0.4s ease-in-out;
+				transition: all 0.2s ease-in-out;
 				&:hover {
 					border: 2px solid ${theme.colors['blue-30']};
 					background: ${theme.colors['sky-blue-20']};

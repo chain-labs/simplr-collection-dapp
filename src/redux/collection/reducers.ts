@@ -1,24 +1,36 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { setCollectionDetails } from './actions';
+import { setCollectionDetails, setCollectionNetwork, setCollectionType } from './actions';
 import { CollectionState } from './types';
 
 const intitalState: CollectionState = {
-	type: null,
+	contract: null,
+	network: 'Ethereum',
 	name: '',
 	symbol: '',
-	project_uri: '',
+	collection_metadata: '',
 	website_url: '',
-	logo_url: null,
-	banner_url: null,
-	contact_email: '',
+	logo: null,
+	banner: null,
 	admin: '',
-	collection_validated: false,
+	delay_reveal: {
+		enabled: false,
+		metadata_uri: '',
+	},
 };
 
 export const collectionReducer = createReducer(intitalState, (builder) => {
-	builder.addCase(setCollectionDetails, (state, action) => {
-		const updateState: CollectionState = action.payload;
-		const newState = { ...state, ...updateState };
-		return newState;
-	});
+	builder
+		.addCase(setCollectionDetails, (state, action) => {
+			const updateState: CollectionState = action.payload;
+			const newState = { ...state, ...updateState };
+			return newState;
+		})
+		.addCase(setCollectionType, (state, action) => {
+			const newState = { ...state, contract: action.payload };
+			return newState;
+		})
+		.addCase(setCollectionNetwork, (state, action) => {
+			const newState = { ...state, network: action.payload };
+			return newState;
+		});
 });
