@@ -21,7 +21,7 @@ const Wagmi = ({ children }) => {
 	});
 
 	const wagmiClient = createClient({
-		autoConnect: user.exists ? true : router.false,
+		autoConnect: user.exists ? true : false,
 		connectors,
 		provider,
 	});
