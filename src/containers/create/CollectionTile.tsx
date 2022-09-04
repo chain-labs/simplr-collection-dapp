@@ -1,12 +1,38 @@
+import axios from 'axios';
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Box from 'src/components/Box';
 import ChainCircle from 'src/components/ChainCircle';
 import Text from 'src/components/Text';
+import { ICollection } from 'src/graphql/query/UserCollections';
+import { COLLECTION } from 'src/mock-datastore/my-collection';
 import { networks } from 'src/redux/collection.new/types';
 import theme from 'src/styleguide/theme';
+import { getChainIdFromNetwork, sanitizePinataUrl } from '../MyCollections/utils';
 
-const CollectionTile = ({ name, image, status, chainId }) => {
+const getSaleState = (collection: ICollection) => {
+	const now = Math.floor(Date.now() / 1000);
+	const presale = parseInt(collection.presaleConfig.presaleStartTime);
+	const sale = parseInt(collection.baseCollectionConfig.publicSaleStartTime);
+	const { paused, maximumTokens } = collection;
+	const supply = collection.baseCollectionConfig.tokensCount;
+	if (now > presale || now > sale) {
+		if (!paused) {
+			if (supply >= maximumTokens) {
+				return 'Sold out';
+			}
+			return 'Live';
+		} else {
+			return 'Paused';
+		}
+	} else {
+		return 'Upcoming';
+	}
+};
+
+const CollectionTile = ({ collection }: { collection: ICollection }) => {
+	const [collectionData, setCollectionData] = React.useState<any>({ name: '', chainId: 1, status: null, image: '' });
+	const { name, chainId, status, image } = collectionData;
 	const getStatusBg = (status) => {
 		switch (status) {
 			case 'Live':
@@ -18,6 +44,29 @@ const CollectionTile = ({ name, image, status, chainId }) => {
 		}
 	};
 
+	useEffect(() => {
+		const fetchData = async () => {
+			const res = await axios.get(sanitizePinataUrl(collection?.metadata));
+			console.log({ res: res.data });
+			const { data } = res;
+			const { collectionDetails } = data;
+			const collectionData = {
+				name: collectionDetails.name,
+				chainId: getChainIdFromNetwork(collectionDetails.networkType.id),
+				image: collectionDetails.bannerImageUrl,
+				status: getSaleState(collection),
+			};
+			setCollectionData(collectionData);
+		};
+		if (collection) {
+			console.log({ collection });
+			fetchData();
+		}
+	}, [collection]);
+
+	if (!collectionData.image) {
+		return null;
+	}
 	return (
 		<Box
 			border="1px solid"
