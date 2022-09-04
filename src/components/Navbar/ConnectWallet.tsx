@@ -7,7 +7,7 @@ import Box from '../Box';
 import If from '../If';
 
 import PolygonSVG from 'src/../public/static/images/svgs/polygon.svg';
-import { ConnectButton, useChainModal } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import theme from 'src/styleguide/theme';
 import Text from '../Text';
 import { CopySimple } from 'phosphor-react';
@@ -27,12 +27,6 @@ const ConnectWallet = ({ networkProps }) => {
 				const { data: ens } = useEnsName({
 					address: user.address,
 				});
-
-				const { openChainModal } = useChainModal();
-
-				useEffect(() => {
-					console.log('chainged');
-				}, [openChainModal]);
 
 				useEffect(() => {
 					if (account) {
