@@ -12,7 +12,7 @@ import { getUniqueCollections } from './utils';
 
 const MyCollectionsPage = () => {
 	const user = useAppSelector(userSelector);
-	const { data, loading, error } = useQuery(GET_USER_COLLECTIONS, {
+	const { data, loading } = useQuery(GET_USER_COLLECTIONS, {
 		variables: {
 			id: user.address.toLowerCase(),
 		},

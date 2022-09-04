@@ -5,7 +5,6 @@ import Box from 'src/components/Box';
 import ChainCircle from 'src/components/ChainCircle';
 import Text from 'src/components/Text';
 import { ICollection } from 'src/graphql/query/UserCollections';
-import { COLLECTION } from 'src/mock-datastore/my-collection';
 import { networks } from 'src/redux/collection.new/types';
 import theme from 'src/styleguide/theme';
 import { getChainIdFromNetwork, sanitizePinataUrl } from '../MyCollections/utils';
@@ -47,7 +46,6 @@ const CollectionTile = ({ collection }: { collection: ICollection }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const res = await axios.get(sanitizePinataUrl(collection?.metadata));
-			console.log({ res: res.data });
 			const { data } = res;
 			const { collectionDetails } = data;
 			const collectionData = {
@@ -59,7 +57,6 @@ const CollectionTile = ({ collection }: { collection: ICollection }) => {
 			setCollectionData(collectionData);
 		};
 		if (collection) {
-			console.log({ collection });
 			fetchData();
 		}
 	}, [collection]);
