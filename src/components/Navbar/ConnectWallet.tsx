@@ -28,6 +28,12 @@ const ConnectWallet = ({ networkProps }) => {
 					address: user.address,
 				});
 
+				const { openChainModal } = useChainModal();
+
+				useEffect(() => {
+					console.log('chainged');
+				}, [openChainModal]);
+
 				useEffect(() => {
 					if (account) {
 						dispatch(setUser(account?.address));

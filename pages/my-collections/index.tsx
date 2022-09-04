@@ -12,7 +12,6 @@ const MyCollectionPage = () => {
 		openConnectModal();
 		return null;
 	}
-
 	return <MyCollectionsPage />;
 };
 
