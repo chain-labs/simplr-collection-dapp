@@ -31,41 +31,43 @@ const HomeComponent = () => {
 	};
 
 	return (
-		<Box width="125rem" mt="18rem" mx="auto" row alignItems="center" justifyContent="space-between">
-			<Box minWidth="56rem" maxWidth="57rem">
-				<Text as="h1">
-					Create your own NFT <span style={{ color: theme.colors['simply-blue'] }}>Collection</span> without a
-					developer.
-				</Text>
-				<Text as="b1" mt="mxl" color="gray-40">
-					Easy to use no-code platform to create NFT smart contracts and launch your NFT projects without any hassle.
-				</Text>
-				<Link href="/my-collections" passHref>
-					<ButtonComp
-						bg="primary"
-						py="mm"
-						px="wm"
-						borderRadius="64px"
-						mt="mxxxl"
-						boxShadow="4px 7px 0px #010211"
-						css={`
-							transition: all 0.08s ease-in-out;
-							&:hover {
-								background: #3733b3;
-							}
-							&:active {
-								box-shadow: none;
-								background: ${theme.colors['blue-50']};
-								transform: translate(4px, 7px);
-							}
-						`}
-					>
-						<Text as="btn1">Start Creating</Text>
-					</ButtonComp>
-				</Link>
-			</Box>
-			<Box>
-				<If condition={!!choice} then={getRandomSVG(choice)} />
+		<Box center height="100vh">
+			<Box width="125rem" mx="auto" row alignItems="center" justifyContent="space-between">
+				<Box minWidth="56rem" maxWidth="57rem">
+					<Text as="h1">
+						Create your own NFT <span style={{ color: theme.colors['simply-blue'] }}>Collection</span> without a
+						developer.
+					</Text>
+					<Text as="b1" mt="mxl" color="gray-40">
+						Easy to use no-code platform to create NFT smart contracts and launch your NFT projects without any hassle.
+					</Text>
+					<Link href="/my-collections" passHref>
+						<ButtonComp
+							bg="primary"
+							py="mm"
+							px="wm"
+							borderRadius="64px"
+							mt="mxxxl"
+							boxShadow="4px 7px 0px #010211"
+							css={`
+								transition: all 0.08s ease-in-out;
+								&:hover {
+									background: #3733b3;
+								}
+								&:active {
+									box-shadow: none;
+									background: ${theme.colors['blue-50']};
+									transform: translate(4px, 7px);
+								}
+							`}
+						>
+							<Text as="btn1">Start Creating</Text>
+						</ButtonComp>
+					</Link>
+				</Box>
+				<Box>
+					<If condition={!!choice} then={getRandomSVG(choice)} />
+				</Box>
 			</Box>
 		</Box>
 	);

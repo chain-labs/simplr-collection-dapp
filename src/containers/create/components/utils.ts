@@ -146,7 +146,6 @@ export const createCollection = async (
 
 	// create params
 	const type = collection.contract;
-	// by default
 
 	const baseCollection = {
 		name: collection.name, // Name of the collection

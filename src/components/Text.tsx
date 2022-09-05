@@ -12,7 +12,7 @@ export const fontSizes = {
 	b2: { mobS: '1.4rem', deskM: '1.6rem' },
 	b1: { mobS: '1.6rem', deskM: '1.8rem' },
 	btn1: { mobS: '1.6rem', deskM: '1.8rem' },
-	btn2: { mobS: '1.4rem', deskM: '1.6rem' },
+	btn2: { mobS: '1.4rem', deskM: '1.4rem' },
 	c1: '1.2rem',
 	c2: '1rem',
 	nav: { mobS: '2rem', tabS: '1.4rem' },
