@@ -102,9 +102,8 @@ export interface TextProps extends BoxProps {
 	className?: string;
 }
 
-const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProps): JSX.Element => {
+const Text = ({ as = 'b1', color, children, ...restProps }: TextProps): JSX.Element => {
 	const fs = fontSizes[as];
-	const fw = fontWeight ? fontWeights[fontWeight] : fontW[as];
 	const lh = restProps.lineHeight ?? lineHeights(as);
 	const cs = restProps.letterSpacing ?? charSpacing[as];
 

@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import Box from 'src/components/Box';
@@ -9,7 +8,6 @@ import theme from 'src/styleguide/theme';
 import HomeHero1 from 'src/svgs/home-hero-1.svg';
 import HomeHero2 from 'src/svgs/home-hero-2.svg';
 import HomeHero3 from 'src/svgs/home-hero-3.svg';
-import { motion } from 'framer-motion';
 
 const HomeComponent = () => {
 	const [choice, setChoice] = React.useState(0);
