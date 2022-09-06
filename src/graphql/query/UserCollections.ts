@@ -7,8 +7,57 @@ export const GET_USER_COLLECTIONS = gql`
 				collection {
 					address
 					metadata
+					presaleConfig {
+						presaleStartTime
+					}
+					paused
+					baseCollectionConfig {
+						publicSaleStartTime
+						tokensCount
+					}
+					maximumTokens
 				}
+			}
+			creator {
+				address
+				metadata
+				presaleConfig {
+					presaleStartTime
+				}
+				paused
+				baseCollectionConfig {
+					publicSaleStartTime
+					tokensCount
+				}
+				maximumTokens
+			}
+			owner {
+				address
+				metadata
+				presaleConfig {
+					presaleStartTime
+				}
+				paused
+				baseCollectionConfig {
+					publicSaleStartTime
+					tokensCount
+				}
+				maximumTokens
 			}
 		}
 	}
 `;
+
+export interface ICollection {
+	address: string;
+	metadata: string;
+	presaleConfig: {
+		presaleStartTime: string;
+	};
+	paused: boolean;
+	baseCollectionConfig: {
+		publicSaleStartTime: string;
+		tokensCount: string;
+	};
+	maximumTokens: string;
+}

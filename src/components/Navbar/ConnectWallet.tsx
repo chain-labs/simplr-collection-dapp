@@ -7,7 +7,7 @@ import Box from '../Box';
 import If from '../If';
 
 import PolygonSVG from 'src/../public/static/images/svgs/polygon.svg';
-import { ConnectButton, useChainModal } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import theme from 'src/styleguide/theme';
 import Text from '../Text';
 import { CopySimple } from 'phosphor-react';
@@ -40,7 +40,9 @@ const ConnectWallet = ({ networkProps }) => {
 				if (!connected) {
 					return (
 						<ButtonComp bg="primary" py="0.95rem" px="mxxxl" borderRadius="64px" onClick={openConnectModal}>
-							<Text color="simply-white">Connect Wallet</Text>
+							<Text as="btn2" color="simply-white">
+								Connect Wallet
+							</Text>
 						</ButtonComp>
 					);
 				}

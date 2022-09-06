@@ -1,16 +1,12 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { PlusCircle } from 'phosphor-react';
-import React from 'react';
 import Box from 'src/components/Box';
-import ChainCircle from 'src/components/ChainCircle';
 import Text from 'src/components/Text';
-import { COLLECTION } from 'src/mock-datastore/my-collection';
-import { networks } from 'src/redux/collection/types';
+import { ICollection } from 'src/graphql/query/UserCollections';
 import theme from 'src/styleguide/theme';
 import CollectionTile from './CollectionTile';
 
-const CollectionGrid = () => {
+const CollectionGrid = ({ collections }: { collections: ICollection[] }) => {
 	return (
 		<Box
 			css={`
@@ -45,9 +41,10 @@ const CollectionGrid = () => {
 					</Text>
 				</Box>
 			</Link>
-			{COLLECTION.map((collection, idx) => (
-				<CollectionTile {...collection} key={`key-${idx}-${collection.name}`} />
-			))}
+			{collections &&
+				collections.map((collection, idx) => (
+					<CollectionTile collection={collection} key={`key-${idx}-${collection[idx]}`} />
+				))}
 		</Box>
 	);
 };
