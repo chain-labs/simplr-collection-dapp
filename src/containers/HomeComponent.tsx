@@ -67,16 +67,8 @@ const HomeComponent = () => {
 						</ButtonComp>
 					</Link>
 				</Box>
-				<motion.div variants={{ show: { opacity: 1 } }}>
-					<Box position="relative" width="70rem" height="46.7rem">
-						<Image src="/static/images/svgs/home-hero-3.svg" layout="fill" objectFit="contain" />
-					</Box>
-				</motion.div>
-				<Box position="relative" width="70rem" height="46.7rem">
-					<Image src="/static/images/svgs/home-hero-3.svg" layout="fill" objectFit="contain" />
-				</Box>
-				<Box position="relative" width="70rem" height="46.7rem">
-					<Image src="/static/images/svgs/home-hero-3.svg" layout="fill" objectFit="contain" />
+				<Box>
+					<If condition={!!choice} then={getRandomSVG(choice)} />
 				</Box>
 			</Box>
 		</Box>
