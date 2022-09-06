@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { CaretDown } from 'phosphor-react';
 import React from 'react';
 import Box from 'src/components/Box';
+import Loader from 'src/components/Loader';
 import Text from 'src/components/Text';
 import { GET_USER_COLLECTIONS } from 'src/graphql/query/UserCollections';
 import { useAppSelector } from 'src/redux/hooks';
@@ -19,7 +20,7 @@ const MyCollectionsPage = () => {
 	});
 
 	if (loading) {
-		return null;
+		return <Loader msg="Fetching your collections..." />;
 	}
 
 	return (

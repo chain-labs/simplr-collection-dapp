@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import Box from 'src/components/Box';
@@ -8,6 +9,7 @@ import theme from 'src/styleguide/theme';
 import HomeHero1 from 'src/svgs/home-hero-1.svg';
 import HomeHero2 from 'src/svgs/home-hero-2.svg';
 import HomeHero3 from 'src/svgs/home-hero-3.svg';
+import { motion } from 'framer-motion';
 
 const HomeComponent = () => {
 	const [choice, setChoice] = React.useState(0);
@@ -65,8 +67,16 @@ const HomeComponent = () => {
 						</ButtonComp>
 					</Link>
 				</Box>
-				<Box>
-					<If condition={!!choice} then={getRandomSVG(choice)} />
+				<motion.div variants={{ show: { opacity: 1 } }}>
+					<Box position="relative" width="70rem" height="46.7rem">
+						<Image src="/static/images/svgs/home-hero-3.svg" layout="fill" objectFit="contain" />
+					</Box>
+				</motion.div>
+				<Box position="relative" width="70rem" height="46.7rem">
+					<Image src="/static/images/svgs/home-hero-3.svg" layout="fill" objectFit="contain" />
+				</Box>
+				<Box position="relative" width="70rem" height="46.7rem">
+					<Image src="/static/images/svgs/home-hero-3.svg" layout="fill" objectFit="contain" />
 				</Box>
 			</Box>
 		</Box>
