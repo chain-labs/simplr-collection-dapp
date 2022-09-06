@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import { setEditDetails } from 'src/redux/edit';
-import { useAppSelector } from 'src/redux/hooks';
 import { getNetworkByShortName } from 'src/utils/chains';
 import { useNetwork } from 'wagmi';
 

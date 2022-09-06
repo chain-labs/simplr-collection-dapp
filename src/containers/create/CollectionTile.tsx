@@ -86,7 +86,7 @@ const CollectionTile = ({ collection }: { collection: ICollection }) => {
 			`}
 		>
 			<Box position="relative" row height="14rem" borderRadius="4px 4px 0 0" overflow="hidden">
-				<Image src={image} layout="fill" objectFit="cover" />
+				<Image src={image} layout="fill" objectFit="cover" quality={10} />
 			</Box>
 			<Box mt="mm">
 				<Text as="h6">{name}</Text>
