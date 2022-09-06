@@ -5,6 +5,7 @@ export interface CollectionState {
 	symbol?: string;
 	collection_metadata?: string;
 	website_url?: string;
+	email?: string;
 	logo?: File;
 	banner?: File;
 	admin?: string;

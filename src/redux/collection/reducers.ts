@@ -9,6 +9,7 @@ const intitalState: CollectionState = {
 	symbol: '',
 	collection_metadata: '',
 	website_url: '',
+	email: '',
 	logo: null,
 	banner: null,
 	admin: '',

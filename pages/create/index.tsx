@@ -16,7 +16,7 @@ const CreatePage = ({ user }: { user: UserState }) => {
 	}, []);
 
 	return (
-		<Box bg="gray-10" width="100vw" minHeight="100vh">
+		<Box bg="simply-white" width="100vw" minHeight="100vh">
 			<CreateComponent />
 		</Box>
 	);

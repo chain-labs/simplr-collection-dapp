@@ -10,7 +10,7 @@ import TypeSection from './sections/Type';
 import WithdrawSection from './sections/Withdraw';
 
 const CreateComponent = () => {
-	const [step, setStep] = React.useState(0);
+	const [step, setStep] = React.useState(1);
 	const [disableButton, setDisableButton] = React.useState(true);
 
 	const getFormSection = () => {

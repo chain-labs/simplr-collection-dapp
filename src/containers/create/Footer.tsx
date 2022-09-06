@@ -33,7 +33,7 @@ const Footer = ({ step, setStep, disableButton }: Props) => {
 		case 2:
 		case 3:
 			return (
-				<Box width={step === 3 ? '91rem' : '66.2rem'} row justifyContent="flex-end">
+				<Box width={step === 3 ? '91rem' : '66.2rem'} row justifyContent="flex-end" mb="18rem">
 					<Box>
 						<ButtonComp bg="secondary" height="56px" width="16rem" mr="mxl" onClick={handleBack}>
 							<Text as="btn1" color="simply-black">
