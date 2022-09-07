@@ -32,6 +32,7 @@ const CollectionSection = () => {
 						width="100%"
 						blockchain
 						helper="Copied from connected wallet. This address will be the owner and responsible for managing the smart contract."
+						errorMessage="Enter a valid Address"
 						value={collection.admin}
 						type="address"
 					/>
@@ -171,6 +172,8 @@ const CollectionSection = () => {
 							mx="auto"
 							mt="-3.5rem"
 							zIndex="5"
+							border="2px solid"
+							borderColor="sky-blue-20"
 							backgroundImage={collection?.logo ? `url(${URL.createObjectURL(collection.logo)})` : ''}
 							backgroundSize="cover"
 							backgroundPosition="center"
