@@ -1,4 +1,4 @@
-import { PlayCircle } from 'phosphor-react';
+import { Globe, PlayCircle } from 'phosphor-react';
 import React, { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import If from 'src/components/If';
@@ -7,6 +7,7 @@ import Toggle from 'src/components/Toggle';
 import { collectionSelector, setCollectionDetails } from 'src/redux/collection';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import theme from 'src/styleguide/theme';
+import { DISCORD_INVITE } from 'src/utils/constants';
 import InputField from '../../InputField';
 import InputImage from '../../InputImage';
 
@@ -17,10 +18,9 @@ const CollectionSection = () => {
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		console.log({ toggleReveal });
-
 		dispatch(setCollectionDetails({ delay_reveal: { enabled: toggleReveal } }));
 	}, [toggleReveal]);
+
 	return (
 		<Box row mt="wm" mb="wl">
 			<Box width="66.2rem">
@@ -141,7 +141,65 @@ const CollectionSection = () => {
 					/>
 				</Box>
 			</Box>
-			<Box flex={1}></Box>
+			<Box flex={1}>
+				<Box height="101rem" mb="wl" ml="ws" border="1px solid transparent">
+					<Box
+						mt="17.8rem"
+						p="ms"
+						borderRadius="8px"
+						bg="sky-blue-20"
+						width="37.4rem"
+						column
+						position="sticky"
+						top="17.8rem"
+					>
+						<Box
+							row
+							height="14rem"
+							borderRadius="4px 4px 0 0"
+							overflow="hidden"
+							bg="sky-blue-10"
+							backgroundImage={collection?.banner ? `url(${URL.createObjectURL(collection.banner)})` : ''}
+							backgroundSize="cover"
+							backgroundPosition="center"
+						/>
+						<Box
+							width="7rem"
+							height="7rem"
+							borderRadius="50%"
+							bg="blue-30"
+							mx="auto"
+							mt="-3.5rem"
+							zIndex="5"
+							backgroundImage={collection?.logo ? `url(${URL.createObjectURL(collection.logo)})` : ''}
+							backgroundSize="cover"
+							backgroundPosition="center"
+						/>
+						<Text as="h6" color="blue-40" textAlign="center">
+							{collection.name !== '' ? collection.name : 'Collection Name'}
+						</Text>
+						<Text as="c1" mt="mxxs" textAlign="center">
+							{collection.symbol !== '' ? `(${collection.symbol})` : '(Symbol)'}
+						</Text>
+						<Box row alignItems="center" mx="auto" mt="mxxs" mb="ms">
+							<Globe size={16} color={theme.colors['blue-40']} />
+							<Text as="c2" ml="mxxs" textAlign="center">
+								{collection.symbol !== '' ? collection.website_url : 'https://www.website.domain'}
+							</Text>
+						</Box>
+					</Box>
+				</Box>
+				<Box ml="ws">
+					<Box borderRadius="4px" bg="yellow-20" p="mm" width="33rem">
+						<Text as="b2">
+							In case you have any queries regarding the metadata for your collection, please reach out to us using
+							<span style={{ color: theme.colors['blue-40'] }}>
+								<a href={DISCORD_INVITE}> Discord.</a>
+							</span>
+						</Text>
+					</Box>
+				</Box>
+			</Box>
 		</Box>
 	);
 };

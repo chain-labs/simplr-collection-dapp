@@ -23,4 +23,6 @@ export const HOW_TO_MANAGE_URL = 'https://www.youtube.com/watch?v=PxKvGDzApso';
 
 export const CALENDLY_URL = 'https://calendly.com/0xmihir/nft-consultation';
 
+export const DISCORD_INVITE = 'https://discord.gg/6Xkw6FXtE8';
+
 export const SUBGRAPH_ENDPOINT = process.env.NEXT_PUBLIC_SUBGRAPH_ENDPOINT;
