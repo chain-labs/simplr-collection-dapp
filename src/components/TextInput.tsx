@@ -90,6 +90,7 @@ const TextInput = ({
 				value={value}
 				onChange={handleChange}
 				onWheel={(e) => {
+					// @ts-expect-error ts-migrate(2339) FIXME: Property 'blur' does not exist on type 'EventTarget'.
 					if (type === 'number') e.target.blur();
 				}}
 				validation={validity}

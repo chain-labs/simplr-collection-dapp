@@ -104,8 +104,8 @@ const CollectionPage = ({ step, setStep }) => {
 			const name = networkData[networkValue];
 
 			if (networkValue === 137 || networkValue === 80001) {
-				// @ts-expect-error ethereum in window
-				window.ethereum.request({
+				// @ts-expect-error - window.ethereum is not defined
+				window?.ethereum?.request({
 					method: 'wallet_addEthereumChain',
 					params: [
 						{
@@ -116,8 +116,7 @@ const CollectionPage = ({ step, setStep }) => {
 					],
 				});
 			}
-
-			// @ts-expect-error ethereum in window
+			// @ts-expect-error - window.ethereum is not defined
 			window.ethereum.request({
 				method: 'wallet_switchEthereumChain',
 				params: [{ chainId }],
