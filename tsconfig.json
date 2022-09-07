@@ -48,7 +48,7 @@
     "**/*.ts",
     "**/*.tsx",
     "src/src/style"
-, "src/containers/create/components/signDoc", "src/containers/create/components/PaymentPage/index.tsxt"  ],
+, "src/containers/create-old/components/signDoc", "src/containers/create-old/components/PaymentPage/index.tsxt"  ],
   "exclude": [
     "node_modules",
     ".next",

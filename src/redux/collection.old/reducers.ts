@@ -3,19 +3,16 @@ import { setCollectionDetails } from './actions';
 import { CollectionState } from './types';
 
 const intitalState: CollectionState = {
-	contract: null,
-	network: null,
+	type: null,
 	name: '',
 	symbol: '',
-	collection_metadata: '',
+	project_uri: '',
 	website_url: '',
-	logo: null,
-	banner: null,
+	logo_url: null,
+	banner_url: null,
+	contact_email: '',
 	admin: '',
-	delay_reveal: {
-		enabled: false,
-		metadata_uri: '',
-	},
+	collection_validated: false,
 };
 
 export const collectionReducer = createReducer(intitalState, (builder) => {

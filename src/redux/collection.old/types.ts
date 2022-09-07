@@ -1,17 +1,15 @@
 export interface CollectionState {
 	contract?: 1 | 2;
-	network?: 1 | 4 | 137 | 80001;
+	type?: 1 | 4 | 137 | 80001;
 	name?: string;
 	symbol?: string;
-	collection_metadata?: string;
+	project_uri?: string;
 	website_url?: string;
-	logo?: File;
-	banner?: File;
+	logo_url?: File;
+	banner_url?: File;
+	contact_email?: string;
 	admin?: string;
-	delay_reveal?: {
-		enabled?: boolean;
-		metadata_uri?: string;
-	};
+	collection_validated?: boolean;
 }
 
 export const networks = {

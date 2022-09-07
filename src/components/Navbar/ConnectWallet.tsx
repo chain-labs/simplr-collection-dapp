@@ -12,6 +12,7 @@ import theme from 'src/styleguide/theme';
 import Text from '../Text';
 import { CopySimple } from 'phosphor-react';
 import ButtonComp from '../Button';
+import { setCollectionDetails } from 'src/redux/collection';
 
 export const condenseAddress = (address) => {
 	return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -31,6 +32,7 @@ const ConnectWallet = ({ networkProps }) => {
 				useEffect(() => {
 					if (account) {
 						dispatch(setUser(account?.address));
+						dispatch(setCollectionDetails({ admin: account?.address }));
 					}
 				}, [account]);
 				const connected = user.exists;

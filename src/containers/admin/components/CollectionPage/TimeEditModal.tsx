@@ -12,7 +12,7 @@ import LabelledTextInput from 'src/components/LabelledTextInput';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
-import { getTimestamp } from 'src/containers/create/components/SalesPage';
+import { getTimestamp } from 'src/containers/create-old/components/SalesPage';
 import { editSelector } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';

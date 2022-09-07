@@ -14,9 +14,10 @@ interface Props {
 	placeholder?: string;
 	width?: string;
 	disabled?: boolean;
+	subdata?: any[];
 }
 
-const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }: Props) => {
+const Dropdown = ({ setValue, value, data, subdata, label, placeholder, width, disabled }: Props) => {
 	const [visible, setVisible] = useState(false);
 	const ref = useOuterClick(() => {
 		setVisible(false);
@@ -43,7 +44,7 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }
 			>
 				<If
 					condition={visible}
-					then={data.map((item) => (
+					then={data.map((item, idx) => (
 						<Box
 							key={item}
 							padding="7px 16px"
@@ -52,14 +53,28 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }
 							minWidth="32rem"
 							css={`
 								&:hover {
-									background-color: ${theme.colors['blue-00']};
+									background-color: ${theme.colors['blue-10']};
 								}
 							`}
 							onClick={() => setValue(item)}
+							row
+							alignItems="center"
+							cursor="pointer"
 						>
-							<Text as="b1" fontFamily="Switzer" fontWeight="medium">
-								{item}
-							</Text>
+							<Text as="b2">{item}</Text>
+							<If
+								condition={!!subdata[idx]}
+								then={
+									<>
+										<Text as="b2" mx="mxxs">
+											-
+										</Text>
+										<Text as="b2" color="gray-30">
+											{subdata[idx]}
+										</Text>
+									</>
+								}
+							/>
 						</Box>
 					))}
 				/>

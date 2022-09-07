@@ -17,6 +17,7 @@ import HowToDropdown from './HowToDropdown';
 import ConnectWallet from './ConnectWallet';
 import Banners from './Banners';
 import { Toaster } from 'react-hot-toast';
+import { setCollectionDetails } from 'src/redux/collection';
 
 const Navbar = () => {
 	const dispatch = useAppDispatch();
@@ -38,6 +39,7 @@ const Navbar = () => {
 			window?.ethereum?.on('accountsChanged', (accounts) => {
 				if (dispatch) {
 					dispatch(setUser(accounts[0]));
+					dispatch(setCollectionDetails({ admin: accounts[0] }));
 				}
 			});
 
