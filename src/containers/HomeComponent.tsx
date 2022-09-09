@@ -1,21 +1,33 @@
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import Box from 'src/components/Box';
 import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Text from 'src/components/Text';
+import { useAppSelector } from 'src/redux/hooks';
+import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import HomeHero1 from 'src/svgs/home-hero-1.svg';
 import HomeHero2 from 'src/svgs/home-hero-2.svg';
 import HomeHero3 from 'src/svgs/home-hero-3.svg';
 
 const HomeComponent = () => {
+	const user = useAppSelector(userSelector);
+	const [initialUserExists, setInitialUserExists] = useState(user.exists);
 	const [choice, setChoice] = React.useState(0);
+	const router = useRouter();
 
 	useEffect(() => {
 		const random = Math.floor(Math.random() * 3) + 1;
 		setChoice(random);
 	}, []);
+
+	useEffect(() => {
+		if (user.exists && !initialUserExists) {
+			router.push('/my-collections');
+		}
+	}, [user]);
 
 	const getRandomSVG = (random) => {
 		switch (random) {
