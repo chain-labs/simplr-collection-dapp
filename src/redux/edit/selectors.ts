@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { AppState } from '../store';
 
-export const selectEdit = (state: RootState) => state.edit;
+export const selectEdit = (state: AppState) => state.edit;
 
 export const editSelector = createSelector(selectEdit, (state) => state);

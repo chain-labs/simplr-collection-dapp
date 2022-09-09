@@ -11,14 +11,13 @@ import theme from 'src/styleguide/theme';
 import CollectionPage from './components/CollectionPage';
 import PaymentsPage from './components/PaymentsPage';
 import { blockExplorer } from 'src/utils/links';
-import { useAppSelector } from 'src/redux/hooks';
-import { userSelector } from 'src/redux/user';
+import { useNetwork } from 'wagmi';
 
 const AdminDashboardComponent = ({ metadata, id, ready, contractName }) => {
 	const [step, setStep] = useState(0);
 	const [provider] = useEthers();
 	const [contract, setContract] = useState<ethers.Contract>();
-	const user = useAppSelector(userSelector);
+	const { chain } = useNetwork();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -62,7 +61,7 @@ const AdminDashboardComponent = ({ metadata, id, ready, contractName }) => {
 					</Text>
 					<Box
 						as="a"
-						href={`${blockExplorer(user.network.chain)}/address/${`${id}`.split(':')[1]}`}
+						href={`${blockExplorer(chain?.id)}/address/${`${id}`.split(':')[1]}`}
 						target="_blank"
 						rel="noreferrer"
 					>

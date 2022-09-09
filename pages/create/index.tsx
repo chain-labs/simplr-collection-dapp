@@ -1,53 +1,27 @@
-/* eslint-disable no-console */
-import CreateComp from 'containers/create';
-import { ethers } from 'ethers';
-import Head from 'next/head';
-import { useEffect, useState } from 'react';
-import useContract from 'src/ethereum/useContract';
-import { getContractDetails } from 'src/ethereum/useCustomContract';
-import { collectionSelector } from 'src/redux/collection';
-import { useAppSelector } from 'src/redux/hooks';
-import { networkSelector, userSelector } from 'src/redux/user';
-import { SEAT_DISABLE } from 'src/utils/constants';
-import tokensOfOwner from 'src/utils/tokenOwnership';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import Text from 'src/components/Text';
+import { wrapper } from 'src/redux/store';
+import { UserState } from 'src/redux/user';
 
-const CreatePage = () => {
-	// const [provider] = useEthers();
-	const collection = useAppSelector(collectionSelector);
-	const network = useAppSelector(networkSelector);
-	const user = useAppSelector(userSelector);
-	const [tokens, setTokens] = useState({ value: [], loading: true });
-
-	const CollectionFactory = useContract('CollectionFactoryV2', collection.type ?? network.chain, user.provider);
+const CreatePage = ({ user }: { user: UserState }) => {
+	const router = useRouter();
 
 	useEffect(() => {
-		if (CollectionFactory && user.address && !SEAT_DISABLE) {
-			getSEATDetails();
-		} else {
-			setTokens({ value: [], loading: false });
+		if (!user.exists) {
+			router.replace('/my-collections');
 		}
-	}, [CollectionFactory, user.address]);
-
-	const getSEATDetails = async () => {
-		try {
-			const abi = getContractDetails('Collection');
-			const seatAddress = await CollectionFactory.callStatic.freePass();
-			const SEATInstance = new ethers.Contract(`${seatAddress}`, abi, user.provider);
-			const tokens = await tokensOfOwner(SEATInstance, user.address);
-			setTokens({ value: tokens, loading: false });
-		} catch (err) {
-			console.log(err);
-		}
-	};
+	}, []);
 
 	return (
-		<>
-			<Head>
-				<title>Simplr | Create Collection</title>
-			</Head>
-			<CreateComp balance={tokens} />;
-		</>
+		<Text as="h1" mt="wxxl" ml="mxl">
+			Create Page
+		</Text>
 	);
 };
 
+CreatePage.getInitialProps = wrapper.getInitialPageProps((store) => () => {
+	const user: UserState = store.getState().user;
+	return { user };
+});
 export default CreatePage;

@@ -1,10 +1,10 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { AppState } from '../store';
 
-export const selectPayment = (state: RootState) => state.payment;
+export const selectPayment = (state: AppState) => state.payment;
 
 export const paymentSelector = createSelector(selectPayment, (state) => state);
 
-export const selectBeneficiaries = (state: RootState) => state.payment.paymentSplitter;
+export const selectBeneficiaries = (state: AppState) => state.payment.paymentSplitter;
 
 export const beneficiariesSelector = createSelector(selectBeneficiaries, (state) => state);

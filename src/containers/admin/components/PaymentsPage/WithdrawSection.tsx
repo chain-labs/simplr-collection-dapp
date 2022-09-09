@@ -6,6 +6,7 @@ import Text from 'src/components/Text';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import { getUnitByChainId } from 'src/utils/chains';
+import { useNetwork, useSigner } from 'wagmi';
 
 interface Props {
 	userShare: string;
@@ -17,6 +18,8 @@ interface Props {
 
 const WithdrawSection = ({ userShare, totalFunds, contract, pendingPayment, setIsWithdrawModalOpen }: Props) => {
 	const user = useAppSelector(userSelector);
+	const { data: signer } = useSigner();
+	const { chain } = useNetwork();
 
 	const withdraw = async () => {
 		toast.loading('Transaction is processing!', {
@@ -24,7 +27,7 @@ const WithdrawSection = ({ userShare, totalFunds, contract, pendingPayment, setI
 		});
 
 		const transaction = await contract
-			.connect(user.signer)
+			.connect(signer)
 			['release(address)'](user.address)
 			.catch(() => setIsWithdrawModalOpen(2));
 		const getEvent = async (transaction) => {
@@ -68,7 +71,7 @@ const WithdrawSection = ({ userShare, totalFunds, contract, pendingPayment, setI
 						Total funds collected:
 					</Text>
 					<Text as="h6" color="simply-blue">
-						{`${totalFunds} ${getUnitByChainId(user.network.chain)}`}
+						{`${totalFunds} ${getUnitByChainId(chain?.id)}`}
 					</Text>
 				</Box>
 				<Box row alignItems="center">
@@ -76,7 +79,7 @@ const WithdrawSection = ({ userShare, totalFunds, contract, pendingPayment, setI
 						Funds you will receive:
 					</Text>
 					<Text as="h6" color="simply-blue">
-						{`${pendingPayment} ${getUnitByChainId(user.network.chain)}`}
+						{`${pendingPayment} ${getUnitByChainId(chain?.id)}`}
 					</Text>
 				</Box>
 			</Box>

@@ -5,12 +5,16 @@ import Head from 'next/head';
 import theme from 'styleguide/theme';
 
 import 'styleguide/globalStyles.css';
+import '@rainbow-me/rainbowkit/styles.css';
 import { ThemeProvider } from 'styled-components';
 
-import { Provider } from 'react-redux';
-import { store } from 'src/redux/store';
+import { wrapper } from 'src/redux/store';
+import ModalHandler from 'components/ModalHandler';
 
 import Navbar from 'components/Navbar';
+import Wagmi from 'components/Wagmi';
+import NextNProgress from 'nextjs-progressbar';
+import ApolloClientProvider from 'components/ApolloClient';
 
 const MyApp = ({ Component, pageProps }) => {
 	useEffect(() => {
@@ -57,16 +61,18 @@ const MyApp = ({ Component, pageProps }) => {
 					}}
 				/>
 			</Head>
-			<Provider store={store}>
-				<ThemeProvider theme={theme}>
-					<Navbar banner />
-					<Component {...pageProps} />
-					<div id="portal"></div>
-					<div id="portal-2"></div>
-				</ThemeProvider>
-			</Provider>
+			<ThemeProvider theme={theme}>
+				<Wagmi>
+					<ApolloClientProvider>
+						<Navbar />
+						<NextNProgress color="#4743C5" />
+						<Component {...pageProps} />
+						<ModalHandler />
+					</ApolloClientProvider>
+				</Wagmi>
+			</ThemeProvider>
 		</>
 	);
 };
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

@@ -5,6 +5,7 @@ import If from 'src/components/If';
 import { useAppSelector } from 'src/redux/hooks';
 import { userSelector } from 'src/redux/user';
 import { getUnitByChainId } from 'src/utils/chains';
+import { useNetwork } from 'wagmi';
 import DashboardCard from './DashboardCard';
 import { CollectionSectionProps } from './SalesSection';
 
@@ -29,6 +30,7 @@ export interface IAdminCollection {
 const OverviewSection = ({ collection, showModal, setShowModal }: CollectionSectionProps) => {
 	const [edit, setEdit] = useState('');
 	const user = useAppSelector(userSelector);
+	const { chain } = useNetwork();
 
 	return (
 		<Box row flexWrap="wrap" between mt="mxxxl">
@@ -72,7 +74,7 @@ const OverviewSection = ({ collection, showModal, setShowModal }: CollectionSect
 					<DashboardCard
 						Icon={CurrencyEth}
 						text="Price per NFT (Pre-sale)"
-						data={`${collection.presalePrice} ${getUnitByChainId(user.network.chain)}`}
+						data={`${collection.presalePrice} ${getUnitByChainId(chain?.id)}`}
 					/>
 				}
 			/>
@@ -93,7 +95,7 @@ const OverviewSection = ({ collection, showModal, setShowModal }: CollectionSect
 			<DashboardCard
 				Icon={CurrencyEth}
 				text="Price per NFT (Public sale)"
-				data={`${collection.price} ${getUnitByChainId(user.network.chain)}`}
+				data={`${collection.price} ${getUnitByChainId(chain?.id)}`}
 			/>
 		</Box>
 	);

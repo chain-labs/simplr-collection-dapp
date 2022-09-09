@@ -12,19 +12,19 @@ export const fontSizes = {
 	b2: { mobS: '1.4rem', deskM: '1.6rem' },
 	b1: { mobS: '1.6rem', deskM: '1.8rem' },
 	btn1: { mobS: '1.6rem', deskM: '1.8rem' },
-	btn2: { mobS: '1.4rem', deskM: '1.6rem' },
+	btn2: { mobS: '1.4rem', deskM: '1.4rem' },
 	c1: '1.2rem',
 	c2: '1rem',
 	nav: { mobS: '2rem', tabS: '1.4rem' },
 };
 
 const fontWeights = {
-	'extra-bold': 800,
-	bold: 700,
-	'semi-bold': 600,
-	medium: 500,
-	regular: 400,
-	thin: 300,
+	'extra-bold': 'OpenSauceOneExtraBold',
+	bold: 'OpenSauceOneBold',
+	'semi-bold': 'OpenSauceOneSemiBold',
+	medium: 'OpenSauceOneMedium',
+	regular: 'OpenSauceOneRegular',
+	thin: 'OpenSauceOneThin',
 };
 
 const fontW = {
@@ -102,12 +102,10 @@ export interface TextProps extends BoxProps {
 	className?: string;
 }
 
-const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProps): JSX.Element => {
+const Text = ({ as = 'b1', color, children, ...restProps }: TextProps): JSX.Element => {
 	const fs = fontSizes[as];
-	const fw = fontWeight ? fontWeights[fontWeight] : fontW[as];
 	const lh = restProps.lineHeight ?? lineHeights(as);
 	const cs = restProps.letterSpacing ?? charSpacing[as];
-	const ff = restProps.fontFamily ?? '"OpenSauceOneRegular", sans-serif';
 
 	return (
 		<Box
@@ -116,10 +114,9 @@ const Text = ({ as = 'b1', fontWeight, color, children, ...restProps }: TextProp
 			padding={0}
 			color={color as string}
 			fontSize={fs}
-			fontWeight={fw}
 			letterSpacing={cs}
 			lineHeight={lh}
-			fontFamily={ff}
+			fontFamily={fontW[as]}
 			fontStyle="normal"
 			{...restProps}
 		>
