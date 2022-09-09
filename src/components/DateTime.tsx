@@ -13,7 +13,7 @@ interface props {
 	width?: string;
 }
 
-const DateTime = ({ value, setValue, disabled, disableValidation, width }: props) => {
+const DateTime = ({ value, setValue, width }: props) => {
 	const [date, setDate] = useState(value?.date ?? '');
 	const [time, setTime] = useState(value?.time ?? '');
 	const [timezone, setTimezone] = useState(value?.timezone ?? 'GMT');
@@ -40,15 +40,7 @@ const DateTime = ({ value, setValue, disabled, disableValidation, width }: props
 	return (
 		<Box overflowX="visible" overflowY="visible">
 			<Box overflow="visible" between width={width} mb="mxxs">
-				<TextInput
-					placeholder="DD/MM/YYYY"
-					type="date"
-					value={date}
-					setValue={setDate}
-					width="32rem"
-					required
-					{...{ disabled, disableValidation }}
-				/>
+				<TextInput placeholder="DD/MM/YYYY" type="date" value={date} setValue={setDate} width="32rem" required />
 				<TextInput
 					placeholder="hh:mm:ss AM/PM"
 					type="time"
@@ -57,16 +49,9 @@ const DateTime = ({ value, setValue, disabled, disableValidation, width }: props
 					setValue={setTime}
 					width="31rem"
 					required
-					{...{ disabled, disableValidation }}
 				/>
 			</Box>
-			<Dropdown
-				data={disabled ? [] : timezones}
-				value={timezone}
-				setValue={setTimezone}
-				width="64rem"
-				{...{ disabled }}
-			/>
+			<Dropdown data={timezones} value={timezone} setValue={setTimezone} width="64rem" />
 		</Box>
 	);
 };

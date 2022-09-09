@@ -1,25 +1,15 @@
 import { ICollection } from 'src/graphql/query/UserCollections';
+import _ from 'lodash';
 
 export const getUniqueCollections = (data): ICollection[] => {
 	const arr = [];
 	if (!data.user) return arr;
-	data.user.beneficiaries.forEach((beneficiary) => {
-		if (!arr.find((item) => item?.address === beneficiary?.collection?.address)) {
-			arr.push(beneficiary.collection);
-		}
+	const { beneficiaries, creator, owner } = data.user;
+	beneficiaries.forEach((beneficiary) => {
+		arr.push(beneficiary.collection);
 	});
-	data.user.creator.forEach((creator) => {
-		if (!arr.find((item) => item?.address === creator?.address)) {
-			arr.push(creator);
-		}
-	});
-	data.user.owner.forEach((owner) => {
-		if (!arr.find((item) => item?.address === owner?.address)) {
-			arr.push(owner);
-		}
-	});
-
-	return arr;
+	const result = _.unionBy(arr, creator, owner, 'address');
+	return result;
 };
 
 export const sanitizePinataUrl = (qid: string) => {

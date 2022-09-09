@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { addWhitelist, removeWhitelist, toggleAffiliable, togglePresale } from '.';
-import { setPricingDetails } from './actions';
-import { PricingState } from './types';
+import { setPresaleDetails, setPricingDetails, setSaleDetails } from './actions';
+import { IPresale, ISale, PricingState } from './types';
 
 const intitalState: PricingState = {
 	totalSupply: null,
@@ -10,6 +10,8 @@ const intitalState: PricingState = {
 		enabled: false,
 		maxTokens: null,
 		price: null,
+		perWallet: null,
+		perSale: null,
 		startTime: null,
 		allowList: {
 			name: '',
@@ -19,6 +21,8 @@ const intitalState: PricingState = {
 	sale: {
 		price: null,
 		startTime: null,
+		perWallet: null,
+		perSale: null,
 	},
 	isAffiliable: false,
 };
@@ -28,7 +32,22 @@ export const pricingReducer = createReducer(intitalState, (builder) => {
 		.addCase(setPricingDetails, (state, action) => {
 			const updateState: PricingState = action.payload;
 			const newState = { ...state, ...updateState };
-			state = newState;
+			return newState;
+		})
+		.addCase(setPresaleDetails, (state, action) => {
+			const updateState: IPresale = action.payload;
+			state.presale = {
+				...state.presale,
+				...updateState,
+			};
+			return state;
+		})
+		.addCase(setSaleDetails, (state, action) => {
+			const updateState: ISale = action.payload;
+			state.sale = {
+				...state.sale,
+				...updateState,
+			};
 			return state;
 		})
 		.addCase(togglePresale, (state, action) => {

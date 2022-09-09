@@ -13,9 +13,10 @@ export interface InputProps {
 	value?: any;
 	width?: string;
 	disabled?: boolean;
+	bg?: string;
 }
 
-const LabelledSelectInput = ({ label, placeholder, set, visible, value, width, disabled }: InputProps) => {
+const LabelledSelectInput = ({ label, placeholder, set, visible, value, width, disabled, bg }: InputProps) => {
 	return (
 		<Box overflow="visible">
 			<Text as="h6" mb={label ? 'mxs' : '0'} color="simply-black">
@@ -27,12 +28,13 @@ const LabelledSelectInput = ({ label, placeholder, set, visible, value, width, d
 					value={value}
 					readOnly
 					placeholder={placeholder}
-					backgroundColor="white-00"
+					bg={bg ?? 'white-10'}
 					padding="12px 16px"
 					width={width}
+					border="1px solid"
+					borderColor="blue-20"
 					boxShadow="inset 0px 2px 2px -1px rgba(74, 74, 104, 0.1)"
-					borderRadius="8px"
-					border="0.5px solid #E6E6FF"
+					borderRadius="4px"
 					outline="none"
 					fontSize="16px"
 					fontFamily="Switzer"
