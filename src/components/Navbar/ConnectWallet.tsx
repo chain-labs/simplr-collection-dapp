@@ -12,6 +12,7 @@ import theme from 'src/styleguide/theme';
 import Text from '../Text';
 import { CopySimple } from 'phosphor-react';
 import ButtonComp from '../Button';
+import { useRouter } from 'next/router';
 
 export const condenseAddress = (address) => {
 	return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -20,6 +21,7 @@ export const condenseAddress = (address) => {
 const ConnectWallet = ({ networkProps }) => {
 	const user = useAppSelector(userSelector);
 	const dispatch = useAppDispatch();
+	const router = useRouter();
 
 	return (
 		<ConnectButton.Custom>
@@ -33,6 +35,7 @@ const ConnectWallet = ({ networkProps }) => {
 						dispatch(setUser(account?.address));
 					}
 				}, [account]);
+
 				const connected = user.exists;
 
 				if (!connected) {
@@ -103,10 +106,7 @@ const ConnectWallet = ({ networkProps }) => {
 							`}
 							onClick={openAccountModal}
 						>
-							<Text as="c1" mr="mxs">
-								{ens ?? condenseAddress(user.address)}
-							</Text>
-							<CopySimple size={20} weight="regular" />
+							<Text as="c1">{ens ?? condenseAddress(user.address)}</Text>
 						</Box>
 					</Box>
 				);
