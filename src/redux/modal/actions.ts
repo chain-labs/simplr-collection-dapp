@@ -4,4 +4,4 @@ export const showModal = createAction<{ type: string; props: any }>('modal/SHOW_
 
 export const hideModal = createAction('modal/HIDE_MODAL');
 
-export const replaceModal = createAction<{ type: string; props: any }>('modal/REPLACE_MODAL');
+export const replaceModal = createAction<{ type: string; props?: any }>('modal/REPLACE_MODAL');

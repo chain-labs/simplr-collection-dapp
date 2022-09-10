@@ -1,5 +1,4 @@
-import TestModal from 'src/components/modals/TestModal';
-import TestModal2 from 'src/components/modals/TestModal2';
+import AllowlistModal from 'src/components/modals/AllowlistModal';
 
 export interface ModalState {
 	isOpen: boolean;
@@ -8,11 +7,9 @@ export interface ModalState {
 }
 
 export const MODALS_LIST = {
-	TEST_MODAL: 'TEST_MODAL',
-	TEST_MODAL_2: 'TEST_MODAL_2',
+	ALLOWLIST_MODAL: 'ALLOWLIST_MODAL',
 };
 
 export const MODALS = {
-	[MODALS_LIST.TEST_MODAL]: TestModal,
-	[MODALS_LIST.TEST_MODAL_2]: TestModal2,
+	[MODALS_LIST.ALLOWLIST_MODAL]: AllowlistModal,
 };

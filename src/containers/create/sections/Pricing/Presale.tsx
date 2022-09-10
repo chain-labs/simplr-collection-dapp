@@ -28,7 +28,7 @@ const Presale = () => {
 	};
 
 	return (
-		<Box bg="sky-blue-10" borderRadius="8px" overflow="hidden">
+		<Box bg="sky-blue-10" borderRadius="8px">
 			<Box mt="wxs" bg="sky-blue-20" borderRadius="8px" px="ms" py="mxs" row between>
 				<Box>
 					<Text as="h5">Pre-sale</Text>
@@ -110,7 +110,7 @@ const Presale = () => {
 						<If
 							condition={!!pricing.presale.maxTokens && !!pricing.presale.price}
 							then={
-								<Box bg="green-20" width="100%" py="mxs" center>
+								<Box bg="green-20" width="100%" py="mxs" center borderRadius="0 0 4px 4px">
 									<Sparkle color={theme.colors['green-60']} size={24} />
 									<Text as="h6" color="green-60" ml="ms">
 										{`You will make a total of ${getPresaleEarnings()} ETH in the pre-sale!`}
