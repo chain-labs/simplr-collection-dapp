@@ -56,13 +56,13 @@ const AllowlistModal = () => {
 		const a = field.toString();
 		const b = a.replaceAll('\n', ' ');
 		const c = b.replaceAll(',', ' ');
-		const d = _.trim(c, '\n');
-		const f = d.split(' ');
-		const g = _.compact(f);
+		const d = c.replaceAll('\r', '');
+		const f = _.trim(d, '\n');
+		const g = f.split(' ');
+		const h = _.compact(g);
+		const i = _.uniqWith(h, _.isEqual);
 
-		const h = _.uniq(g);
-
-		dispatch(addWhitelist({ list: h, name }));
+		dispatch(addWhitelist({ list: i, name }));
 		dispatch(hideModal());
 	};
 

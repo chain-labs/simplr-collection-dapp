@@ -3,9 +3,7 @@ import { createWrapper } from 'next-redux-wrapper';
 import { collectionReducer } from './collection';
 import { EditReducer } from './edit';
 import { modalReducer } from './modal/reducers';
-import { paymentReducer } from './payment';
 import { pricingReducer } from './pricing';
-import { saleReducer } from './sales';
 import { userReducer } from './user/reducers';
 import { validationReducer } from './validation';
 import { withdrawReducer } from './withdraw/reducers';
@@ -15,9 +13,7 @@ const makeStore = () =>
 		reducer: {
 			user: userReducer,
 			collection: collectionReducer,
-			sales: saleReducer,
 			pricing: pricingReducer,
-			payment: paymentReducer,
 			withdraw: withdrawReducer,
 			validation: validationReducer,
 			edit: EditReducer,
