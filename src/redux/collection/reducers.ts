@@ -3,7 +3,7 @@ import { setCollectionDetails } from './actions';
 import { CollectionState } from './types';
 
 const intitalState: CollectionState = {
-	type: 1,
+	type: null,
 	name: '',
 	symbol: '',
 	project_uri: '',

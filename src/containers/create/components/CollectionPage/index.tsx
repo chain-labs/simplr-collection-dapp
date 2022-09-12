@@ -116,6 +116,8 @@ const CollectionPage = ({ step, setStep }) => {
 					],
 				});
 			}
+			console.log({ chainId, networkValue });
+
 			// @ts-expect-error - window.ethereum is not defined
 			window.ethereum.request({
 				method: 'wallet_switchEthereumChain',
