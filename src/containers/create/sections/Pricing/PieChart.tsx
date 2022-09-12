@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Box from 'src/components/Box';
+import Text from 'src/components/Text';
 import { useAppSelector } from 'src/redux/hooks';
 import { pricingSelector } from 'src/redux/pricing';
 import theme from 'src/styleguide/theme';
@@ -35,12 +36,15 @@ const PieChart = () => {
 				height="100%"
 				width="100%"
 				borderRadius="50%"
-				backgroundImage={`conic-gradient(#5E3FBE 0deg, #5E3FBE 45deg, ${theme.colors['blue-20']} 45deg, ${
-					theme.colors['blue-20']
-				} ${presalePercentDegrees() + 45}deg, ${theme.colors['simply-black']} ${presalePercentDegrees() + 45}deg, ${
+				backgroundImage={`conic-gradient(transparent 0deg, transparent 45deg, ${theme.colors['simply-black']} 45deg, ${
 					theme.colors['simply-black']
-				} ${presalePercentDegrees() + 45 + reservePercentDegrees()}deg)`}
+				} ${reservePercentDegrees() + 45}deg, ${theme.colors['blue-20']} ${reservePercentDegrees() + 45}deg, ${
+					theme.colors['blue-20']
+				} ${presalePercentDegrees() + reservePercentDegrees() + 45}deg, transparent ${
+					presalePercentDegrees() + reservePercentDegrees() + 45
+				}deg)`}
 			/>
+
 			<Box />
 		</Box>
 	);

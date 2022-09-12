@@ -5,25 +5,26 @@ import If from 'src/components/If';
 import Text from 'src/components/Text';
 import { useAppSelector } from 'src/redux/hooks';
 import { pricingSelector } from 'src/redux/pricing';
+import { PricingState } from 'src/redux/pricing/types';
 import theme from 'src/styleguide/theme';
 import InputDateTime from '../../InputDateTime';
 import InputNumber from '../../InputNumber';
 
+export const getMaxSaleTokens = (pricing: PricingState) => {
+	const { totalSupply, reserve_NFTs, presale } = pricing;
+	let max = totalSupply - reserve_NFTs;
+	if (presale.enabled && presale.maxTokens) {
+		max -= presale.maxTokens;
+	}
+	return max;
+};
+
 const Sale = () => {
 	const pricing = useAppSelector(pricingSelector);
 
-	const getMaxSaleTokens = () => {
-		const { totalSupply, reserve_NFTs, presale } = pricing;
-		let max = totalSupply - reserve_NFTs;
-		if (presale.enabled && presale.maxTokens) {
-			max -= presale.maxTokens;
-		}
-		return max;
-	};
-
 	const getSaleEarnings = () => {
 		const { price } = pricing.sale;
-		const max = getMaxSaleTokens();
+		const max = getMaxSaleTokens(pricing);
 		return (max * price).toFixed(2);
 	};
 
@@ -41,7 +42,7 @@ const Sale = () => {
 				<Box width="100%" px="ms" mt="mxl" pb="mm">
 					<InputNumber
 						idx={10}
-						value={getMaxSaleTokens()}
+						value={getMaxSaleTokens(pricing)}
 						label="Maximum Supply (Public Sale)"
 						helper="Total Supply - Reserve Tokens - Presale"
 						required
@@ -70,7 +71,7 @@ const Sale = () => {
 						helper="Maximum number of tokens a wallet can hold during the public-sale."
 						value={pricing.sale.perWallet}
 						min={1}
-						max={getMaxSaleTokens()}
+						max={getMaxSaleTokens(pricing)}
 						required
 						blockchain
 						width="100%"

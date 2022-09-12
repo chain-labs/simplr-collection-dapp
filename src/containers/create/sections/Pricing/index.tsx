@@ -14,7 +14,7 @@ import Affiliate from './Affiliate';
 import Allowlist from './Allowlist';
 import PieChart from './PieChart';
 import Presale from './Presale';
-import Sale from './Sale';
+import Sale, { getMaxSaleTokens } from './Sale';
 
 const PricingSection = () => {
 	const pricing = useAppSelector(pricingSelector);
@@ -54,9 +54,29 @@ const PricingSection = () => {
 				<Box mt="ws" />
 				<Affiliate />
 			</Box>
-			<Box border="1px solid red" flex={1} ml="wxxs">
-				<Box width="48rem" borderRadius="8px" bg="sky-blue-10" center pt="mxxxl">
+			<Box flex={1} ml="wxxs" position="relative">
+				<Box
+					width="48rem"
+					borderRadius="8px"
+					bg="sky-blue-10"
+					center
+					pt="mxxxl"
+					pb="mxl"
+					column
+					position="sticky"
+					top="17.8rem"
+				>
 					<PieChart />
+					<Box mt="mxxxl" width="90%" center column>
+						<Text as="h5" textAlign="center">
+							Token Breakdown
+						</Text>
+						<Box mt="mxl" mb="mm" row alignItems="center" justifyContent="space-between" width="100%">
+							<Token color="#5E3FBE" name="Public Sale" tokens={getMaxSaleTokens(pricing)} />
+							<Token color="blue-20" name="Pre-sale" tokens={pricing.presale.maxTokens} />
+						</Box>
+						<Token color="simply-black" name="Reserve" tokens={pricing.reserve_NFTs} />
+					</Box>
 				</Box>
 			</Box>
 		</Box>
@@ -64,3 +84,41 @@ const PricingSection = () => {
 };
 
 export default PricingSection;
+
+const Token = ({ color, name, tokens }) => {
+	const pricing = useAppSelector(pricingSelector);
+	const [percent, setPercent] = useState(0);
+
+	useEffect(() => {
+		const total = pricing.totalSupply;
+		const salePercent = (getMaxSaleTokens(pricing) / total) * 100;
+		const presalePercent = (pricing.presale.maxTokens / total) * 100;
+		const reservePercent = 100 - salePercent - presalePercent;
+
+		switch (name) {
+			case 'Public Sale':
+				setPercent(salePercent);
+				break;
+			case 'Pre-sale':
+				setPercent(presalePercent);
+				break;
+			case 'Reserve':
+				setPercent(reservePercent);
+				break;
+		}
+	}, [tokens]);
+
+	return (
+		<Box row alignItems="center">
+			<Box height="2.4rem" width="2.4rem" bg={color} />
+			<Box row>
+				<Text as="h6" ml="mxs">
+					{name}:
+				</Text>
+				<Text as="b2" ml="mxxs" color="simply-blue">
+					{tokens}({percent.toFixed(1).replace(/[.,]0$/, '')}%)
+				</Text>
+			</Box>
+		</Box>
+	);
+};
