@@ -2,7 +2,7 @@
 import { ethers, providers } from 'ethers';
 import { useEffect, useState } from 'react';
 import contracts from '../contracts/contracts.json';
-import { networks } from 'src/redux/collection.old/types';
+import { networks } from 'src/redux/collection/types';
 import { ProviderProps } from './types';
 
 const useContract = (contractName: string, chain: number, provider: ProviderProps) => {

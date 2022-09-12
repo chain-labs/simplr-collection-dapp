@@ -9,10 +9,10 @@ import ButtonComp from 'src/components/Button';
 import If from 'src/components/If';
 import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
-import { collectionSelector } from 'src/redux/collection.old';
+import { collectionSelector } from 'src/redux/collection';
 import { editSelector } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { presaleWhitelistSelector, setSaleDetails } from 'src/redux/sales';
+import { allowListSelector, setSaleDetails } from 'src/redux/pricing';
 import { userSelector } from 'src/redux/user';
 import theme from 'src/styleguide/theme';
 import { getUnitByChainId } from 'src/utils/chains';
@@ -99,7 +99,7 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 	const { data: signer } = useSigner();
 
 	const collection = useAppSelector(collectionSelector);
-	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
+	const presaleWhitelist = useAppSelector(allowListSelector);
 
 	useEffect(() => {
 		if (!visible) {
@@ -266,14 +266,14 @@ const EditModalv2 = ({ visible, setVisible, data, type, clearInput }: Props) => 
 		} else if (step === 1) {
 			if (type === 'whitelist_add') {
 				addWhitelist().then(() => {
-					const arr = [...presaleWhitelist, ...data];
+					const arr = [...presaleWhitelist.list, ...data];
 					dispatch(setSaleDetails({ presaleable: { presaleWhitelist: arr } }));
 					setStep(3);
 					clearInput();
 				});
 			} else if (type === 'whitelist_remove') {
 				removeWhitelist().then(() => {
-					const arr = [...presaleWhitelist].filter((item) => !data.includes(item));
+					const arr = [...presaleWhitelist.list].filter((item) => !data.includes(item));
 					dispatch(setSaleDetails({ presaleable: { presaleWhitelist: arr } }));
 					setStep(3);
 					clearInput();

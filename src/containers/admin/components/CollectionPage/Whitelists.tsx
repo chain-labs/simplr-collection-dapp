@@ -9,7 +9,7 @@ import TextArea from 'src/components/TextArea';
 import WhitelistModal from 'src/containers/create-old/components/SalesPage/WhitelistModal';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
-import { presaleWhitelistSelector } from 'src/redux/sales';
+import { allowListSelector } from 'src/redux/pricing';
 import { userSelector } from 'src/redux/user';
 import EditModalv2 from '../EditModalv2';
 
@@ -21,13 +21,13 @@ const Whitelists = ({ admin }) => {
 	const [editType, setEditType] = useState<'whitelist_add' | 'whitelist_remove'>();
 	const [showModal, setShowModal] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
-	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
+	const allowList = useAppSelector(allowListSelector);
 	const user = useAppSelector(userSelector);
 
 	const handleAdd = () => {
 		const whitelistString = whitelistAdder.replace(/\s+/g, '');
 		const whitelistsArray = whitelistString.split(',');
-		const list = [...whitelistsArray, ...presaleWhitelist];
+		const list = [...whitelistsArray, ...allowList.list];
 		let err = false;
 
 		whitelistsArray.every((address, index) => {

@@ -4,7 +4,7 @@ import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import TextInput from 'src/components/TextInput';
 import { useAppSelector } from 'src/redux/hooks';
-import { presaleWhitelistSelector } from 'src/redux/sales';
+import { allowListSelector } from 'src/redux/pricing';
 import { X } from 'phosphor-react';
 import If from 'src/components/If';
 
@@ -17,12 +17,12 @@ interface Props {
 }
 
 const WhitelistModal = ({ visible, setVisible }: Props) => {
-	const whiteList = useAppSelector(presaleWhitelistSelector);
+	const whiteList = useAppSelector(allowListSelector);
 	const [empty, setEmpty] = useState(false); // Checks if search result is empty
 	const [searchInput, setSearchInput] = useState('');
 
 	useEffect(() => {
-		const arr = whiteList.filter((item) => item.includes(searchInput));
+		const arr = whiteList.list.filter((item) => item.includes(searchInput));
 		if (arr.length === 0) {
 			setEmpty(true);
 		} else {
@@ -72,8 +72,8 @@ const WhitelistModal = ({ visible, setVisible }: Props) => {
 											Address does not exist.
 										</Text>
 									}
-									else={whiteList
-										?.filter((address) => address.includes(searchInput))
+									else={whiteList?.list
+										.filter((address) => address.includes(searchInput))
 										?.map((address, index) => (
 											<Box row key={address.substr(-4)} mb="mxl" between>
 												<Box row>
@@ -84,7 +84,7 @@ const WhitelistModal = ({ visible, setVisible }: Props) => {
 										))}
 								/>
 							}
-							else={whiteList.map((address, index) => (
+							else={whiteList.list.map((address, index) => (
 								<Box row key={address.substr(-4)} mb="mxl" between>
 									<Box row>
 										<Text as="h4" width="4.4rem">{`${index + 1}.`}</Text>

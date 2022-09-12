@@ -138,7 +138,6 @@ const InputNumber = ({
 					borderRadius="4px"
 					value={disabled ? value : input}
 					onChange={(e) => setInput(e.target.value)}
-					// @ts-expect-error ts-migrate(2769) FIXME: No overload matches this call.
 					onWheel={(e) => e.target.blur()}
 					onBlur={handleBlur}
 					placeholder={placeholder}

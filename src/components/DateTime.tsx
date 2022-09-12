@@ -3,7 +3,7 @@ import Box from './Box';
 import TextInput from './TextInput';
 import Dropdown from './Dropdown';
 import { timezones } from 'src/utils/timezones';
-import { DateType } from 'src/redux/sales/types';
+import { DateType } from 'src/redux/pricing/types';
 
 interface props {
 	value: DateType;

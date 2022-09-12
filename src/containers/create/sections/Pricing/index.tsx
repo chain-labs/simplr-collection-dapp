@@ -12,6 +12,7 @@ import InputDateTime from '../../InputDateTime';
 import InputNumber from '../../InputNumber';
 import Affiliate from './Affiliate';
 import Allowlist from './Allowlist';
+import PieChart from './PieChart';
 import Presale from './Presale';
 import Sale from './Sale';
 
@@ -53,7 +54,11 @@ const PricingSection = () => {
 				<Box mt="ws" />
 				<Affiliate />
 			</Box>
-			<Box></Box>
+			<Box border="1px solid red" flex={1} ml="wxxs">
+				<Box width="48rem" borderRadius="8px" bg="sky-blue-10" center pt="mxxxl">
+					<PieChart />
+				</Box>
+			</Box>
 		</Box>
 	);
 };
