@@ -9787,8 +9787,465 @@
       "name": "goerli",
       "chainId": "5",
       "contracts": {
+        "AffiliateRegistry": {
+          "address": "0xBd50118230A404c9C626400b26F90f2bc7E351dB",
+          "abi": [
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "_projectName",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "_affiliateShares",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "_affiliateRegistrationFee",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "affiliate",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "message",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "AffiliateRegistered",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "previousOwner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "newOwner",
+                  "type": "address"
+                }
+              ],
+              "name": "OwnershipTransferred",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "projectId",
+                  "type": "bytes32"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "projectOwner",
+                  "type": "address"
+                }
+              ],
+              "name": "ProjectRegistered",
+              "type": "event"
+            },
+            {
+              "inputs": [],
+              "name": "AFFILIATE_MESSAGE_PREFIX",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "HUNDRED_PERCENT",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "PROJECT_PREFIX",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "affiliateRegistrationFee",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address[]",
+                  "name": "whitelists",
+                  "type": "address[]"
+                }
+              ],
+              "name": "batchRemoveWhitelist",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address[]",
+                  "name": "whitelists",
+                  "type": "address[]"
+                }
+              ],
+              "name": "batchWhitelist",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_affiliate",
+                  "type": "address"
+                }
+              ],
+              "name": "getAffiliateMessage",
+              "outputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "message",
+                  "type": "bytes32"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes",
+                  "name": "signature",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "address",
+                  "name": "affiliate",
+                  "type": "address"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "projectId",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "value",
+                  "type": "uint256"
+                }
+              ],
+              "name": "getAffiliateShareValue",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "_isAffiliate",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "_shareValue",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "projectId",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "getProjectDetails",
+              "outputs": [
+                {
+                  "components": [
+                    {
+                      "internalType": "address",
+                      "name": "owner",
+                      "type": "address"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "projectShares",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct AffiliateRegistryStorage.Project",
+                  "name": "project",
+                  "type": "tuple"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "_projectName",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "_projectOwner",
+                  "type": "address"
+                }
+              ],
+              "name": "getProjectId",
+              "outputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "projectId",
+                  "type": "bytes32"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_affiliate",
+                  "type": "address"
+                }
+              ],
+              "name": "isAffiliate",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "_address",
+                  "type": "address"
+                }
+              ],
+              "name": "isWhitelisted",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "owner",
+              "outputs": [
+                {
+                  "internalType": "address",
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "projectId",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "projectExists",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "exists",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "registerAffiliate",
+              "outputs": [],
+              "stateMutability": "payable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "projectName",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "affiliateShares",
+                  "type": "uint256"
+                }
+              ],
+              "name": "registerProject",
+              "outputs": [
+                {
+                  "internalType": "bytes32",
+                  "name": "projectId",
+                  "type": "bytes32"
+                }
+              ],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "renounceOwnership",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_newFee",
+                  "type": "uint256"
+                }
+              ],
+              "name": "setAffiliateRegistrationFee",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "_affiliateShares",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "_projectId",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "setAffiliateShares",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "newOwner",
+                  "type": "address"
+                }
+              ],
+              "name": "transferOwnership",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "bytes",
+                  "name": "signature",
+                  "type": "bytes"
+                },
+                {
+                  "internalType": "address",
+                  "name": "_affiliate",
+                  "type": "address"
+                }
+              ],
+              "name": "verifyAffiliate",
+              "outputs": [
+                {
+                  "internalType": "bool",
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [],
+              "name": "withdraw",
+              "outputs": [],
+              "stateMutability": "nonpayable",
+              "type": "function"
+            }
+          ]
+        },
         "Collection": {
-          "address": "0x8F0C4A7044188a59eb89e6bdE8f27e2f8E0A46d5",
+          "address": "0xb03024311d48aaE2c3DC27c4B9a218029D1B4ACa",
           "abi": [
             {
               "anonymous": false,
@@ -9870,68 +10327,12 @@
               "inputs": [
                 {
                   "indexed": false,
-                  "internalType": "uint256",
-                  "name": "maximumTokens",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "uint256",
-                  "name": "maxPurchase",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "uint256",
-                  "name": "maxHolding",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "uint256",
-                  "name": "price",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "uint256",
-                  "name": "publicSaleStartTime",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "string",
-                  "name": "projectURI",
-                  "type": "string"
-                }
-              ],
-              "name": "BaseCollectionSetup",
-              "type": "event"
-            },
-            {
-              "anonymous": false,
-              "inputs": [
-                {
-                  "indexed": false,
                   "internalType": "string",
                   "name": "projectUri",
                   "type": "string"
                 }
               ],
               "name": "CollectionRevealed",
-              "type": "event"
-            },
-            {
-              "anonymous": false,
-              "inputs": [
-                {
-                  "indexed": true,
-                  "internalType": "address",
-                  "name": "collectionAddress",
-                  "type": "address"
-                }
-              ],
-              "name": "CollectionSetupComplete",
               "type": "event"
             },
             {
@@ -10188,49 +10589,6 @@
                 }
               ],
               "name": "PresaleReservedTokensUpdated",
-              "type": "event"
-            },
-            {
-              "anonymous": false,
-              "inputs": [
-                {
-                  "indexed": false,
-                  "internalType": "uint256",
-                  "name": "presaleReservedTokens",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "uint256",
-                  "name": "presalePrice",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "uint256",
-                  "name": "presaleStartTime",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "uint256",
-                  "name": "presaleMaxHolding",
-                  "type": "uint256"
-                },
-                {
-                  "indexed": true,
-                  "internalType": "bytes32",
-                  "name": "whitelistRoot",
-                  "type": "bytes32"
-                },
-                {
-                  "indexed": false,
-                  "internalType": "string",
-                  "name": "whitelistCid",
-                  "type": "string"
-                }
-              ],
-              "name": "PresaleSetup",
               "type": "event"
             },
             {
@@ -10782,9 +11140,9 @@
               "name": "maxHolding",
               "outputs": [
                 {
-                  "internalType": "uint16",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "uint16"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -10795,9 +11153,9 @@
               "name": "maxPurchase",
               "outputs": [
                 {
-                  "internalType": "uint16",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "uint16"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -11056,6 +11414,49 @@
             {
               "inputs": [
                 {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "releasable",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "releasable",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
                   "internalType": "address payable",
                   "name": "account",
                   "type": "address"
@@ -11244,7 +11645,7 @@
                 },
                 {
                   "internalType": "bytes",
-                  "name": "_data",
+                  "name": "data",
                   "type": "bytes"
                 }
               ],
@@ -12044,7 +12445,7 @@
           ]
         },
         "CollectionA": {
-          "address": "0xEf77D7168f54aF0D31645B351B49eaD8B365E6C7",
+          "address": "0xcCF4079192689cf91174FBadbb97804c5932066b",
           "abi": [
             {
               "inputs": [],
@@ -12190,13 +12591,13 @@
               "anonymous": false,
               "inputs": [
                 {
-                  "indexed": true,
-                  "internalType": "address",
-                  "name": "collectionAddress",
-                  "type": "address"
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "projectUri",
+                  "type": "string"
                 }
               ],
-              "name": "CollectionSetupComplete",
+              "name": "CollectionRevealed",
               "type": "event"
             },
             {
@@ -12254,6 +12655,77 @@
                 }
               ],
               "name": "Initialized",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newMaxHolding",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaxHoldingUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newMaxPurchase",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaxPurchaseUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "maximumTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "MaximumTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "string",
+                  "name": "metadata",
+                  "type": "string"
+                }
+              ],
+              "name": "MetadataUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "address",
+                  "name": "receiver",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "quantity",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Minted",
               "type": "event"
             },
             {
@@ -12349,6 +12821,166 @@
               "anonymous": false,
               "inputs": [
                 {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleMaxHolding",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleMaxHoldingUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presalePrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresalePriceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleReservedTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleReservedTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleReservedTokens",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presalePrice",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleStartTime",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "presaleMaxHolding",
+                  "type": "uint256"
+                },
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "whitelistRoot",
+                  "type": "bytes32"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "whitelistCid",
+                  "type": "string"
+                }
+              ],
+              "name": "PresaleSetup",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newPresaleStartTime",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PresaleStartTimeUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newPrice",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PriceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "projectUri",
+                  "type": "string"
+                }
+              ],
+              "name": "ProjectURIUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "internalType": "bytes32",
+                  "name": "provenance",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "ProvenanceUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "newSaleStartTime",
+                  "type": "uint256"
+                }
+              ],
+              "name": "PublicSaleStartTimeUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "uint256",
+                  "name": "reservedTokens",
+                  "type": "uint256"
+                }
+              ],
+              "name": "ReservedTokensUpdated",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
                   "indexed": true,
                   "internalType": "address",
                   "name": "from",
@@ -12387,15 +13019,15 @@
               "anonymous": false,
               "inputs": [
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "bytes32",
-                  "name": "root",
+                  "name": "whitelistRoot",
                   "type": "bytes32"
                 },
                 {
                   "indexed": false,
                   "internalType": "string",
-                  "name": "cid",
+                  "name": "whitelistCid",
                   "type": "string"
                 }
               ],
@@ -12797,9 +13429,9 @@
               "name": "maxHolding",
               "outputs": [
                 {
-                  "internalType": "uint16",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "uint16"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -12810,9 +13442,9 @@
               "name": "maxPurchase",
               "outputs": [
                 {
-                  "internalType": "uint16",
+                  "internalType": "uint256",
                   "name": "",
-                  "type": "uint16"
+                  "type": "uint256"
                 }
               ],
               "stateMutability": "view",
@@ -13058,6 +13690,49 @@
             {
               "inputs": [],
               "name": "publicSaleStartTime",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "releasable",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "contract IERC20Upgradeable",
+                  "name": "token",
+                  "type": "address"
+                },
+                {
+                  "internalType": "address",
+                  "name": "account",
+                  "type": "address"
+                }
+              ],
+              "name": "releasable",
               "outputs": [
                 {
                   "internalType": "uint256",
@@ -14012,7 +14687,7 @@
           ]
         },
         "CollectionFactoryV2": {
-          "address": "0xb104020D9c467396524a801daFEE73515BE4779F",
+          "address": "0x9cE7C123d532237ee8B2A01eA9c76732a6444e55",
           "abi": [
             {
               "inputs": [

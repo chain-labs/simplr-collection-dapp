@@ -130,12 +130,12 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 	const getBg = (chain) => {
 		if (chain === 1) return 'green-50';
 		else if (chain === 137) return 'purple-50';
-		else if (chain === 4 || chain === 80001) return 'yellow-40';
+		else if (chain === 5 || chain === 80001) return 'yellow-40';
 	};
 
 	const getBannerBg = (chain) => {
 		if (chain === 1 || chain === 137) return 'purple-10';
-		else if (chain === 4 || chain === 80001) return 'yellow-20';
+		else if (chain === 5 || chain === 80001) return 'yellow-20';
 	};
 
 	const getBannerText = (chain) => {
@@ -143,13 +143,13 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 			return 'You are connected to the Mainnet. Any transactions you make on the Mainnet will cost real ETH. ';
 		else if (chain === 137)
 			return 'You are connected to the Mainnet. Any transactions you make on the Mainnet will cost real MATIC. ';
-		else if (chain === 4 || chain === 80001)
+		else if (chain === 5 || chain === 80001)
 			return 'You are connected to a test network. Any transactions made here won’t reflect in the Mainnet.';
 	};
 
 	const getBannerTextColor = (chain) => {
 		if (chain === 1 || chain === 137) return 'simply-blue';
-		else if (chain === 4 || chain === 80001) return 'yellow-90';
+		else if (chain === 5 || chain === 80001) return 'yellow-90';
 	};
 
 	return (

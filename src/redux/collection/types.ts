@@ -21,6 +21,10 @@ export const networks = {
 		name: 'Rinkeby Testnet',
 		id: 'rinkeby',
 	},
+	5: {
+		name: 'Goerli Testnet',
+		id: 'goerli',
+	},
 	137: {
 		name: 'Polygon Mainnet',
 		id: 'matic',
@@ -35,6 +39,10 @@ export const test_networks = {
 	4: {
 		name: 'Rinkeby Testnet',
 		id: 'rinkeby',
+	},
+	5: {
+		name: 'Goerli Testnet',
+		id: 'goerli',
 	},
 	80001: {
 		name: 'Polygon Testnet',
