@@ -11,10 +11,10 @@ const Step2Modal = ({ gas, fails }: { gas?: string; fails?: boolean }) => {
 
 	return (
 		<Box>
-			<Text as="h4" mb="ms" fontFamily="Switzer">
+			<Text as="h4" mb="ms" fontFamily="Satoshi">
 				Confirm Change
 			</Text>
-			<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Switzer">
+			<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Satoshi">
 				Every change in the smart contract costs gas. Do you want to commit these changes?
 			</Text>
 

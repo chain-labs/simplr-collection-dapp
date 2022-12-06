@@ -1,6 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-@import url('https://api.fontshare.com/css?f[]=switzer@300,400,500,600,700&display=swap');
-@import url('https://fontlibrary.org//face/open-sauce-one');
+@import url('https://fonts.cdnfonts.com/css/satoshi');
 
 
 body,
@@ -8,12 +6,12 @@ html {
 	padding: 0;
 	margin: 0;
 	font-size: 62.5%;
-	font-family: 'Switzer', sans-serif;
+	font-family: 'Satoshi', sans-serif;
 	font-style: normal;
 }
 
 p {
-	font-family: 'OpenSauceOneRegular', sans-serif;
+	font-family: 'Satoshi', sans-serif;
 }
 
 div {

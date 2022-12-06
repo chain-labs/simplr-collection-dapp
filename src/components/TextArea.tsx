@@ -35,7 +35,7 @@ const TextAreaElement = styled(Box)(
         border: none;
         outline: none;
         padding: ${props.theme.space.ms} ${props.theme.space.mm};
-        font-family: 'Switzer', sans-serif;
+        font-family: 'Satoshi', sans-serif;
         font-weight: 500;
         font-size: 16px;
         line-height: 21px;

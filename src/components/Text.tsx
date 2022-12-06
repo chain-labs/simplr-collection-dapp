@@ -85,8 +85,8 @@ const lineHeights = (as) => {
 
 const fontFamily = (as) => {
 	return as === 'b1' || as === 'b2' || as === 'b3' || as === 'c1' || as === 'c2' || as === 'c3'
-		? '"OpenSauceOneRegular", sans-serif'
-		: '"Switzer", sans-serif';
+		? '"Satoshi", sans-serif'
+		: '"Satoshi", sans-serif';
 };
 
 export interface TextProps extends BoxProps {

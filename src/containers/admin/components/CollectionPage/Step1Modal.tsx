@@ -19,7 +19,7 @@ const Step1Modal = ({ value, setValue, gas }) => {
 			<If
 				condition={modalData.editfield === 'Reveal'}
 				then={
-					<Text as="b3" fontWeight="medium" mb="ms" fontFamily="Switzer" row alignItems="center">
+					<Text as="b3" fontWeight="medium" mb="ms" fontFamily="Satoshi" row alignItems="center">
 						Enter Collection URI
 						<Box
 							onMouseEnter={() => setShowTooltip(true)}
@@ -54,7 +54,7 @@ const Step1Modal = ({ value, setValue, gas }) => {
 					</Text>
 				}
 				else={
-					<Text as="b3" fontWeight="medium" mb="ms" fontFamily="Switzer">
+					<Text as="b3" fontWeight="medium" mb="ms" fontFamily="Satoshi">
 						Enter new {modalData.label.toLocaleLowerCase()}
 					</Text>
 				}
