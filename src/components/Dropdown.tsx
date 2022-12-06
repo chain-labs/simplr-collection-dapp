@@ -57,7 +57,7 @@ const Dropdown = ({ setValue, value, data, label, placeholder, width, disabled }
 							`}
 							onClick={() => setValue(item)}
 						>
-							<Text as="b1" fontFamily="Switzer" fontWeight="medium">
+							<Text as="b1" fontFamily="Satoshi" fontWeight="medium">
 								{item}
 							</Text>
 						</Box>

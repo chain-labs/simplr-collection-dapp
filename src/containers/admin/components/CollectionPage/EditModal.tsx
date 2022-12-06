@@ -252,7 +252,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 						condition={step === 0 && (modalData.editable === 'Live' || modalData.editable === 'Paused')}
 						then={
 							<ButtonComp bg="primary" height="40px" mt="ml" onClick={handleAction}>
-								<Text as="h6" fontFamily="Switzer">
+								<Text as="h6" fontFamily="Satoshi">
 									{modalData.editable === 'Live' ? 'Pause' : 'Resume'}
 								</Text>
 							</ButtonComp>
@@ -267,7 +267,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 								disable={step === 2 ? true : false}
 								center
 							>
-								<Text as="h6" fontFamily="Switzer">
+								<Text as="h6" fontFamily="Satoshi">
 									{buttonText}
 								</Text>
 								{step === 2 ? (
@@ -285,7 +285,7 @@ const EditModal = ({ visible, setVisible }: props) => {
 						condition={step === 0 || step === 1}
 						then={
 							<ButtonComp width="100%" bg="secondary" height="40px" onClick={() => setVisible(false)} mt="ml">
-								<Text as="h6" fontFamily="Switzer">
+								<Text as="h6" fontFamily="Satoshi">
 									Cancel
 								</Text>
 							</ButtonComp>

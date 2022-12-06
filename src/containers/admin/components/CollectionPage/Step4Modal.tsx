@@ -13,11 +13,11 @@ const Step4Modal = ({ value }: { value?: string; gas?: string }) => {
 
 	return (
 		<Box>
-			<Text as="h4" mb="ms" fontFamily="Switzer">
+			<Text as="h4" mb="ms" fontFamily="Satoshi">
 				{modalData.label}
 			</Text>
 			<hr />
-			<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Switzer">
+			<Text as="h6" mt="mxxl" color="#52575C" fontFamily="Satoshi">
 				Successfully changed the {modalData.label}. Changes have been reflected on your dashboard.
 			</Text>
 			<If
