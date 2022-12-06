@@ -15,25 +15,25 @@ const ButtonBar = () => {
 		<Box mt="mxxl" mx="mxxl">
 			<ButtonBarComp>
 				<SingleButton currentActive={activeButton} setValue={setActiveButton} value={first}>
-					<Text as="h5" fontWeight="medium" fontFamily="Switzer">
+					<Text as="h5" fontWeight="medium" fontFamily="Satoshi">
 						Hi
 					</Text>
 				</SingleButton>
 				<SingleButton currentActive={activeButton} setValue={setActiveButton} value={second}>
 					{' '}
-					<Text as="h5" fontWeight="medium" fontFamily="Switzer">
+					<Text as="h5" fontWeight="medium" fontFamily="Satoshi">
 						Its
 					</Text>
 				</SingleButton>
 				<SingleButton currentActive={activeButton} setValue={setActiveButton} value={third}>
 					{' '}
-					<Text as="h5" fontWeight="medium" fontFamily="Switzer">
+					<Text as="h5" fontWeight="medium" fontFamily="Satoshi">
 						My
 					</Text>
 				</SingleButton>
 				<SingleButton currentActive={activeButton} setValue={setActiveButton} value={fourth}>
 					{' '}
-					<Text as="h5" fontWeight="medium" fontFamily="Switzer">
+					<Text as="h5" fontWeight="medium" fontFamily="Satoshi">
 						Button
 					</Text>
 				</SingleButton>

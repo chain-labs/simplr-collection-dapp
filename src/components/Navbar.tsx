@@ -18,6 +18,7 @@ import ButtonComp from './Button';
 import { ProviderProps, SignerProps } from 'src/ethereum/types';
 import { ethers } from 'ethers';
 import { testNetworks, TEST_NETWORK } from 'src/utils/constants';
+import Image from 'next/image';
 
 const Navbar = ({ banner }: { banner?: boolean }) => {
 	const dispatch = useAppDispatch();
@@ -191,47 +192,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 									<CopySimple color={theme.colors['simply-blue']} size="20" />
 								</Box>
 							}
-							else={
-								<>
-									<ButtonComp
-										bg="primary"
-										height="56px"
-										py="mm"
-										px="ml"
-										onClick={() => {
-											handleConnectWallet();
-										}}
-									>
-										<Text as="h4">Connect Wallet</Text>
-									</ButtonComp>
-									<Box position="absolute" zIndex={-1} top="0" left="0" height="100vh" width="100vw" bg="simply-white">
-										<Box mx="auto" width="80%" row between height="100%">
-											<Box maxWidth="40rem">
-												<Text as="h2" color="simply-blue" mb="ms">
-													Create and manage cost effective NFT Collections.
-												</Text>
-												<Text as="b2" mb="mxl">
-													Simplr is an easy to use, no-code platform to create NFT smart contracts and launch your NFT
-													projects without any hassle.
-												</Text>
-												<If
-													condition={wrongNetwork}
-													then={
-														<Box row mt="mm">
-															<WarningCircle weight="fill" color={theme.colors['red-50']} size="24" />
-															<Text as="c3" color="red-50" ml="mxs">
-																We currently only support Ethereum and Polygon {TEST_NETWORK ? 'Testnets' : null}.
-																Please switch your network to either of those and try again.
-															</Text>
-														</Box>
-													}
-												/>
-											</Box>
-											<Box as="img" src="/static/images/png/hero_image.png"></Box>
-										</Box>
-									</Box>
-								</>
-							}
+							else={<GettingStarted handleConnectWallet={handleConnectWallet} />}
 						/>
 					</Box>
 				</Container>
@@ -253,3 +214,52 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 };
 
 export default Navbar;
+
+const GettingStarted = ({ handleConnectWallet }) => {
+	return (
+		<Box>
+			<Box position="absolute" zIndex={1} top="0" left="0" height="100vh" width="100vw" bg="simply-white">
+				<Box height="540px" width="514px" position="relative">
+					<Image
+						src="https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/sim_col_gs_ellipse1__1__r92KrQPyk8.svg"
+						height={269}
+						width={349}
+					/>
+				</Box>
+				<Box position="absolute" top="66px" left="47px">
+					<Image
+						src="https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/simplr_logo-min_eO5qws5Lt.png"
+						height={43}
+						width={164}
+					/>
+				</Box>
+				<Box height="540px" width="514px" position="absolute" top="100" right="0">
+					<Image
+						src="https://ik.imagekit.io/chainlabs/Simplr_Collection_Dapp/sim_col_gs_ellipse2__1__yqNnvLEcK.svg"
+						height={491}
+						width={550}
+					/>
+				</Box>
+				<Box
+					margin="auto"
+					position="absolute"
+					top="50%"
+					left="50%"
+					transform="translate(-50%, -50%)"
+					center
+					flexDirection="column"
+				>
+					<Text as="h1" color="simply-blue" mb="mxl" textAlign="center">
+						Get Started
+					</Text>
+					<Text as="h5" fontWeight="medium" mb="ms">
+						Connect your wallet to start using Simplr
+					</Text>
+					<ButtonComp bg="primary" px="wl" py="1.45rem" onClick={handleConnectWallet}>
+						<Text as="b3">Connect Wallet</Text>
+					</ButtonComp>
+				</Box>
+			</Box>
+		</Box>
+	);
+};

@@ -13,7 +13,7 @@ import ButtonComp from 'src/components/Button';
 import TimeEditModal from './TimeEditModal';
 
 interface DashboardCardProps {
-	Icon: React.ReactNode;
+	Icon: any;
 	text: string;
 	data?: string;
 	editable?: 'address' | 'time' | 'number' | 'status';
@@ -157,7 +157,6 @@ const DashboardCard = ({
 			mb="mm"
 		>
 			<Box center width="4.8rem" height="4.8rem" borderRadius="50%" bg="blue-00">
-				{/* @ts-expect-error Icon as props */}
 				<Icon color={theme.colors['simply-blue']} size="20" weight="bold" />
 				<If condition={showModal} then={<EditModal visible={showModal} setVisible={setShowModal} />} />
 			</Box>

@@ -90,7 +90,7 @@ const TextInput = ({
 				value={value}
 				onChange={handleChange}
 				onWheel={(e) => {
-					// @ts-expect-error ts-migrate(2339) FIXME: Property 'blur' does not exist on type 'EventTarget'.
+					// @ts-expect-error - e.target is an input element
 					if (type === 'number') e.target.blur();
 				}}
 				validation={validity}
@@ -166,7 +166,7 @@ export const InputElement = styled(Box)(
 	(props: InputProps) => `
 	padding: ${`${props.theme.space.ms} ${props.theme.space.mm}`};
 	font-size: ${props.fontSize ?? '1.6rem'};
-	font-family: 'Switzer', sans-serif;
+	font-family: 'Satoshi', sans-serif;
 	border-radius: 8px;
 	background: ${props?.disabled || props.value ? props.theme.colors['simply-white'] : props.theme.colors['white-00']};
 	border: ${
