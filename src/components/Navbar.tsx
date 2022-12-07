@@ -192,7 +192,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 									<CopySimple color={theme.colors['simply-blue']} size="20" />
 								</Box>
 							}
-							else={<GettingStarted handleConnectWallet={handleConnectWallet} />}
+							else={<GettingStarted handleConnectWallet={handleConnectWallet} wrongNetwork={wrongNetwork} />}
 						/>
 					</Box>
 				</Container>
@@ -215,7 +215,7 @@ const Navbar = ({ banner }: { banner?: boolean }) => {
 
 export default Navbar;
 
-const GettingStarted = ({ handleConnectWallet }) => {
+const GettingStarted = ({ handleConnectWallet, wrongNetwork }) => {
 	return (
 		<Box>
 			<Box position="absolute" zIndex={1} top="0" left="0" height="100vh" width="100vw" bg="simply-white">
@@ -258,6 +258,18 @@ const GettingStarted = ({ handleConnectWallet }) => {
 					<ButtonComp bg="primary" px="wl" py="1.45rem" onClick={handleConnectWallet}>
 						<Text as="b3">Connect Wallet</Text>
 					</ButtonComp>
+					<If
+						condition={wrongNetwork}
+						then={
+							<Box row mt="mm" maxWidth="38rem">
+								<WarningCircle weight="fill" color={theme.colors['red-50']} size="24" />
+								<Text as="c3" color="red-50" ml="mxs">
+									We currently only support Ethereum and Polygon {TEST_NETWORK ? 'Testnets' : null}. Please switch your
+									network to either of those and try again.
+								</Text>
+							</Box>
+						}
+					/>
 				</Box>
 			</Box>
 		</Box>
