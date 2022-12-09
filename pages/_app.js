@@ -60,6 +60,7 @@ const MyApp = ({ Component, pageProps }) => {
                   `,
 					}}
 				/>
+				<script defer data-domain="app.simplrcollection.com" src="https://plausible.io/js/script.js"></script>
 			</Head>
 			<ThemeProvider theme={theme}>
 				<Wagmi>
