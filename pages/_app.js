@@ -44,19 +44,7 @@ const MyApp = ({ Component, pageProps }) => {
 				<title>Simplr Collection</title>
 				<link href="https://api.fontshare.com/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
 				<link rel="shortcut icon" href="/favicon.png" />
-				<script
-					type="text/javascript"
-					dangerouslySetInnerHTML={{
-						__html: `
-					(function(c,l,a,r,i,t,y){
-						c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-						t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-						y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-					})(window, document, "clarity", "script", "b6ii472snx");
-                  `,
-					}}
-				/>
-				<script defer data-domain="app.simplrcollection.com" src="https://plausible.io/js/script.js"></script>
+				<script defer data-domain="app.simplrhq.com" src="https://plausible.io/js/script.js"></script>
 			</Head>
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>
