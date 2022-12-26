@@ -1,8 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Simplr Collection dApp
+![Schmint Banner](https://images.ctfassets.net/j9ge5krwd0zh/5Ve2o310bLo0VvW8KG6jTE/333d8a7fe9596f82d14a21a6972d8f0d/Frame_287.png?h=600 "Simplr Collection Banner")
+![Javascript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Typescript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
+![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white)
+![GraphQL](https://img.shields.io/badge/-GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white)
+![Styled Components](https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)
+![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)
 
-## Getting Started
+# Description
+The NFT smart contract you want, without the hassle
 
-First, run the development server:
+An easy-to-use no-code platform for creating NFT smart-contracts and launching your NFT collection without the hassle.
+
+[![](https://markdown-videos.deta/youtube/0fR5XyS2pL0)](https://youtu.be/0fR5XyS2pL0)
+[![Simplr Guide Video](http://img.youtube.com/vi/0fR5XyS2pL0/0.jpg)](http://www.youtube.com/watch?v=0fR5XyS2pL0 "Simplr Guide Video")
+
+# Try it
+Visit the Schmint dApp website at: https://app.simplrhq.com/
+Need to know more? Visite https://simplrhq.com/
+
+# Usage
+
+### 1. First, Install the dependencies:a
+```bash
+npm install
+# or
+yarn install
+```
+
+### 2. Complete the Environment Variables.
+
+### 3. Run the development server:
 
 ```bash
 npm run dev
@@ -10,25 +40,24 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+# Learn More
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+[Click Here](https://simplrhq.com/) to visit the Landing Page of Simplr Collection
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+# Community & Support
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/VA5fgcRJtS)
+[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/simplrhq/)
+[![Medium](https://img.shields.io/badge/Medium-12100E?style=for-the-badge&logo=medium&logoColor=white)](https://simplrhq.medium.com/)
 
-## Learn More
+# Latest Contributors
+<a href="https://github.com/chain-labs/simplr-collection-dapp/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=chain-labs/schmint-lp" />
+</a>
 
-To learn more about Next.js, take a look at the following resources:
+Made with [contrib.rocks](https://contrib.rocks).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [Angel Lakra](https://github.com/angel112)
+- [Khushboo Dalwani](https://github.com/Khushboo1008)
+- [Mihirsinh Parmar](https://github.com/codebuster22)
