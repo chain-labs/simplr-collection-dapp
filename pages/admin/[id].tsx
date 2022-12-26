@@ -36,13 +36,19 @@ const AdminDashboardPage = () => {
 	};
 
 	useEffect(() => {
-		if (id && provider) {
+		if (id && provider && currentNetwork.chain > 0) {
 			if (process.browser) {
 				const shortName = `${id}`.split(':')[0];
 				const network = getNetworkByShortName(shortName);
 				const chainId = `0x${network.chainId.toString(16)}`;
+				console.log({ shortName, network, chainId, currentNetwork });
+
 				if (network.chainId !== currentNetwork.chain) {
+					console.log('ehhh');
+
 					if (network.chainId === 137 || network.chainId === 80001) {
+						console.log('change man', { network });
+
 						// @ts-expect-error ethereum in window
 						window.ethereum
 							.request({
@@ -67,6 +73,17 @@ const AdminDashboardPage = () => {
 									})
 									.catch((err) => console.log({ err }));
 							});
+
+						// @ts-expect-error ethereum in window
+						window.ethereum
+							.request({
+								method: 'wallet_switchEthereumChain',
+								params: [{ chainId }],
+							})
+							.then(() => {
+								setReady(true);
+							})
+							.catch((err) => console.log({ err }));
 					} else {
 						// @ts-expect-error ethereum in window
 						window.ethereum
@@ -82,7 +99,7 @@ const AdminDashboardPage = () => {
 				} else setReady(true);
 			}
 		}
-	}, [id, provider]);
+	}, [id, provider, currentNetwork]);
 
 	useEffect(() => {
 		if (ready) {
