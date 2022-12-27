@@ -92,7 +92,7 @@ const CollectionPage = ({ step, setStep }) => {
 	};
 
 	useEffect(() => {
-		if (networkValue > 0 && process.browser) {
+		if (networkValue > 0 && process.browser && user.exists) {
 			const chainIdInHex = `${networkValue.toString(16)}`;
 			let chainId;
 			if (chainIdInHex.includes('0x')) {
@@ -123,7 +123,7 @@ const CollectionPage = ({ step, setStep }) => {
 				params: [{ chainId }],
 			});
 		}
-	}, [networkValue]);
+	}, [networkValue, user.exists]);
 
 	return (
 		<Box>
