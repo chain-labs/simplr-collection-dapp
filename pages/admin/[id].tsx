@@ -9,16 +9,23 @@ import { getContractDetails } from 'src/ethereum/useCustomContract';
 import useEthers from 'src/ethereum/useEthers';
 import { setEditDetails } from 'src/redux/edit';
 import { useAppSelector } from 'src/redux/hooks';
-import { networkSelector } from 'src/redux/user';
+import { networkSelector, userSelector } from 'src/redux/user';
 import { getNetworkByShortName } from 'src/utils/chains';
 
 const AdminDashboardPage = () => {
+	const user = useAppSelector(userSelector);
+	if (!user.exists) return null;
+	else return <AdminDashboard />;
+};
+
+const AdminDashboard = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	const [provider] = useEthers();
 	const [metadata, setMetadata] = useState();
 	const dispatch = useDispatch();
 	const currentNetwork = useAppSelector(networkSelector);
+	const user = useAppSelector(userSelector);
 	const [ready, setReady] = useState(false);
 	const [contractName, setContractName] = useState();
 
@@ -36,7 +43,7 @@ const AdminDashboardPage = () => {
 	};
 
 	useEffect(() => {
-		if (id && provider) {
+		if (id && provider && user.exists) {
 			if (process.browser) {
 				const shortName = `${id}`.split(':')[0];
 				const network = getNetworkByShortName(shortName);
@@ -67,6 +74,16 @@ const AdminDashboardPage = () => {
 									})
 									.catch((err) => console.log({ err }));
 							});
+						// @ts-expect-error ethereum in window
+						window.ethereum
+							.request({
+								method: 'wallet_switchEthereumChain',
+								params: [{ chainId }],
+							})
+							.then(() => {
+								setReady(true);
+							})
+							.catch((err) => console.log({ err }));
 					} else {
 						// @ts-expect-error ethereum in window
 						window.ethereum
@@ -82,7 +99,7 @@ const AdminDashboardPage = () => {
 				} else setReady(true);
 			}
 		}
-	}, [id, provider]);
+	}, [id, provider, currentNetwork, user.exists]);
 
 	useEffect(() => {
 		if (ready) {
