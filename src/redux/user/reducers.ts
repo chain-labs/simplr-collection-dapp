@@ -1,8 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { ProviderProps, SignerProps } from 'src/ethereum/types';
-import { setNetwork, setProvider, setSigner } from '.';
 
-import { setUser, removeUser } from './actions';
+import { setUser, removeUser, setNetwork, setProvider, setSigner } from './actions';
 
 type UserState = {
 	address: string;
