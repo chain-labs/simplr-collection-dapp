@@ -47,7 +47,7 @@ const TextInput = ({
 	const handleChange = (e) => {
 		e.preventDefault();
 		if (type === 'number') {
-			setValue(parseFloat(e.target.value));
+			setValue(e.target.value);
 		} else {
 			setValue(e.target.value);
 		}

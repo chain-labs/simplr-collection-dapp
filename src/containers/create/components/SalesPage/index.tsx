@@ -51,17 +51,17 @@ const SalesPage = ({ step, setStep }) => {
 
 	const [isAffiliable, setIsAffiliable] = useState(affiliable);
 	const { type } = collection;
-	const [maxTokens, setMaxTokens] = useState<number>(sales.maximumTokens);
-	const [maxPurchase, setMaxPurchase] = useState<number>(sales.maxPurchase);
-	const [maxHolding, setMaxHolding] = useState<number>(sales.maxHolding);
-	const [price, setPrice] = useState<number>(sales.price);
-	const [reserveTokens, setReserveTokens] = useState<number>(sales.reserveTokens);
+	const [maxTokens, setMaxTokens] = useState<string>(sales.maximumTokens);
+	const [maxPurchase, setMaxPurchase] = useState<string>(sales.maxPurchase);
+	const [maxHolding, setMaxHolding] = useState<string>(sales.maxHolding);
+	const [price, setPrice] = useState<string>(sales.price);
+	const [reserveTokens, setReserveTokens] = useState<string>(sales.reserveTokens);
 	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<DateType>(sales.publicSaleStartTime);
 	const [isPresaleable, setIsPresaleable] = useState(presaleable);
 
-	const [presaleReservedTokens, setPresaleReservedTokens] = useState<number>(sales.presaleable.presaleReservedTokens);
-	const [presalePrice, setPresalePrice] = useState<number>(sales.presaleable.presalePrice);
-	const [presaleMaxHolding, setPresaleMaxHolding] = useState<number>(sales.presaleable.presaleMaxHolding);
+	const [presaleReservedTokens, setPresaleReservedTokens] = useState<string>(sales.presaleable.presaleReservedTokens);
+	const [presalePrice, setPresalePrice] = useState<string>(sales.presaleable.presalePrice);
+	const [presaleMaxHolding, setPresaleMaxHolding] = useState<string>(sales.presaleable.presaleMaxHolding);
 	const [presaleStartTime, setPresaleStartTime] = useState<DateType>(sales.presaleable.presaleStartTime);
 
 	const [isRevealable, setIsRevealable] = useState(revealable);
@@ -168,7 +168,7 @@ const SalesPage = ({ step, setStep }) => {
 					<LabelledTextInput
 						type="number"
 						min="1"
-						max={maxHolding?.toString()}
+						max={maxHolding}
 						label="Maximum NFTs allowed to buy per sale"
 						helperText="Maximum number of NFTs a user can buy at once"
 						required
@@ -180,7 +180,7 @@ const SalesPage = ({ step, setStep }) => {
 					<LabelledTextInput
 						type="number"
 						min="1"
-						max={maxTokens?.toString()}
+						max={maxTokens}
 						label="Maximum NFTs allowed to buy per wallet"
 						helperText="Maximum number of NFTs a user can hold in their wallet"
 						required
@@ -204,7 +204,7 @@ const SalesPage = ({ step, setStep }) => {
 					<LabelledTextInput
 						type="number"
 						min="0"
-						max={maxTokens?.toString()}
+						max={maxTokens}
 						label="Reserved NFTs"
 						helperText=" Reserved NFTs will not be included in the sale and can be transferred directly to any wallet address. Enter “0” if you do not wish to reserve any NFTs."
 						required

@@ -121,7 +121,7 @@ const SEATModal = ({ isOpen, setIsOpen, balance, loading, setTncStatus }: Props)
 												<Text as="h5">{earlyPass ? "Let's Go!" : 'Get a SEAT!'}</Text>
 											</ButtonComp>
 											<If
-												condition={!toBoolean(SEAT_TOGGLE) && !earlyPass}
+												condition={!SEAT_TOGGLE && !earlyPass}
 												then={
 													<Text
 														as="h5"

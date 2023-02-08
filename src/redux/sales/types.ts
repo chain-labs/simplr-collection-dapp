@@ -1,15 +1,15 @@
 export interface SaleState {
-	maximumTokens?: number;
-	maxPurchase?: number;
-	maxHolding?: number;
-	price?: number;
-	reserveTokens?: number;
+	maximumTokens?: string;
+	maxPurchase?: string;
+	maxHolding?: string;
+	price?: string;
+	reserveTokens?: string;
 	publicSaleStartTime?: DateType;
 	presaleable?: {
 		enabled?: boolean;
-		presaleReservedTokens?: number;
-		presalePrice?: number;
-		presaleMaxHolding?: number;
+		presaleReservedTokens?: string;
+		presalePrice?: string;
+		presaleMaxHolding?: string;
 		presaleWhitelist?: string[];
 		presaleStartTime?: DateType;
 	};
