@@ -29,6 +29,7 @@ export const uploadToIPFS = async (
 ) => {
 	const bannerData = new FormData();
 	const logoData = new FormData();
+
 	bannerData.append('file', collection.banner_url);
 	bannerData.append('pinataMetadata', JSON.stringify({ name: `${collection.name.replace(' ', '_')}_banner` }));
 	const banner_res = await axios.post(`${PINATA_URL}pinning/pinFileToIPFS`, bannerData, {
@@ -53,7 +54,6 @@ export const uploadToIPFS = async (
 			pinata_secret_api_key: PINATA_KEY_SECRET,
 		},
 	});
-
 	const jsonBody = {
 		collectionDetails: {
 			name: collection.name,
@@ -116,6 +116,7 @@ export const uploadToIPFS = async (
 			},
 		}
 	);
+
 	return {
 		banner: jsonBody.collectionDetails.bannerImageUrl.split('ipfs/')[1],
 		logo: jsonBody.collectionDetails.logoUrl.split('ipfs/')[1],
