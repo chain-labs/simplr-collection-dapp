@@ -11,11 +11,11 @@ import { DateType } from 'src/redux/sales/types';
 const SalesSummaryPage = ({ setModalStep }) => {
 	const sales = useAppSelector(saleSelector);
 	const componentRef = useRef(null);
-	const [maxTokens, setMaxTokens] = useState<number>(sales.maximumTokens);
-	const [maxPurchase, setMaxPurchase] = useState<number>(sales.maxPurchase);
-	const [maxHolding, setMaxHolding] = useState<number>(sales.maxHolding);
-	const [price, setPrice] = useState<number>(sales.price);
-	const [reserveTokens, setReserveTokens] = useState<number>(sales.reserveTokens);
+	const [maxTokens, setMaxTokens] = useState<string>(sales.maximumTokens);
+	const [maxPurchase, setMaxPurchase] = useState<string>(sales.maxPurchase);
+	const [maxHolding, setMaxHolding] = useState<string>(sales.maxHolding);
+	const [price, setPrice] = useState<string>(sales.price);
+	const [reserveTokens, setReserveTokens] = useState<string>(sales.reserveTokens);
 	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<DateType>(sales.publicSaleStartTime);
 
 	useEffect(() => {
@@ -39,7 +39,7 @@ const SalesSummaryPage = ({ setModalStep }) => {
 			<LabelledTextInput
 				type="number"
 				min="1"
-				max={maxTokens?.toString()}
+				max={maxTokens}
 				label="Maximum NFTs allowed to buy per sale"
 				helperText="Maximum number of NFTs a user can buy at once"
 				required
@@ -53,7 +53,7 @@ const SalesSummaryPage = ({ setModalStep }) => {
 			<LabelledTextInput
 				type="number"
 				min="1"
-				max={maxTokens?.toString()}
+				max={maxTokens}
 				label="Maximum NFTs allowed to buy per wallet"
 				helperText="Maximum number of NFTs a user can hold in their wallet"
 				required
@@ -81,7 +81,7 @@ const SalesSummaryPage = ({ setModalStep }) => {
 			<LabelledTextInput
 				type="number"
 				min="0"
-				max={maxTokens?.toString()}
+				max={maxTokens}
 				label="Reserved NFTs"
 				helperText=" Reserved NFTs will not be included in the sale and can be transferred directly to any wallet address. Enter “0” if you do not wish to reserve any NFTs."
 				required

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import WhitelistManagement from 'src/utils/WhitelistManager';
 import { SignerProps } from 'src/ethereum/types';
 import { CollectionState, networks } from 'src/redux/collection/types';
@@ -29,6 +29,7 @@ export const uploadToIPFS = async (
 ) => {
 	const bannerData = new FormData();
 	const logoData = new FormData();
+
 	bannerData.append('file', collection.banner_url);
 	bannerData.append('pinataMetadata', JSON.stringify({ name: `${collection.name.replace(' ', '_')}_banner` }));
 	const banner_res = await axios.post(`${PINATA_URL}pinning/pinFileToIPFS`, bannerData, {
@@ -53,7 +54,6 @@ export const uploadToIPFS = async (
 			pinata_secret_api_key: PINATA_KEY_SECRET,
 		},
 	});
-
 	const jsonBody = {
 		collectionDetails: {
 			name: collection.name,
@@ -116,6 +116,7 @@ export const uploadToIPFS = async (
 			},
 		}
 	);
+
 	return {
 		banner: jsonBody.collectionDetails.bannerImageUrl.split('ipfs/')[1],
 		logo: jsonBody.collectionDetails.logoUrl.split('ipfs/')[1],
@@ -152,10 +153,10 @@ export const createCollection = async (
 		name: collection.name, // Name of the collection
 		symbol: collection.symbol, // Symbol of the collection
 		admin: collection.admin, // admin address
-		maximumTokens: sales.maximumTokens, // maximum tokens that can be sold
-		maxPurchase: sales.maxPurchase, // maximum tokens that can be purchased at a time in single transaction
-		maxHolding: sales.maxHolding, // maximum tokens that a wallet can hold during the sale
-		price: ethers.utils.parseUnits(sales.price?.toString(), 18), // 0.08 ETH  // price of public sale // expect wei value
+		maximumTokens: BigNumber.from(sales.maximumTokens), // maximum tokens that can be sold
+		maxPurchase: BigNumber.from(sales.maxPurchase), // maximum tokens that can be purchased at a time in single transaction
+		maxHolding: BigNumber.from(sales.maxHolding), // maximum tokens that a wallet can hold during the sale
+		price: ethers.utils.parseUnits(sales.price, 18), // 0.08 ETH  // price of public sale // expect wei value
 		publicSaleStartTime: getTimestamp(sales.publicSaleStartTime), // timestamp of public sale start
 		projectURI: sales.revealable.enabled ? sales.revealable.loadingImageUrl : collection.project_uri, // placeholder or collection uri depending upon what they choose for reveal
 	};
@@ -164,10 +165,10 @@ export const createCollection = async (
 
 	const presaleable = sales.presaleable.enabled
 		? {
-				presaleReservedTokens: sales.presaleable.presaleReservedTokens, // tokens that will be sold under presale, should be less than maximum tokens
-				presalePrice: ethers.utils.parseUnits(sales.presaleable.presalePrice?.toString(), 18), // 0.008 ETH  // price per token during presale // expect wei value
+				presaleReservedTokens: BigNumber.from(sales.presaleable.presaleReservedTokens), // tokens that will be sold under presale, should be less than maximum tokens
+				presalePrice: ethers.utils.parseUnits(sales.presaleable.presalePrice, 18), // 0.008 ETH  // price per token during presale // expect wei value
 				presaleStartTime: getTimestamp(sales.presaleable.presaleStartTime), // timestamp when presale starts, it should less than timestamp when public sale starts
-				presaleMaxHolding: sales.presaleable.presaleMaxHolding, // maximum tokens that a wallet can hold during presale
+				presaleMaxHolding: BigNumber.from(sales.presaleable.presaleMaxHolding), // maximum tokens that a wallet can hold during presale
 				presaleWhitelist: {
 					root,
 					cid: await whitelistManager.getCid(collection.name),

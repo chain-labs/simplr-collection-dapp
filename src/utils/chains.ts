@@ -4859,7 +4859,7 @@ export const getNetworkByShortName = (shortName: string) => {
 
 export const getSymbolByShortName = (shortName: string) => {
 	const network = getNetworkByShortName(shortName);
-	return network ? network.nativeCurrency.symbol : 'ETH';
+	return network ? network?.nativeCurrency?.symbol : 'ETH';
 };
 
 export const getShortNameByChainId = (chainId: number) => {
@@ -4873,5 +4873,5 @@ export const getNetworkByChainId = (chainId: number) => {
 
 export const getUnitByChainId = (chainId: number) => {
 	const network = getNetworkByChainId(chainId);
-	return network ? network.nativeCurrency.symbol : 'ETH';
+	return network ? network?.nativeCurrency?.symbol : 'ETH';
 };

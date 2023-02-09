@@ -25,6 +25,7 @@ interface Props {
 	disableValidation?: boolean;
 	fontSize?: string;
 	children?: string | React.ReactNode;
+	bigNumber?: boolean;
 }
 
 const LabelledTextInput = ({
@@ -47,6 +48,7 @@ const LabelledTextInput = ({
 	disableValidation,
 	fontSize,
 	children,
+	bigNumber,
 }: Props) => {
 	const [showTooltip, setShowTooltip] = useState<boolean>();
 	return (
@@ -109,6 +111,7 @@ const LabelledTextInput = ({
 							max,
 							disableValidation,
 							fontSize,
+							bigNumber,
 						}}
 					/>
 				}

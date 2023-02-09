@@ -18,6 +18,8 @@ import {
 } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
 import theme from 'src/styleguide/theme';
+import { smallerBN, subBN } from 'src/utils/BigNumber';
+import { MAX_HOLD_LIMIT, UNLIMITED } from 'src/utils/constants';
 import Affiliable from './Affiliable';
 import Presale from './Presale';
 import Revealable from './Revealable';
@@ -51,17 +53,17 @@ const SalesPage = ({ step, setStep }) => {
 
 	const [isAffiliable, setIsAffiliable] = useState(affiliable);
 	const { type } = collection;
-	const [maxTokens, setMaxTokens] = useState<number>(sales.maximumTokens);
-	const [maxPurchase, setMaxPurchase] = useState<number>(sales.maxPurchase);
-	const [maxHolding, setMaxHolding] = useState<number>(sales.maxHolding);
-	const [price, setPrice] = useState<number>(sales.price);
-	const [reserveTokens, setReserveTokens] = useState<number>(sales.reserveTokens);
+	const [maxTokens, setMaxTokens] = useState<string>(sales.maximumTokens);
+	const [maxPurchase, setMaxPurchase] = useState<string>(sales.maxPurchase);
+	const [maxHolding, setMaxHolding] = useState<string>(sales.maxHolding);
+	const [price, setPrice] = useState<string>(sales.price);
+	const [reserveTokens, setReserveTokens] = useState<string>(sales.reserveTokens);
 	const [publicSaleLaunchTimestamp, setPublicSaleLaunchTimestamp] = useState<DateType>(sales.publicSaleStartTime);
 	const [isPresaleable, setIsPresaleable] = useState(presaleable);
 
-	const [presaleReservedTokens, setPresaleReservedTokens] = useState<number>(sales.presaleable.presaleReservedTokens);
-	const [presalePrice, setPresalePrice] = useState<number>(sales.presaleable.presalePrice);
-	const [presaleMaxHolding, setPresaleMaxHolding] = useState<number>(sales.presaleable.presaleMaxHolding);
+	const [presaleReservedTokens, setPresaleReservedTokens] = useState<string>(sales.presaleable.presaleReservedTokens);
+	const [presalePrice, setPresalePrice] = useState<string>(sales.presaleable.presalePrice);
+	const [presaleMaxHolding, setPresaleMaxHolding] = useState<string>(sales.presaleable.presaleMaxHolding);
 	const [presaleStartTime, setPresaleStartTime] = useState<DateType>(sales.presaleable.presaleStartTime);
 
 	const [isRevealable, setIsRevealable] = useState(revealable);
@@ -147,6 +149,7 @@ const SalesPage = ({ step, setStep }) => {
 			</Box>
 			<form onSubmit={addSalesDetails}>
 				<Box overflow="visible" mb="20rem">
+					{/* Toaster */}
 					<Box overflow="visible">
 						<Toaster
 							position="top-center"
@@ -155,40 +158,134 @@ const SalesPage = ({ step, setStep }) => {
 							}}
 						/>
 					</Box>
+					{/* Max Tokens */}
+					<Box display="flex" alignItems="flex-end">
+						<LabelledTextInput
+							type="number"
+							min="1"
+							max={UNLIMITED}
+							label="Total NFTs in the collection"
+							required
+							placeholder="eg.10,000"
+							value={maxTokens}
+							setValue={setMaxTokens}
+							bigNumber
+						/>
+						<Box
+							py="ms"
+							px="mm"
+							ml="mm"
+							borderRadius="8px"
+							cursor="pointer"
+							css={`
+								&:hover {
+									background: ${theme.colors['blue-10']};
+								}
+							`}
+							onClick={() => setMaxTokens(UNLIMITED)}
+						>
+							<Text as="h5" color="simply-blue">
+								Set to Unlimited
+							</Text>
+						</Box>
+					</Box>
+					<Box mt="mxxxl" />
+					{/* Reserved Tokens */}
 					<LabelledTextInput
 						type="number"
-						min="1"
-						label="Total NFTs in the collection"
+						min="0"
+						max={maxTokens}
+						label="Reserved NFTs"
+						helperText=" Reserved NFTs will not be included in the sale and can be transferred directly to any wallet address. Enter “0” if you do not wish to reserve any NFTs."
 						required
 						placeholder="eg.10,000"
-						value={maxTokens}
-						setValue={setMaxTokens}
+						value={reserveTokens}
+						setValue={setReserveTokens}
 					/>
 					<Box mt="mxxxl" />
-					<LabelledTextInput
-						type="number"
-						min="1"
-						max={maxHolding?.toString()}
-						label="Maximum NFTs allowed to buy per sale"
-						helperText="Maximum number of NFTs a user can buy at once"
-						required
-						placeholder="eg. 2"
-						value={maxPurchase}
-						setValue={setMaxPurchase}
-					/>
+					{/* Max Holding */}
+					<Box display="flex" alignItems="flex-end">
+						<LabelledTextInput
+							type="number"
+							min="1"
+							max={
+								maxTokens
+									? reserveTokens
+										? smallerBN(subBN(maxTokens, reserveTokens), MAX_HOLD_LIMIT)
+										: smallerBN(maxTokens, MAX_HOLD_LIMIT)
+									: MAX_HOLD_LIMIT
+							}
+							label="Maximum NFTs allowed to buy per wallet"
+							helperText="Maximum number of NFTs a user can hold in their wallet"
+							required
+							placeholder="eg. 5"
+							value={maxHolding}
+							setValue={setMaxHolding}
+						/>
+						<Box
+							py="ms"
+							px="mm"
+							ml="-1.6rem"
+							mb="3.4rem"
+							borderRadius="8px"
+							cursor="pointer"
+							css={`
+								&:hover {
+									background: ${theme.colors['blue-10']};
+								}
+							`}
+							onClick={() =>
+								setMaxHolding(
+									maxTokens
+										? reserveTokens
+											? smallerBN(subBN(maxTokens, reserveTokens), MAX_HOLD_LIMIT)
+											: smallerBN(maxTokens, MAX_HOLD_LIMIT)
+										: MAX_HOLD_LIMIT
+								)
+							}
+						>
+							<Text as="h5" color="simply-blue">
+								Set to Max
+							</Text>
+						</Box>
+					</Box>
 					<Box mt="mxxxl" />
-					<LabelledTextInput
-						type="number"
-						min="1"
-						max={maxTokens?.toString()}
-						label="Maximum NFTs allowed to buy per wallet"
-						helperText="Maximum number of NFTs a user can hold in their wallet"
-						required
-						placeholder="eg. 5"
-						value={maxHolding}
-						setValue={setMaxHolding}
-					/>
+					{/* Max Purchase */}
+					<Box display="flex" alignItems="flex-end">
+						<LabelledTextInput
+							type="number"
+							min="1"
+							max={maxHolding ? maxHolding : maxTokens && smallerBN(maxTokens, MAX_HOLD_LIMIT)}
+							label="Maximum NFTs allowed to buy per sale"
+							helperText="Maximum number of NFTs a user can buy at once"
+							required
+							placeholder="eg. 2"
+							value={maxPurchase}
+							setValue={setMaxPurchase}
+						/>
+						<Box
+							py="ms"
+							px="mm"
+							ml="mm"
+							mb="3.4rem"
+							borderRadius="8px"
+							cursor="pointer"
+							css={`
+								&:hover {
+									background: ${theme.colors['blue-10']};
+								}
+							`}
+							onClick={() =>
+								setMaxPurchase(maxHolding ? maxHolding : maxTokens && smallerBN(maxTokens, MAX_HOLD_LIMIT))
+							}
+						>
+							<Text as="h5" color="simply-blue">
+								Set to Max
+							</Text>
+						</Box>
+					</Box>
 					<Box mt="mxxxl" />
+					{/* Price */}
 					<LabelledTextInput
 						type="number"
 						step="0.000001"
@@ -201,18 +298,7 @@ const SalesPage = ({ step, setStep }) => {
 						setValue={setPrice}
 					/>
 					<Box mt="mxxxl" />
-					<LabelledTextInput
-						type="number"
-						min="0"
-						max={maxTokens?.toString()}
-						label="Reserved NFTs"
-						helperText=" Reserved NFTs will not be included in the sale and can be transferred directly to any wallet address. Enter “0” if you do not wish to reserve any NFTs."
-						required
-						placeholder="eg.10,000"
-						value={reserveTokens}
-						setValue={setReserveTokens}
-					/>
-					<Box mt="mxxxl" />
+					{/* Sale Time */}
 					<LabelledTextInput label="Public Sale Launch" required type="date">
 						<DateTime value={publicSaleLaunchTimestamp} setValue={setPublicSaleLaunchTimestamp} width="100%" />
 					</LabelledTextInput>
@@ -230,6 +316,8 @@ const SalesPage = ({ step, setStep }) => {
 						presaleStartTime={presaleStartTime}
 						setPresaleStartTime={setPresaleStartTime}
 						maxTokens={maxTokens}
+						reservedTokens={reserveTokens}
+						maxPurchase={maxPurchase}
 					/>
 					<Box mt="wm" />
 					<Revealable

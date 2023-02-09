@@ -11,6 +11,9 @@ import Toggle from 'src/components/Toggle';
 import { useAppDispatch, useAppSelector } from 'src/redux/hooks';
 import { addWhitelist, presaleableToggleSelector, presaleWhitelistSelector, togglePresale } from 'src/redux/sales';
 import { DateType } from 'src/redux/sales/types';
+import theme from 'src/styleguide/theme';
+import { subBN } from 'src/utils/BigNumber';
+import { MAX_HOLD_LIMIT } from 'src/utils/constants';
 import { getUnit } from '.';
 import WhitelistModal from './WhitelistModal';
 
@@ -27,19 +30,23 @@ const Presale = ({
 	presaleStartTime,
 	setPresaleStartTime,
 	maxTokens,
+	reservedTokens,
+	maxPurchase,
 }: {
 	unit: number;
 	isChecked?: boolean;
 	setIsChecked: (boolean) => void;
-	presaleReservedTokens?: number;
-	setPresaleReservedTokens: (number) => void;
-	presalePrice?: number;
-	setPresalePrice: (number) => void;
-	presaleMaxHolding?: number;
-	setPresaleMaxHolding: (number) => void;
+	presaleReservedTokens?: string;
+	setPresaleReservedTokens: (string) => void;
+	presalePrice?: string;
+	setPresalePrice: (string) => void;
+	presaleMaxHolding?: string;
+	setPresaleMaxHolding: (string) => void;
 	presaleStartTime?: DateType;
-	setPresaleStartTime: (number) => void;
-	maxTokens?: number;
+	setPresaleStartTime: (string) => void;
+	maxTokens?: string;
+	reservedTokens?: string;
+	maxPurchase?: string;
 }) => {
 	const checked = useAppSelector(presaleableToggleSelector);
 	const presaleWhitelist = useAppSelector(presaleWhitelistSelector);
@@ -91,16 +98,40 @@ const Presale = ({
 				condition={isChecked}
 				then={
 					<Box mt="wxs" overflow="visible">
-						<LabelledTextInput
-							type="number"
-							min="1"
-							max={maxTokens?.toString()}
-							label="Maximum NFTs allowed to sell during pre-sale"
-							required
-							placeholder="eg. 500"
-							value={presaleReservedTokens}
-							setValue={setPresaleReservedTokens}
-						/>
+						<Box display="flex" alignItems="flex-end">
+							<LabelledTextInput
+								type="number"
+								min="1"
+								max={`${maxTokens && reservedTokens ? subBN(maxTokens, reservedTokens) : maxTokens}`}
+								label="Maximum NFTs allowed to sell during pre-sale"
+								required
+								placeholder="eg. 500"
+								value={presaleReservedTokens}
+								setValue={setPresaleReservedTokens}
+								bigNumber
+							/>
+							<Box
+								py="ms"
+								px="mm"
+								ml="mm"
+								borderRadius="8px"
+								cursor="pointer"
+								css={`
+									&:hover {
+										background: ${theme.colors['blue-10']};
+									}
+								`}
+								onClick={() =>
+									setPresaleReservedTokens(
+										`${maxTokens && reservedTokens ? subBN(maxTokens, reservedTokens) : maxTokens}`
+									)
+								}
+							>
+								<Text as="h5" color="simply-blue">
+									Set to Max
+								</Text>
+							</Box>
+						</Box>
 						<Box mt="mxxxl" />
 						<LabelledTextInput
 							type="number"
@@ -114,16 +145,37 @@ const Presale = ({
 							setValue={setPresalePrice}
 						/>
 						<Box mt="mxxxl" />
-						<LabelledTextInput
-							type="number"
-							min="1"
-							max={presaleReservedTokens?.toString()}
-							label="Maximum NFTs allowed to buy per user during pre-sale"
-							required
-							placeholder="eg. 2"
-							value={presaleMaxHolding}
-							setValue={setPresaleMaxHolding}
-						/>
+						<Box display="flex" alignItems="flex-end">
+							<LabelledTextInput
+								type="number"
+								min="1"
+								max={maxPurchase ?? presaleReservedTokens ?? maxTokens ?? MAX_HOLD_LIMIT}
+								label="Maximum NFTs allowed to buy per user during pre-sale"
+								required
+								placeholder="eg. 2"
+								value={presaleMaxHolding}
+								setValue={setPresaleMaxHolding}
+							/>
+							<Box
+								py="ms"
+								px="mm"
+								ml="mm"
+								borderRadius="8px"
+								cursor="pointer"
+								css={`
+									&:hover {
+										background: ${theme.colors['blue-10']};
+									}
+								`}
+								onClick={() =>
+									setPresaleMaxHolding(`${maxPurchase ?? presaleReservedTokens ?? maxTokens ?? MAX_HOLD_LIMIT}`)
+								}
+							>
+								<Text as="h5" color="simply-blue">
+									Set to Max
+								</Text>
+							</Box>
+						</Box>
 						<Box mt="mxxxl" />
 						<Box column overflow="visible">
 							<LabelledTextInput

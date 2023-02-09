@@ -74,6 +74,7 @@ const ApprovalModal = ({ isOpen, setIsOpen, balance }) => {
 							payments,
 							signer: user.signer,
 							balance,
+							typeofprice: typeof sales.price,
 						});
 						createCollection(CollectionFactory, res.metadata, collection, sales, payments, user.signer, balance)
 							.then((res) => {
