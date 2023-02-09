@@ -39,7 +39,7 @@ const SalesSummaryPage = ({ setModalStep }) => {
 			<LabelledTextInput
 				type="number"
 				min="1"
-				max={maxTokens?.toString()}
+				max={maxTokens}
 				label="Maximum NFTs allowed to buy per sale"
 				helperText="Maximum number of NFTs a user can buy at once"
 				required

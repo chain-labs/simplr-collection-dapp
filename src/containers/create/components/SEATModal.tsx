@@ -7,7 +7,7 @@ import Modal from 'src/components/Modal';
 import Text from 'src/components/Text';
 import theme from 'src/styleguide/theme';
 import Navbar from 'src/components/Navbar';
-import { SEAT_TOGGLE, toBoolean } from 'src/utils/constants';
+import { SEAT_TOGGLE } from 'src/utils/constants';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAppSelector } from 'src/redux/hooks';

@@ -5,6 +5,7 @@ import { Prohibit, Check, WarningCircle, MagnifyingGlass } from 'phosphor-react'
 import If from './If';
 import { useEffect, useState } from 'react';
 import Text from './Text';
+import { decrementBN, incrementBN, ltBN } from 'src/utils/BigNumber';
 
 interface Props {
 	disabled?: boolean;
@@ -23,6 +24,7 @@ interface Props {
 	max?: string;
 	disableValidation?: boolean;
 	fontSize?: string;
+	bigNumber?: boolean;
 }
 
 const TextInput = ({
@@ -40,6 +42,7 @@ const TextInput = ({
 	max,
 	disableValidation,
 	fontSize,
+	bigNumber,
 }: Props) => {
 	const [validity, setValidity] = useState<'clear' | 'valid' | 'invalid'>('clear');
 	const [searchIcon, setSearchIcon] = useState<boolean>(true);
@@ -83,15 +86,16 @@ const TextInput = ({
 		>
 			<InputElement
 				as="input"
-				{...{ disabled, required, type, step, disableValidation, fontSize }}
+				{...{ disabled, required, step, disableValidation, fontSize }}
 				readOnly={!setValue}
+				type={bigNumber && type === 'number' ? 'text' : type}
 				placeholder={placeholder}
 				pattern={regexp}
 				value={value}
 				onChange={handleChange}
 				onWheel={(e) => {
 					// @ts-expect-error - e.target is an input element
-					if (type === 'number') e.target.blur();
+					if (!bigNumber && type === 'number') e.target.blur();
 				}}
 				validation={validity}
 				onBlur={handleValidity}
@@ -99,6 +103,19 @@ const TextInput = ({
 				width={width ?? '32rem'}
 				min={min}
 				max={max}
+				onKeyDown={(e) => {
+					if (bigNumber && type === 'number') {
+						if (e.key === 'ArrowDown') {
+							if (value === '0' || value === '') setValue('0');
+							else setValue(value ? decrementBN(value) : '');
+						}
+						if (e.key === 'ArrowUp') {
+							if (value === '') {
+								setValue('1');
+							} else setValue(value && max && ltBN(value, max) ? incrementBN(value) : value);
+						}
+					}
+				}}
 			></InputElement>
 			<If
 				condition={disabled && !disableValidation}
